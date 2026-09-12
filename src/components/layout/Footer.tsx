@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { EGFIN, NAV, SITE } from "@/lib/site";
 
-const year = new Date().getFullYear();
-
 export function Footer() {
+  const year = new Date().getFullYear();
   return (
     <footer data-theme="dark" className="themed border-t border-(--line)">
       <div className="container-x py-16 lg:py-24">

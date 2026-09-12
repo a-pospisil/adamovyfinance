@@ -60,7 +60,7 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2" noValidate={false}>
+    <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
       <div className="sm:col-span-1">
         <label htmlFor={`${id}-name`} className="eyebrow">Jméno a příjmení</label>
         <input id={`${id}-name`} name="name" required minLength={2} maxLength={100} autoComplete="name" className="field" />

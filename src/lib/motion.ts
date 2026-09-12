@@ -17,7 +17,6 @@ export function getGsap() {
 }
 
 export const MOTION_OK = "(prefers-reduced-motion: no-preference)";
-export const MOTION_REDUCED = "(prefers-reduced-motion: reduce)";
 
 /**
  * Splits text into word spans for staggered reveals while keeping nested

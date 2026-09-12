@@ -7,8 +7,6 @@ type Props = {
   children: ReactNode;
   /** Adds the default vertical rhythm. */
   padded?: boolean;
-  /** Removes horizontal container (for full-bleed scenes). */
-  bleed?: boolean;
   as?: "section" | "div" | "header" | "footer" | "article";
   ariaLabelledby?: string;
 };
@@ -20,7 +18,6 @@ export function Section({
   className = "",
   children,
   padded = true,
-  bleed = false,
   as: Tag = "section",
   ariaLabelledby,
 }: Props) {
@@ -31,7 +28,7 @@ export function Section({
       aria-labelledby={ariaLabelledby}
       className={`themed relative ${padded ? "section-y" : ""} ${className}`}
     >
-      {bleed ? children : <div className="container-x">{children}</div>}
+      <div className="container-x">{children}</div>
     </Tag>
   );
 }

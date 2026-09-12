@@ -46,7 +46,7 @@ export function Header() {
       >
         Přeskočit na obsah
       </a>
-      <div className="container-x flex h-[4.5rem] items-center justify-between lg:h-20">
+      <div className="container-x flex h-[4.5rem] items-center justify-between xl:h-20">
         <Link href="/" className="group flex items-center gap-3" aria-label="Adam Pospíšil – úvod">
           <span
             aria-hidden="true"
@@ -62,7 +62,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav aria-label="Hlavní navigace" className="hidden items-center gap-8 lg:flex">
+        <nav aria-label="Hlavní navigace" className="hidden items-center gap-7 xl:flex">
           {NAV.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
@@ -94,7 +94,7 @@ export function Header() {
 
         <button
           type="button"
-          className="relative z-[60] -mr-2 flex h-11 items-center gap-3 px-2 font-mono text-[0.7rem] uppercase tracking-[0.16em] lg:hidden"
+          className="relative z-[60] -mr-2 flex h-11 items-center gap-3 px-2 font-mono text-[0.7rem] uppercase tracking-[0.16em] xl:hidden"
           aria-expanded={open}
           aria-controls={menuId}
           onClick={() => setOpen((v) => !v)}
@@ -118,7 +118,7 @@ export function Header() {
       <div
         id={menuId}
         hidden={!open}
-        className="fixed inset-0 top-[4.5rem] z-50 flex flex-col bg-ink-950 lg:hidden"
+        className="fixed inset-0 top-[4.5rem] z-50 flex flex-col overflow-y-auto bg-ink-950 xl:hidden"
       >
         <nav aria-label="Mobilní navigace" className="container-x flex flex-1 flex-col justify-center gap-1 py-8">
           {NAV.map((item, i) => (

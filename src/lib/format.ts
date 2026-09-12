@@ -11,11 +11,6 @@ export function formatCzk(value: number, suffix = `${NBSP}Kč`): string {
   return `${nb(czk.format(Math.round(value)))}${suffix}`;
 }
 
-/** 4000000 -> "4,0 mil. Kč" */
-export function formatMil(value: number, digits = 1): string {
-  return `${(value / 1_000_000).toFixed(digits).replace(".", ",")}${NBSP}mil.${NBSP}Kč`;
-}
-
 /** 0.7 -> "70 %" */
 export function formatPct(ratio: number, digits = 0): string {
   return `${(ratio * 100).toFixed(digits).replace(".", ",")}${NBSP}%`;

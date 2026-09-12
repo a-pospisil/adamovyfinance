@@ -2,8 +2,8 @@ import { EGFIN, FACTS, SITE, SITE_URL } from "@/lib/site";
 
 export const PERSON_ID = `${SITE_URL}/#adam-pospisil`;
 export const ORG_ID = `${SITE_URL}/#evergreen-finance`;
-export const SERVICE_ID = `${SITE_URL}/#service`;
-export const WEBSITE_ID = `${SITE_URL}/#website`;
+const SERVICE_ID = `${SITE_URL}/#service`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
 
 /** Adam as the central entity of the site (personal brand). */
 export function personSchema() {
