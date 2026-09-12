@@ -2,19 +2,18 @@ import type { ReactNode } from "react";
 
 type Props = {
   id?: string;
-  theme?: "dark" | "light";
+  theme?: "paper" | "ink" | "cocoa";
   className?: string;
   children: ReactNode;
-  /** Adds the default vertical rhythm. */
   padded?: boolean;
-  as?: "section" | "div" | "header" | "footer" | "article";
+  as?: "section" | "div" | "article";
   ariaLabelledby?: string;
 };
 
-/** Themed page section. Children inherit --bg/--fg/--line variables. */
+/** Sekce webu. Barvy dědí potomci přes --bg/--fg/--line/--accent. */
 export function Section({
   id,
-  theme = "dark",
+  theme = "paper",
   className = "",
   children,
   padded = true,
@@ -33,19 +32,21 @@ export function Section({
   );
 }
 
-type EyebrowProps = { index?: string; children: ReactNode; className?: string };
-
-/** Mono section label with optional running index: "03 — Financování jako systém". */
-export function Eyebrow({ index, children, className = "" }: EyebrowProps) {
+/** Číslované záhlaví sekce: „01 — O MNĚ“ s tenkou linkou a rozetou. */
+export function SectionMark({
+  index,
+  children,
+  className = "",
+}: {
+  index: string;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <p className={`eyebrow flex items-center gap-3 ${className}`}>
-      {index && (
-        <>
-          <span className="text-(--fg)">{index}</span>
-          <span aria-hidden="true" className="h-px w-8 bg-(--line-strong)" />
-        </>
-      )}
-      <span>{children}</span>
-    </p>
+    <div className={`flex items-center gap-4 ${className}`}>
+      <span className="label-sm tabular text-(--accent)">{index}</span>
+      <span aria-hidden="true" className="h-px w-10 bg-(--line-strong)" />
+      <span className="label-xs">{children}</span>
+    </div>
   );
 }

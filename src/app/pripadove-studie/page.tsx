@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
-import { Eyebrow, Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { Section, SectionMark } from "@/components/ui/Section";
+import { Numeral } from "@/components/engraving/Engraving";
 import { CASE_STUDIES, WORKSHOP_CASES } from "@/lib/caseStudies";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, ORG_ID, PERSON_ID } from "@/lib/schema";
@@ -46,106 +47,142 @@ export default function CaseStudiesPage() {
       />
 
       <PageHero
-        eyebrow="Případové studie"
+        label="Případové studie"
+        numeral="03"
         title={
           <>
-            Čísla <span className="serif-accent text-moss-300">místo slibů.</span>
+            Čísla <span className="italic-accent text-burgundy">místo slibů.</span>
           </>
         }
         lead={
           <p>
-            Tři případy z praxe mého týmu. Údaje jsou anonymizované, čísla skutečná a zaokrouhlená. U každého
-            případu stejná struktura: problém, rozhodnutí, struktura financování, výsledek. A jedna věc, kterou si
-            z něj odnést.
+            Tři případy z praxe mého týmu. Údaje jsou anonymizované, čísla skutečná a zaokrouhlená. U každého stejná
+            osnova: problém, rozhodnutí, struktura, výsledek.
           </p>
         }
       />
 
       {CASE_STUDIES.map((c, i) => (
-        <Section key={c.slug} id={c.slug} theme={i % 2 === 0 ? "light" : "dark"} as="article" ariaLabelledby={`${c.slug}-title`}>
-          <Reveal className="grid gap-8 lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-5">
-              <Eyebrow index={`0${i + 1}`}>{c.region}</Eyebrow>
-              <h2 id={`${c.slug}-title`} className="display display-md mt-6">
-                {c.title}
-              </h2>
-            </div>
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-6 lg:col-span-6 lg:col-start-7">
-              {c.metrics.map((m) => (
-                <div key={m.label} className="border-t border-(--line) pt-4">
-                  <dt className="eyebrow">{m.label}</dt>
-                  <dd className="numeral mt-2 text-[clamp(1.4rem,2.2vw,2rem)]">{m.value}</dd>
-                </div>
+        <Section
+          key={c.slug}
+          id={c.slug}
+          theme={i % 2 === 0 ? "paper" : "ink"}
+          as="article"
+          ariaLabelledby={`${c.slug}-title`}
+          className="overflow-hidden border-t border-(--line)"
+        >
+          <Numeral
+            value={`0${i + 1}`}
+            className="pointer-events-none absolute -right-4 top-10 text-[14rem] leading-none sm:text-[20rem]"
+            tone={i % 2 === 0 ? "brown" : "gold"}
+            opacity={0.06}
+          />
+
+          <div className="relative">
+            <Reveal className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+              <div className="lg:col-span-5">
+                <p className="label-xs text-(--accent)">{c.region}</p>
+                <h2 id={`${c.slug}-title`} className="display display-md mt-4 max-w-[16ch]">
+                  {c.title}
+                </h2>
+              </div>
+              <dl className="grid grid-cols-2 gap-x-8 gap-y-7 lg:col-span-6 lg:col-start-7">
+                {c.metrics.map((m) => (
+                  <div key={m.label} className="border-t border-(--line) pt-4">
+                    <dt className="label-xs">{m.label}</dt>
+                    <dd className="nominal mt-2 text-[clamp(1.5rem,2.6vw,2.4rem)]">{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+
+            <ol className="mt-14 grid border-t border-(--line) md:grid-cols-2 lg:grid-cols-4">
+              {STEPS.map((s, j) => (
+                <Reveal
+                  as="li"
+                  key={s.key}
+                  delay={j * 60}
+                  className="border-b border-(--line) py-7 md:pr-8 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:[&:not(:first-child)]:pl-8"
+                >
+                  <span className="label-xs tabular text-(--accent)">0{j + 1}</span>
+                  <h3 className="display display-sm mt-3">{s.label}</h3>
+                  <p className="mt-4 text-[0.95rem] leading-relaxed text-(--muted)">{c[s.key]}</p>
+                </Reveal>
               ))}
-            </dl>
-          </Reveal>
+            </ol>
 
-          <ol className="mt-14 grid border-t border-(--line) md:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s, j) => (
-              <Reveal as="li" key={s.key} delay={j * 0.08} className="border-b border-(--line) py-7 md:pr-8 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:[&:not(:first-child)]:pl-8">
-                <span className="font-mono text-[0.65rem] tracking-[0.14em] text-(--muted)">0{j + 1}</span>
-                <h3 className="display display-sm mt-3 text-[1.2rem]">{s.label}</h3>
-                <p className="mt-4 text-[0.95rem] leading-relaxed">{c[s.key]}</p>
-              </Reveal>
-            ))}
-          </ol>
-
-          <Reveal className="mt-10 grid gap-6 border-t border-(--line) pt-8 lg:grid-cols-12">
-            <p className="serif-accent text-[clamp(1.3rem,2vw,1.8rem)] leading-[1.25] lg:col-span-8">„{c.lesson}“</p>
-            <div className="lg:col-span-4 lg:text-right">
-              <a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 text-[0.9rem] text-(--muted) transition-colors hover:text-(--fg)">
-                Podrobná verze včetně bank na egfin.cz
-                <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↗</span>
-              </a>
-            </div>
-          </Reveal>
+            <Reveal className="mt-10 grid gap-6 border-t border-(--line) pt-8 lg:grid-cols-12">
+              <p className="display display-sm italic-accent lg:col-span-8">„{c.lesson}“</p>
+              <div className="lg:col-span-4 lg:text-right">
+                <a
+                  href={c.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="label-xs border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
+                >
+                  Podrobná verze na egfin.cz
+                </a>
+              </div>
+            </Reveal>
+          </div>
         </Section>
       ))}
 
-      <Section theme="dark" ariaLabelledby="ws-cases-title">
+      <Section theme="paper" ariaLabelledby="ws-cases-title" className="border-t border-(--line)">
         <Reveal>
-          <Eyebrow index="04">Z workshopů</Eyebrow>
-          <h2 id="ws-cases-title" className="display display-md mt-6">
-            Stejný klient, stejná banka, <span className="serif-accent text-moss-300">jiná struktura.</span>
+          <SectionMark index="04">Z workshopů</SectionMark>
+        </Reveal>
+        <Reveal delay={60}>
+          <h2 id="ws-cases-title" className="display display-md mt-10 max-w-[18ch]">
+            Stejný klient, stejná banka, <span className="italic-accent text-burgundy">jiná struktura.</span>
           </h2>
         </Reveal>
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+
+        <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
           {WORKSHOP_CASES.map((c, i) => (
-            <Reveal key={c.title} as="article" delay={i * 0.1} className="border border-(--line) p-6 sm:p-8">
-              <p className="mono-label text-sand">{c.who}</p>
+            <Reveal as="article" key={c.title} delay={i * 80} className="border-t border-(--line-strong) pt-7">
+              <p className="label-xs">{c.who}</p>
               <h3 className="display display-sm mt-3">{c.title}</h3>
               <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-(--line) py-5">
                 {c.metrics.map((m) => (
                   <div key={m.label}>
-                    <dd className="numeral text-[clamp(1.2rem,2vw,1.8rem)]">{m.value}</dd>
-                    <dt className="mt-1 text-[0.75rem] text-sand">{m.label}</dt>
+                    <dd className="nominal text-[clamp(1.2rem,2vw,1.75rem)]">{m.value}</dd>
+                    <dt className="label-xs mt-1.5">{m.label}</dt>
                   </div>
                 ))}
               </dl>
               <dl className="mt-6 space-y-4 text-[0.95rem]">
-                <div><dt className="eyebrow">Výchozí situace</dt><dd className="mt-1">{c.problem}</dd></div>
-                <div><dt className="eyebrow">Co se změnilo</dt><dd className="mt-1">{c.change}</dd></div>
-                <div><dt className="eyebrow">Výsledek</dt><dd className="mt-1 font-medium">{c.result}</dd></div>
+                <div>
+                  <dt className="label-xs">Výchozí situace</dt>
+                  <dd className="mt-1 text-(--muted)">{c.problem}</dd>
+                </div>
+                <div>
+                  <dt className="label-xs">Co se změnilo</dt>
+                  <dd className="mt-1 text-(--muted)">{c.change}</dd>
+                </div>
+                <div>
+                  <dt className="label-xs">Výsledek</dt>
+                  <dd className="mt-1">{c.result}</dd>
+                </div>
               </dl>
             </Reveal>
           ))}
         </div>
-      </Section>
 
-      <Section theme="light" ariaLabelledby="cs-cta-title">
-        <Reveal className="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <Reveal className="mt-16 grid gap-8 border-t border-(--line) pt-12 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <h2 id="cs-cta-title" className="display display-md">
-              Chcete vědět, <span className="serif-accent text-(--accent)">co je možné u vás?</span>
+            <h2 className="display display-md max-w-[14ch]">
+              Chcete vědět, <span className="italic-accent text-burgundy">co je možné u vás?</span>
             </h2>
-            <p className="mt-6 max-w-xl text-(--muted)">
-              Popište mi, kde stojíte. Odpovím konkrétně: kolik, kde, za jakých podmínek a v jakém pořadí. Zdarma
-              a bez závazku.
+            <p className="mt-5 max-w-xl text-(--muted)">
+              Popište mi, kde stojíte. Odpovím konkrétně: kolik, kde, za jakých podmínek a v jakém pořadí.
             </p>
           </div>
           <div className="flex flex-wrap gap-4 lg:col-span-4 lg:justify-end">
-            <Button href="/kontakt" magnetic>Probrat mé financování</Button>
-            <Button href={EGFIN.portfolioAnalysis} external variant="outline" magnetic>Analýza portfolia</Button>
+            <Button href="/kontakt">Probrat financování</Button>
+            <Button href={EGFIN.portfolioAnalysis} external variant="outline">
+              Analýza portfolia
+            </Button>
           </div>
         </Reveal>
       </Section>

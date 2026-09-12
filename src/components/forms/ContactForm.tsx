@@ -18,7 +18,7 @@ const TOPICS = [
 
 type Status = "idle" | "sending" | "sent" | "unavailable" | "error";
 
-/** Lead form. Posts to /api/kontakt; when e-mail delivery is not configured it points to direct channels. */
+/** Poptávka. Posílá se na /api/kontakt; bez nastaveného e-mailu nabídne přímé kanály. */
 export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
   const id = useId();
   const [status, setStatus] = useState<Status>("idle");
@@ -49,46 +49,61 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
 
   if (status === "sent") {
     return (
-      <div className="border border-(--line) p-8" role="status">
-        <p className="display display-sm">Díky, ozvu se.</p>
+      <div className="border-t border-(--line-strong) pt-8" role="status">
+        <p className="display display-md">Děkuji, ozvu se.</p>
         <p className="mt-4 max-w-md text-(--muted)">
           Zprávu mám. Odpovídám {SITE.responseTime}. Pokud to spěchá, zavolejte na{" "}
-          <a href={SITE.phoneHref} className="text-(--fg) underline underline-offset-4">{SITE.phone}</a>.
+          <a href={SITE.phoneHref} className="text-(--fg) underline underline-offset-4">
+            {SITE.phone}
+          </a>
+          .
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
-      <div className="sm:col-span-1">
-        <label htmlFor={`${id}-name`} className="eyebrow">Jméno a příjmení</label>
+    <form onSubmit={onSubmit} className="grid gap-7 sm:grid-cols-2">
+      <div>
+        <label htmlFor={`${id}-name`} className="label-xs">
+          Jméno a příjmení
+        </label>
         <input id={`${id}-name`} name="name" required minLength={2} maxLength={100} autoComplete="name" className="field" />
       </div>
-      <div className="sm:col-span-1">
-        <label htmlFor={`${id}-phone`} className="eyebrow">Telefon</label>
+      <div>
+        <label htmlFor={`${id}-phone`} className="label-xs">
+          Telefon
+        </label>
         <input id={`${id}-phone`} name="phone" type="tel" required autoComplete="tel" inputMode="tel" className="field" />
       </div>
-      <div className="sm:col-span-1">
-        <label htmlFor={`${id}-email`} className="eyebrow">E-mail</label>
+      <div>
+        <label htmlFor={`${id}-email`} className="label-xs">
+          E-mail
+        </label>
         <input id={`${id}-email`} name="email" type="email" required autoComplete="email" className="field" />
       </div>
-      <div className="sm:col-span-1">
-        <label htmlFor={`${id}-topic`} className="eyebrow">Co řešíte</label>
+      <div>
+        <label htmlFor={`${id}-topic`} className="label-xs">
+          Co řešíte
+        </label>
         <select id={`${id}-topic`} name="topic" defaultValue={defaultTopic ?? TOPICS[0]} className="field">
           {TOPICS.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>
+              {t}
+            </option>
           ))}
         </select>
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor={`${id}-message`} className="eyebrow">Situace v pár větách</label>
+        <label htmlFor={`${id}-message`} className="label-xs">
+          Situace v pár větách
+        </label>
         <textarea
           id={`${id}-message`}
           name="message"
-          rows={5}
+          rows={4}
           maxLength={3000}
-          placeholder="Kolik nemovitostí vlastníte, jaké úvěry máte, co chcete koupit nebo změnit. Konkrétní čísla pomohou, ale nejsou podmínkou."
+          placeholder="Kolik nemovitostí vlastníte, jaké úvěry máte, co chcete koupit nebo změnit."
           className="field resize-y"
         />
       </div>
@@ -96,6 +111,7 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
         <label htmlFor={`${id}-web`}>Web</label>
         <input id={`${id}-web`} name="website" tabIndex={-1} autoComplete="off" />
       </div>
+
       <label className="flex items-start gap-3 text-[0.85rem] text-(--muted) sm:col-span-2">
         <input type="checkbox" name="consent" required className="mt-1 size-4 accent-(--accent)" />
         <span>
@@ -107,26 +123,31 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
         </span>
       </label>
 
-      <div className="flex flex-wrap items-center gap-5 sm:col-span-2">
+      <div className="flex flex-wrap items-center gap-6 sm:col-span-2">
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex h-14 items-center gap-3 rounded-[2px] bg-(--btn-bg) px-8 font-medium text-(--btn-fg) transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="label-sm group inline-flex h-12 items-center gap-3 bg-(--btn-bg) px-7 text-(--btn-fg) transition-colors hover:bg-(--accent) disabled:opacity-60"
         >
-          {status === "sending" ? "Odesílám…" : "Odeslat"}
-          <span aria-hidden="true">→</span>
+          {status === "sending" ? "Odesílám" : "Odeslat"}
+          <span aria-hidden="true" className="h-px w-5 bg-current transition-[width] duration-300 group-hover:w-8" />
         </button>
         <p className="text-[0.85rem] text-(--muted)">Odpovídám {SITE.responseTime}.</p>
       </div>
 
       {(status === "unavailable" || status === "error") && (
-        <p role="alert" className="border-l-2 border-(--accent) pl-4 text-[0.9rem] text-(--muted) sm:col-span-2">
+        <p role="alert" className="border-l border-(--accent) pl-4 text-[0.9rem] text-(--muted) sm:col-span-2">
           {status === "unavailable"
             ? "Formulář teď zprávy neodesílá. Napište mi prosím rovnou: "
             : "Zprávu se nepodařilo odeslat. Zkuste to znovu, nebo mi napište rovnou: "}
-          <a href={`mailto:${SITE.email}`} className="text-(--fg) underline underline-offset-4">{SITE.email}</a>
+          <a href={`mailto:${SITE.email}`} className="text-(--fg) underline underline-offset-4">
+            {SITE.email}
+          </a>
           {" nebo "}
-          <a href={SITE.whatsapp} className="text-(--fg) underline underline-offset-4" target="_blank" rel="noopener noreferrer">WhatsApp</a>.
+          <a href={SITE.whatsapp} className="text-(--fg) underline underline-offset-4" target="_blank" rel="noopener noreferrer">
+            WhatsApp
+          </a>
+          .
         </p>
       )}
     </form>

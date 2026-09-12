@@ -1,29 +1,37 @@
 import Link from "next/link";
+import { CornerOrnament, Guilloche, MicroStrip } from "@/components/engraving/Engraving";
 import { EGFIN, NAV, SITE } from "@/lib/site";
 
 export function Footer() {
   const year = new Date().getFullYear();
+
   return (
-    <footer data-theme="dark" className="themed border-t border-(--line)">
-      <div className="container-x py-16 lg:py-24">
+    <footer data-theme="ink" className="themed relative overflow-hidden">
+      <Guilloche className="pointer-events-none absolute -right-24 -top-32 size-[26rem]" tone="gold" opacity={0.1} />
+      <CornerOrnament className="pointer-events-none absolute left-6 top-6 size-10" tone="gold" opacity={0.35} />
+
+      <div className="container-x relative py-16 lg:py-20">
+        <MicroStrip text="Adam Pospíšil · Investment financing · Real estate" repeat={6} className="mb-12 hidden sm:block" />
+
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <p className="display display-sm max-w-md">
-              Banka vidí úvěr. <span className="serif-accent text-moss-300">Já vidím portfolio.</span>
+            <p className="display display-md max-w-sm">
+              Banka vidí úvěr.
+              <br />
+              <span className="italic-accent text-gold-300">Já vidím portfolio.</span>
             </p>
-            <p className="mt-6 max-w-md text-sand">
-              Adam Pospíšil – finanční poradce, hypoteční specialista, investor a lektor. Financování
-              investičních nemovitostí plánované v kontextu toho, co přijde dál.
+            <p className="mt-6 max-w-sm text-[0.95rem] text-(--muted)">
+              Adam Pospíšil — financování investičních nemovitostí pro investory. Praha.
             </p>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-3 lg:col-span-7">
+          <nav aria-label="Patička" className="grid gap-10 sm:grid-cols-3 lg:col-span-7">
             <div>
-              <h2 className="eyebrow mb-5">Web</h2>
-              <ul className="space-y-3">
+              <h2 className="label-xs mb-5">Web</h2>
+              <ul className="space-y-2.5">
                 {NAV.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href} className="transition-colors hover:text-moss-300">
+                    <Link href={item.href} className="text-[0.95rem] transition-colors hover:text-gold-300">
                       {item.label}
                     </Link>
                   </li>
@@ -31,75 +39,73 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <h2 className="eyebrow mb-5">Evergreen Finance</h2>
-              <ul className="space-y-3">
+              <h2 className="label-xs mb-5">Evergreen Finance</h2>
+              <ul className="space-y-2.5">
                 <li>
-                  <a href={EGFIN.url} className="transition-colors hover:text-moss-300" rel="noopener">
+                  <a href={EGFIN.url} className="text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
                     egfin.cz
                   </a>
                 </li>
                 <li>
-                  <a href={EGFIN.calculators} className="transition-colors hover:text-moss-300" rel="noopener">
+                  <a href={EGFIN.calculators} className="text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
                     Kalkulačky
                   </a>
                 </li>
                 <li>
-                  <a href={EGFIN.portfolioAnalysis} className="transition-colors hover:text-moss-300" rel="noopener">
-                    Analýza portfolia zdarma
-                  </a>
-                </li>
-                <li>
-                  <a href={EGFIN.caseStudies} className="transition-colors hover:text-moss-300" rel="noopener">
-                    Případové studie
+                  <a href={EGFIN.portfolioAnalysis} className="text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
+                    Analýza portfolia
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h2 className="eyebrow mb-5">Kontakt</h2>
-              <ul className="space-y-3">
+              <h2 className="label-xs mb-5">Kontakt</h2>
+              <ul className="space-y-2.5 text-[0.95rem]">
                 <li>
-                  <a href={SITE.phoneHref} className="transition-colors hover:text-moss-300">
+                  <a href={SITE.phoneHref} className="transition-colors hover:text-gold-300">
                     {SITE.phone}
                   </a>
                 </li>
                 <li>
-                  <a href={`mailto:${SITE.email}`} className="break-all transition-colors hover:text-moss-300">
+                  <a href={`mailto:${SITE.email}`} className="break-all transition-colors hover:text-gold-300">
                     {SITE.email}
                   </a>
                 </li>
                 <li>
-                  <a href={SITE.instagram} className="transition-colors hover:text-moss-300" target="_blank" rel="noopener noreferrer">
+                  <a href={SITE.instagram} className="transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     Instagram {SITE.instagramHandle}
                   </a>
                 </li>
                 <li>
-                  <a href={SITE.linkedin} className="transition-colors hover:text-moss-300" target="_blank" rel="noopener noreferrer">
+                  <a href={SITE.linkedin} className="transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     LinkedIn
                   </a>
                 </li>
-                <li className="pt-2 text-sand">
-                  {SITE.office.street}
-                  <br />
-                  {SITE.office.zip} {SITE.office.city}
+                <li className="pt-2 text-(--muted)">
+                  {SITE.office.street}, {SITE.office.zip} {SITE.office.city}
                 </li>
               </ul>
             </div>
-          </div>
+          </nav>
         </div>
 
-        <div className="mt-16 grid gap-6 border-t border-(--line) pt-8 text-[0.8rem] leading-relaxed text-sand lg:grid-cols-12">
-          <p className="lg:col-span-5">
+        <div className="mt-14 flex flex-wrap items-baseline justify-between gap-4 border-t border-(--line) pt-6">
+          <p className="microtype">A. P. / 01 · CZ / {year}</p>
+          <p className="microtype">Adamovy finance</p>
+        </div>
+
+        <div className="mt-6 grid gap-5 text-[0.78rem] leading-relaxed text-(--muted) lg:grid-cols-12">
+          <p className="lg:col-span-4">
             © {year} Adam Pospíšil ·{" "}
-            <Link href="/ochrana-osobnich-udaju" className="underline decoration-(--line-strong) underline-offset-4 hover:text-ivory-100">
+            <Link href="/ochrana-osobnich-udaju" className="underline decoration-(--line-strong) underline-offset-4 hover:text-paper">
               Ochrana osobních údajů
             </Link>
           </p>
-          <p className="lg:col-span-7">
+          <p className="lg:col-span-8">
             Adam Pospíšil působí jako zakladatel a jednatel společnosti {EGFIN.legalName}, IČO {EGFIN.ico}, vázaného
             zástupce společnosti Broker Trust, a.s. (IČO 26439719), která je v registru ČNB vedena jako samostatný
-            zprostředkovatel. Workshopy pořádá Monopoly advisory s.r.o., IČO 23123575. Informace na tomto webu jsou obecné
-            a nenahrazují individuální posouzení; schválení úvěru je vždy rozhodnutím banky.
+            zprostředkovatel. Workshopy pořádá Monopoly advisory s.r.o., IČO 23123575. Informace na tomto webu jsou
+            obecné a nenahrazují individuální posouzení; schválení úvěru je vždy rozhodnutím banky.
           </p>
         </div>
       </div>

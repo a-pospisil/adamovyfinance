@@ -1,34 +1,48 @@
 import type { ReactNode } from "react";
-import { Lines } from "@/components/ui/Lines";
 import { Reveal } from "@/components/ui/Reveal";
+import { Guilloche, Numeral, WaveField } from "@/components/engraving/Engraving";
 
 type Props = {
-  eyebrow: string;
+  label: string;
   title: ReactNode;
   lead?: ReactNode;
   aside?: ReactNode;
-  theme?: "dark" | "light";
-  size?: "lg" | "xl";
+  numeral?: string;
 };
 
-/** Consistent opening block for subpages: eyebrow, oversized headline, lead, optional aside. */
-export function PageHero({ eyebrow, title, lead, aside, theme = "dark", size = "lg" }: Props) {
+/** Záhlaví podstránky: papír, jemná rytina, jedno velké tvrzení. */
+export function PageHero({ label, title, lead, aside, numeral }: Props) {
   return (
-    <section data-theme={theme} className="themed pt-32 pb-16 md:pt-40 md:pb-20 lg:pt-44 lg:pb-24">
-      <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-8">
-        <div className={aside ? "lg:col-span-7" : "lg:col-span-10"}>
-          <p className="eyebrow">{eyebrow}</p>
-          <Lines as="h1" className={`display mt-6 ${size === "xl" ? "display-xl" : "display-lg"}`} delay={0.1}>
-            {title}
-          </Lines>
+    <section data-theme="paper" className="themed relative overflow-hidden pb-16 pt-28 sm:pt-32 lg:pb-20 lg:pt-36">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1/2 max-w-3xl">
+        <WaveField className="absolute inset-0 h-full w-full" tone="brown" opacity={0.06} />
+        <Guilloche className="absolute -right-24 top-1/2 size-[30rem] -translate-y-1/2" tone="gold" opacity={0.14} />
+        {numeral && (
+          <Numeral
+            value={numeral}
+            className="absolute right-[8%] top-1/2 -translate-y-1/2 text-[16rem] leading-none"
+            tone="brown"
+            opacity={0.06}
+          />
+        )}
+      </div>
+
+      <div className="container-x relative grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className={aside ? "lg:col-span-7" : "lg:col-span-9"}>
+          <Reveal>
+            <p className="label-xs">{label}</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <h1 className="display display-lg mt-6 max-w-[14ch]">{title}</h1>
+          </Reveal>
           {lead && (
-            <Reveal delay={0.35}>
-              <div className="lead mt-8 max-w-2xl text-(--muted)">{lead}</div>
+            <Reveal delay={140}>
+              <div className="lead mt-8 max-w-xl">{lead}</div>
             </Reveal>
           )}
         </div>
         {aside && (
-          <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.3}>
+          <Reveal className="lg:col-span-4 lg:col-start-9" delay={120}>
             {aside}
           </Reveal>
         )}

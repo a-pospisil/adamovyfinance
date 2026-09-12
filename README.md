@@ -6,20 +6,43 @@ nemovitostí, investor a lektor. Pozice webu: **„Banka vidí úvěr. Já vidí
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack), React 19, TypeScript
-- **Tailwind CSS 4** – design tokens v `src/app/globals.css` (`@theme`), sekce se přepínají přes `data-theme="dark|light"`
-- **GSAP + ScrollTrigger** (`@gsap/react`) – scroll storytelling; každá animace respektuje `prefers-reduced-motion`
-- `next/font` – Schibsted Grotesk (sans), Newsreader italic (serif accent), IBM Plex Mono (data), subsety `latin` + `latin-ext`
-- `next/image` – AVIF/WebP, zdrojové fotky v `public/images`
+- **Tailwind CSS 4** — design tokens v `src/app/globals.css` (`@theme`); sekce přepínají paletu přes
+  `data-theme="paper | ink | cocoa"`
+- `next/font` — **Cormorant Garamond** (display, rytinové nadpisy) a **Inter** (text), subsety `latin` + `latin-ext`
+- `next/image` — AVIF/WebP; portréty jsou převedené do teplého duotónu (kakao → papír)
+- Animace: jediný `IntersectionObserver` (`RevealObserver`) + CSS přechody, žádná animační knihovna
 
 Žádné UI knihovny, žádná analytika, žádné cookies.
+
+## Vizuální identita
+
+Old money × české bankovky × editorial. Palety vychází z tiskových barev bankovek:
+
+| Token | Hodnota | Použití |
+| --- | --- | --- |
+| `paper` | `#F1E7D0` | hlavní podklad |
+| `ink` | `#211D1A` | text, tmavé sekce |
+| `cocoa` | `#3A2924` | druhá tmavá sekce |
+| `brown` | `#80533F` | rytina, nominály |
+| `burgundy` | `#633C48` | akcent na papíru |
+| `gold` | `#B08A50` | guilloché, akcent na tmavém |
+| `violet`, `banknote-green` | `#66506B`, `#536B58` | jen drobné detaily |
+
+V jedné sekci se používají nejvýš tři až čtyři barvy. Rytinový systém (`src/components/engraving`) generuje
+guilloché, rozety a vlnová pole matematicky (hypotrochoida a epitrochoida), takže nejde o obrázky a vše zůstává
+ostré v každém rozlišení. Kresba drží opacitu 5–20 %, papír má jemné zrno přes `body::before`.
+
+Mikrotypografie (`ADAM POSPÍŠIL / INVESTMENT FINANCING`, `A. P. / 01`, `CZ / 2026`) je čistě dekorativní,
+označená `aria-hidden`, a nikdy nepředstírá bankovní nebo právní údaje.
 
 ## Struktura
 
 ```
 src/app              stránky (/, /financovani, /workshopy, /pripadove-studie, /o-adamovi, /nastroje, /kontakt,
                      /ochrana-osobnich-udaju), sitemap.ts, robots.ts, not-found.tsx, api/kontakt
-src/components/home  sekce homepage (Hero, Story, ChaosSystem, MortgageChain, InvestmentProperty, PortfolioBuilder, …)
-src/components/ui    Button, Section/Eyebrow, Reveal, Lines, Counter, PageHero, JsonLd
+src/components/home  sekce homepage (Hero, About, Specialisation, Figures, Workshop, Contact)
+src/components/engraving  rytinový systém: guilloché, rozeta, vlnové pole, rohy, nominály, mikrotypografie
+src/components/ui    Button, Section/SectionMark, Reveal, RevealObserver, PageHero, JsonLd
 src/lib              site.ts (kontakty, ověřená čísla, ČNB limity), workshops.ts, caseStudies.ts, model.ts, schema.ts,
                      format.ts, metadata.ts, motion.ts
 ```
@@ -30,8 +53,7 @@ Všechna čísla, termíny a ceny se mění na jednom místě:
 - `src/lib/workshops.ts` – termíny, místo, ceny, early bird (stránky s workshopy se přegenerují každou hodinu
   a samy přepnou early bird → běžná cena → „další termín připravuji“)
 - `src/lib/caseStudies.ts` – případové studie
-- `src/lib/model.ts` – modelový příklad (cena, LTV, sazba, nájem) použitý v hero, sekci Investiční nemovitost
-  a Portfolio builderu
+- `src/lib/model.ts` – modelový příklad (cena, LTV, sazba, nájem) pro kalkulačku a ukázky
 
 ## Vývoj
 

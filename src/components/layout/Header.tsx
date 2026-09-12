@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { NAV, SITE } from "@/lib/site";
 
-/** Fixed header: transparent over the hero, solid ink after scrolling. Full-screen menu on mobile. */
+/** Hlavička jako záhlaví tištěného dokumentu: monogram, jméno, tenká linka. */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -13,19 +13,19 @@ export function Header() {
   const menuId = useId();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock page scroll while the menu is open.
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
     return () => {
       document.documentElement.style.overflow = "";
     };
   }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -35,34 +35,25 @@ export function Header() {
 
   return (
     <header
-      data-theme="dark"
-      className={`fixed inset-x-0 top-0 z-50 text-ivory-100 transition-[background-color,border-color] duration-500 ${
-        scrolled || open ? "bg-ink-950/95 border-b border-(--line)" : "bg-transparent border-b border-transparent"
+      data-theme="paper"
+      className={`fixed inset-x-0 top-0 z-50 border-b text-ink transition-colors duration-500 ${
+        scrolled || open ? "border-(--line) bg-paper" : "border-transparent bg-transparent"
       }`}
     >
       <a
         href="#obsah"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-ivory-100 focus:px-4 focus:py-2 focus:text-ink-950"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
       >
         Přeskočit na obsah
       </a>
-      <div className="container-x flex h-[4.5rem] items-center justify-between xl:h-20">
-        <Link href="/" className="group flex items-center gap-3" aria-label="Adam Pospíšil – úvod">
-          <span
-            aria-hidden="true"
-            className="grid size-9 place-items-center border border-(--line-strong) font-mono text-[0.7rem] tracking-[0.12em] transition-colors group-hover:border-ivory-100"
-          >
-            AP
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="text-[0.95rem] font-semibold tracking-[-0.01em]">Adam Pospíšil</span>
-            <span className="mt-1 hidden font-mono text-[0.6rem] uppercase tracking-[0.16em] text-sand sm:block">
-              Hypotéky · Investiční nemovitosti
-            </span>
-          </span>
+
+      <div className="container-x flex h-16 items-center justify-between gap-6 lg:h-[4.75rem]">
+        <Link href="/" className="group flex items-baseline gap-3" aria-label="Adam Pospíšil — úvod">
+          <span className="display whitespace-nowrap text-[1.35rem] leading-none tracking-[0.01em]">Adam Pospíšil</span>
+          <span className="microtype hidden whitespace-nowrap translate-y-[-1px] xl:block">Investment financing</span>
         </Link>
 
-        <nav aria-label="Hlavní navigace" className="hidden items-center gap-7 xl:flex">
+        <nav aria-label="Hlavní navigace" className="hidden items-center gap-7 lg:flex">
           {NAV.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
@@ -70,23 +61,17 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative text-[0.9rem] tracking-[-0.005em] transition-colors hover:text-ivory-50 ${
-                  active ? "text-ivory-50" : "text-sand"
+                className={`label-sm whitespace-nowrap border-b pb-0.5 text-[0.68rem] tracking-[0.13em] transition-colors ${
+                  active ? "border-burgundy text-burgundy" : "border-transparent text-ink/70 hover:text-ink"
                 }`}
               >
                 {item.label}
-                <span
-                  aria-hidden="true"
-                  className={`absolute -bottom-1.5 left-0 h-px bg-moss-300 transition-[width] duration-300 ${
-                    active ? "w-full" : "w-0"
-                  }`}
-                />
               </Link>
             );
           })}
           <Link
             href="/kontakt"
-            className="ml-2 inline-flex h-10 items-center rounded-[2px] bg-ivory-100 px-4 text-[0.875rem] font-medium text-ink-950 transition-opacity hover:opacity-90"
+            className="label-sm inline-flex h-10 items-center whitespace-nowrap bg-ink px-5 text-[0.68rem] tracking-[0.13em] text-paper transition-colors hover:bg-burgundy"
           >
             Probrat financování
           </Link>
@@ -94,49 +79,45 @@ export function Header() {
 
         <button
           type="button"
-          className="relative z-[60] -mr-2 flex h-11 items-center gap-3 px-2 font-mono text-[0.7rem] uppercase tracking-[0.16em] xl:hidden"
+          className="label-sm relative z-[60] -mr-1 flex h-11 items-center gap-3 px-1 lg:hidden"
           aria-expanded={open}
           aria-controls={menuId}
           onClick={() => setOpen((v) => !v)}
         >
           <span>{open ? "Zavřít" : "Menu"}</span>
-          <span aria-hidden="true" className="relative block h-3 w-6">
+          <span aria-hidden="true" className="relative block h-2.5 w-5">
             <span
-              className={`absolute left-0 top-0 h-px w-6 bg-current transition-transform duration-300 ${
-                open ? "translate-y-[5.5px] rotate-45" : ""
+              className={`absolute left-0 top-0 h-px w-5 bg-current transition-transform duration-300 ${
+                open ? "translate-y-[5px] rotate-45" : ""
               }`}
             />
             <span
-              className={`absolute bottom-0 left-0 h-px w-6 bg-current transition-transform duration-300 ${
-                open ? "-translate-y-[5.5px] -rotate-45" : ""
+              className={`absolute bottom-0 left-0 h-px w-5 bg-current transition-transform duration-300 ${
+                open ? "-translate-y-[5px] -rotate-45" : ""
               }`}
             />
           </span>
         </button>
       </div>
 
-      <div
-        id={menuId}
-        hidden={!open}
-        className="fixed inset-0 top-[4.5rem] z-50 flex flex-col overflow-y-auto bg-ink-950 xl:hidden"
-      >
-        <nav aria-label="Mobilní navigace" className="container-x flex flex-1 flex-col justify-center gap-1 py-8">
+      <div id={menuId} hidden={!open} className="fixed inset-0 top-16 z-50 overflow-y-auto bg-paper lg:hidden">
+        <nav aria-label="Mobilní navigace" className="container-x flex min-h-full flex-col justify-center py-10">
           {NAV.map((item, i) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="flex items-baseline gap-4 border-b border-(--line) py-4 text-[clamp(1.75rem,7vw,2.5rem)] font-semibold tracking-[-0.02em]"
+              className="flex items-baseline gap-5 border-b border-(--line) py-4"
             >
-              <span className="font-mono text-[0.7rem] tracking-[0.16em] text-sand">0{i + 1}</span>
-              {item.label}
+              <span className="label-xs tabular">{String(i + 1).padStart(2, "0")}</span>
+              <span className="display text-[clamp(1.75rem,8vw,2.5rem)] leading-none">{item.label}</span>
             </Link>
           ))}
-          <div className="mt-8 flex flex-col gap-3">
-            <a href={SITE.phoneHref} className="text-lg text-ivory-100">
+          <div className="mt-10 flex flex-col gap-2">
+            <a href={SITE.phoneHref} className="display text-2xl">
               {SITE.phone}
             </a>
-            <a href={SITE.instagram} className="text-sand" target="_blank" rel="noopener noreferrer">
+            <a href={SITE.instagram} className="label-sm text-ink/70" target="_blank" rel="noopener noreferrer">
               Instagram {SITE.instagramHandle}
             </a>
           </div>

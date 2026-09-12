@@ -1,39 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Newsreader, Schibsted_Grotesk } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { RevealObserver } from "@/components/ui/RevealObserver";
 import { organizationSchema, personSchema, professionalServiceSchema, websiteSchema } from "@/lib/schema";
 import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const sans = Schibsted_Grotesk({
+const display = Cormorant_Garamond({
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const sans = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const serif = Newsreader({
-  subsets: ["latin", "latin-ext"],
-  style: ["italic"],
-  axes: ["opsz"],
-  variable: "--font-serif",
-  display: "swap",
-  preload: false,
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-  preload: false,
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Adam Pospíšil – hypotéky a financování investičních nemovitostí",
+    default: "Adam Pospíšil – financování investičních nemovitostí",
     template: "%s | Adam Pospíšil",
   },
   description: SITE.description,
@@ -46,7 +38,7 @@ export const metadata: Metadata = {
     locale: SITE.locale,
     siteName: SITE.name,
     url: `${SITE_URL}/`,
-    title: "Adam Pospíšil – hypotéky a financování investičních nemovitostí",
+    title: "Adam Pospíšil – financování investičních nemovitostí",
     description: SITE.description,
     images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Adam Pospíšil – Banka vidí úvěr. Já vidím portfolio." }],
   },
@@ -60,17 +52,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0d0c",
-  colorScheme: "dark",
+  themeColor: "#f1e7d0",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="cs" className={`${sans.variable} ${serif.variable} ${mono.variable} h-full`}>
+    <html lang="cs" className={`${display.variable} ${sans.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <JsonLd data={[personSchema(), organizationSchema(), professionalServiceSchema(), websiteSchema()]} />
+        <RevealObserver />
         <Header />
         <div id="obsah" className="flex-1">
           {children}

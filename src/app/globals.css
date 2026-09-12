@@ -1,243 +1,224 @@
 @import "tailwindcss";
 
-/* ---------- Design tokens ---------- */
+/* ============================================================
+   ADAMOVY FINANCE — Old money × české bankovky × editorial
+   Paleta: bankovkový papír, kakao, hnědá, burgundy, staré zlato.
+   Zelená a fialová jen jako drobné akcenty (nominály 100/1000 Kč).
+   ============================================================ */
 @theme {
-  --color-ink-950: #0a0d0c;
-  --color-ink-900: #101513;
-  --color-ink-800: #171e1b;
-  --color-ink-700: #232c28;
-  --color-ivory-50: #f5f2eb;
-  --color-ivory-100: #ede8dd;
-  --color-ivory-200: #e0dacc;
-  --color-ivory-300: #cdc5b3;
-  --color-moss-200: #c6d8cb;
-  --color-moss-300: #a3c0ac;
-  --color-moss-400: #74a084;
-  --color-moss-600: #35634b;
-  --color-moss-700: #264a38;
-  --color-sand: #b3ab9b;
-  --color-stone: #67625a;
+  --color-paper: #f1e7d0;
+  --color-paper-50: #f7f0df;
+  --color-paper-200: #e4d6b8;
+  --color-paper-300: #d3c19f;
+  --color-cocoa: #3a2924;
+  --color-brown: #80533f;
+  --color-brown-300: #b98f78;
+  --color-burgundy: #633c48;
+  --color-gold: #b08a50;
+  --color-gold-300: #d4b686;
+  --color-violet: #66506b;
+  --color-banknote-green: #536b58;
+  --color-ink: #211d1a;
 
+  --grain: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.13'/></feComponentTransfer></filter><rect width='180' height='180' filter='url(%23g)'/></svg>");
+
+  --font-display: var(--font-display), "Cormorant Garamond", Garamond, "Times New Roman", serif;
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
-  --font-mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
-
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-/* ---------- Section themes (components stay theme-agnostic) ---------- */
+/* ---------- Theme surfaces ---------- */
 @layer base {
   :root,
-  [data-theme="dark"] {
-    --bg: var(--color-ink-950);
-    --surface: var(--color-ink-900);
-    --fg: var(--color-ivory-100);
-    --muted: var(--color-sand);
-    --line: rgb(237 232 221 / 0.14);
-    --line-strong: rgb(237 232 221 / 0.32);
-    --accent: var(--color-moss-300);
-    --accent-strong: var(--color-moss-200);
-    --btn-bg: var(--color-ivory-100);
-    --btn-fg: var(--color-ink-950);
-    color-scheme: dark;
-  }
-  [data-theme="light"] {
-    --bg: var(--color-ivory-50);
-    --surface: var(--color-ivory-100);
-    --fg: var(--color-ink-950);
-    --muted: var(--color-stone);
-    --line: rgb(10 13 12 / 0.14);
-    --line-strong: rgb(10 13 12 / 0.36);
-    --accent: var(--color-moss-600);
-    --accent-strong: var(--color-moss-700);
-    --btn-bg: var(--color-ink-950);
-    --btn-fg: var(--color-ivory-50);
+  [data-theme="paper"] {
+    --bg: var(--color-paper);
+    --surface: var(--color-paper-50);
+    --fg: var(--color-ink);
+    --muted: #6c5b4e;
+    --micro: #6c5b4e;
+    --line: rgb(33 29 26 / 0.16);
+    --line-strong: rgb(33 29 26 / 0.32);
+    --accent: var(--color-burgundy);
+    --gold: var(--color-gold);
+    --btn-bg: var(--color-ink);
+    --btn-fg: var(--color-paper);
     color-scheme: light;
   }
+  [data-theme="ink"] {
+    --bg: var(--color-ink);
+    --surface: #2a2521;
+    --fg: var(--color-paper);
+    --muted: #a89478;
+    --micro: #c8b394;
+    --line: rgb(241 231 208 / 0.18);
+    --line-strong: rgb(241 231 208 / 0.38);
+    --accent: var(--color-gold-300);
+    --gold: var(--color-gold-300);
+    --btn-bg: var(--color-paper);
+    --btn-fg: var(--color-ink);
+    color-scheme: dark;
+  }
+  [data-theme="cocoa"] {
+    --bg: var(--color-cocoa);
+    --surface: #46322b;
+    --fg: var(--color-paper);
+    --muted: #bda389;
+    --micro: #d5c0a4;
+    --line: rgb(241 231 208 / 0.2);
+    --line-strong: rgb(241 231 208 / 0.4);
+    --accent: var(--color-gold-300);
+    --gold: var(--color-gold-300);
+    --btn-bg: var(--color-paper);
+    --btn-fg: var(--color-cocoa);
+    color-scheme: dark;
+  }
 
+  /* Rytinové SVG přesahují okraj sekcí; clip na html i body zabrání vodorovnému posunu stránky. */
   html {
+    overflow-x: clip;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+    html { scroll-behavior: auto; }
   }
 
   body {
-    background: var(--color-ink-950);
-    color: var(--color-ivory-100);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 1.0625rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    font-feature-settings: "kern", "liga", "ss01";
+    font-feature-settings: "kern", "liga";
     overflow-x: clip;
   }
 
-  ::selection {
-    background: var(--color-moss-600);
-    color: var(--color-ivory-50);
+  /* Jemné zrno bankovkového papíru přes celý dokument. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: var(--grain);
+    background-size: 180px 180px;
   }
 
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 4px;
-  }
+  ::selection { background: var(--color-gold-300); color: var(--color-ink); }
+  :focus-visible { outline: 1.5px solid var(--accent); outline-offset: 4px; }
 
-  h1, h2, h3, h4 {
-    text-wrap: balance;
-  }
-  p {
-    text-wrap: pretty;
-  }
-
-  strong { font-weight: 600; }
-
-  button, input, select, textarea {
-    font: inherit;
-    color: inherit;
-  }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 /* ---------- Utilities ---------- */
 @utility themed {
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--fg);
 }
 
 @utility container-x {
   width: 100%;
-  max-width: 108rem;
+  max-width: 90rem;
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 4.5rem);
+  padding-inline: clamp(1.25rem, 5vw, 5.5rem);
 }
 
 @utility section-y {
-  padding-block: clamp(5.5rem, 12vw, 11rem);
+  padding-block: clamp(5rem, 11vw, 10rem);
 }
 
-@utility eyebrow {
-  font-family: var(--font-mono);
+/* Rytinové nadpisy: Cormorant s jemným prokladem. */
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+@utility display-xl { font-size: clamp(2.9rem, 7.6vw, 7.5rem); }
+@utility display-lg { font-size: clamp(2.4rem, 5.4vw, 5rem); }
+@utility display-md { font-size: clamp(1.9rem, 3.6vw, 3.25rem); }
+@utility display-sm { font-size: clamp(1.375rem, 2vw, 1.875rem); }
+
+@utility italic-accent {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Nominální čísla jako na bankovce. */
+@utility nominal {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums;
+}
+
+/* Malé verzálkové popisky s širokým prokladem. */
+@utility label-xs {
+  font-family: var(--font-sans);
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-@utility mono-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-@utility display {
+@utility label-sm {
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  line-height: 0.9;
-  letter-spacing: -0.035em;
 }
 
-@utility display-xl {
-  font-size: clamp(3.25rem, 10.4vw, 10.75rem);
-}
-@utility display-lg {
-  font-size: clamp(2.75rem, 7.4vw, 7.25rem);
-}
-@utility display-md {
-  font-size: clamp(2.125rem, 5vw, 4.75rem);
-}
-@utility display-sm {
-  font-size: clamp(1.625rem, 2.8vw, 2.625rem);
-}
-
-@utility serif-accent {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: -0.01em;
-  font-variation-settings: "opsz" 72;
+/* Mikrotypografie na okrajích (ADAM POSPÍŠIL / INVESTMENT FINANCING). */
+@utility microtype {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--micro);
 }
 
 @utility lead {
-  font-size: clamp(1.125rem, 1.5vw, 1.4rem);
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--muted);
 }
 
-@utility hairline {
-  border-color: var(--line);
-}
-
-@utility numeral {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 0.9;
-  font-variant-numeric: tabular-nums lining-nums;
+@utility rule {
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
 @utility tabular {
   font-variant-numeric: tabular-nums lining-nums;
 }
 
-/* Reveal helpers: initial states are applied only when JS + motion are available. */
-@utility will-reveal {
-  will-change: transform, opacity;
-}
-
-/* Terminal-like row */
-@utility term-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 1rem;
-  padding-block: 0.65rem;
-  border-bottom: 1px solid var(--line);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* Hide scrollbar for horizontal story rails */
-@utility no-scrollbar {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-/* Form fields share one look across themes */
+/* Formulářová pole ve stylu tištěného formuláře: jen spodní linka. */
 @utility field {
   margin-top: 0.5rem;
   display: block;
   width: 100%;
-  border: 1px solid var(--line-strong);
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
   background: transparent;
-  padding: 0.85rem 1rem;
-  border-radius: 2px;
+  padding: 0.6rem 0.1rem;
   color: var(--fg);
-  transition: border-color 0.2s ease;
-  &::placeholder {
-    color: color-mix(in srgb, var(--muted) 70%, transparent);
-  }
-  &:focus {
-    outline: none;
-    border-color: var(--fg);
-  }
+  border-radius: 0;
+  transition: border-color 0.25s ease;
+  &::placeholder { color: color-mix(in srgb, var(--muted) 65%, transparent); }
+  &:focus { outline: none; border-bottom-color: var(--accent); }
 }
 
-/* Range slider: hairline track, square thumb, themed */
 @utility range {
   display: block;
   width: 100%;
@@ -245,32 +226,32 @@
   appearance: none;
   background: transparent;
   cursor: pointer;
-  &::-webkit-slider-runnable-track {
-    height: 1px;
-    background: var(--line-strong);
-  }
-  &::-moz-range-track {
-    height: 1px;
-    background: var(--line-strong);
-  }
+  &::-webkit-slider-runnable-track { height: 1px; background: var(--line-strong); }
+  &::-moz-range-track { height: 1px; background: var(--line-strong); }
   &::-webkit-slider-thumb {
     appearance: none;
-    width: 14px;
-    height: 14px;
-    margin-top: -6.5px;
-    background: var(--fg);
-    border: 1px solid var(--bg);
-    border-radius: 1px;
+    width: 13px; height: 13px; margin-top: -6px;
+    background: var(--accent); border: 0; border-radius: 50%;
   }
   &::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background: var(--fg);
-    border: 1px solid var(--bg);
-    border-radius: 1px;
+    width: 13px; height: 13px;
+    background: var(--accent); border: 0; border-radius: 50%;
   }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 6px;
+  &:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 6px; }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Odhalení obsahu při scrollu — bez knihovny, jen IntersectionObserver + CSS. */
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    &[data-shown="true"] { opacity: 1; transform: none; }
   }
 }

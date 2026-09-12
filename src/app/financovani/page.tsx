@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
-import { Eyebrow, Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { Section, SectionMark } from "@/components/ui/Section";
+import { Guilloche } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { CNB_2026, EGFIN } from "@/lib/site";
@@ -11,16 +12,15 @@ import { CNB_2026, EGFIN } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({
   title: "Financování investičních nemovitostí – investiční hypotéka, refinancování, s.r.o.",
   description:
-    "Jak přemýšlím o financování: investiční hypotéka, hypotéka na investiční byt, refinancování, financování portfolia, financování přes s.r.o. a hypotéka pro podnikatele. Bez klišé, s čísly.",
+    "Jak přemýšlím o financování: investiční hypotéka, hypotéka na investiční byt, refinancování, financování portfolia, financování přes s.r.o. a hypotéka pro podnikatele.",
   path: "/financovani",
 });
 
 type Topic = {
   id: string;
   title: string;
-  accent: string;
   lead: string;
-  body: string[];
+  body: string;
   questions: string[];
   egfin: { label: string; href: string };
 };
@@ -28,95 +28,111 @@ type Topic = {
 const TOPICS: Topic[] = [
   {
     id: "investicni-hypoteka",
-    title: "Investiční",
-    accent: "hypotéka.",
-    lead: "Jiný produkt s jinými pravidly než hypotéka na bydlení. Rozhoduje, kolik z nájmu banka uzná, jak započítá stávající závazky a jaké LTV dává smysl pro další nákup.",
-    body: [
-      `Od ${CNB_2026.effectiveFrom} platí doporučení ČNB: LTV nejvýše ${CNB_2026.investmentLtv} % a DTI nejvýše ${CNB_2026.investmentDti} pro úvěr na třetí a další obytnou nemovitost nebo na nemovitost k pronájmu. Do počtu se počítá i družstevní podíl a nemovitost v zahraničí. Vlastních zdrojů tedy potřebujete 30 % kupní ceny, nebo zástavu jinou nemovitostí.`,
-      "Maximální LTV není automaticky nejlepší LTV. Nastavuji ho podle cashflow a podle toho, co má přijít po prvním nákupu, ne podle maxima banky. Krátká fixace tam, kde plánujeme refinancování po přecenění, dlouhá tam, kde má cashflow držet bez překvapení.",
+    title: "Investiční hypotéka",
+    lead: "Jiný produkt s jinými pravidly než hypotéka na bydlení.",
+    body: `Od ${CNB_2026.effectiveFrom} platí doporučení ČNB: LTV nejvýše ${CNB_2026.investmentLtv} % a DTI nejvýše ${CNB_2026.investmentDti} pro úvěr na třetí a další obytnou nemovitost nebo na nemovitost k pronájmu. Maximální LTV přitom není automaticky nejlepší LTV — nastavuji ho podle cashflow a podle toho, co má přijít po prvním nákupu.`,
+    questions: [
+      "Kolik z budoucího nájmu banka uzná: z odhadu, nebo z daňového přiznání?",
+      "Jak se do bonity promítne hypotéka na vlastní bydlení?",
+      "Které LTV nechá rezervu na další nákup?",
     ],
-    questions: ["Kolik z budoucího nájmu banka uzná: z odhadu, nebo z daňového přiznání?", "Jak se do bonity promítne hypotéka na vlastní bydlení?", "Které LTV nechá rezervu na další nákup?"],
-    egfin: { label: "Investiční hypotéka na egfin.cz", href: `${EGFIN.url}/financovani/investicni-hypoteka` },
+    egfin: { label: "Investiční hypotéka", href: `${EGFIN.url}/financovani/investicni-hypoteka` },
   },
   {
     id: "hypoteka-na-investicni-byt",
-    title: "Hypotéka na",
-    accent: "investiční byt.",
-    lead: "Byt na pronájem je matematika: kupní cena, vlastní kapitál, úvěr, nájem, splátka, rezerva. Teprve z nich vzniká strategie, ne naopak.",
-    body: [
-      "V regionech nese byt cashflow: nájem pokryje splátku i rezervu a portfolio roste z přebytku. V Praze a Brně bývá cashflow záporné a investor si vědomě platí růst hodnoty a amortizaci jistiny. Obě strategie jsou legitimní, pokud víte, kterou z nich děláte, a příjem měsíční dotaci bezpečně unese.",
-      "Před podpisem rezervační smlouvy počítám splátku, cashflow po nákladech, DSCR a výnos na vlastní kapitál. A vždy s rezervou na šest a více splátek pro měsíce, kdy v bytě nikdo nebydlí.",
+    title: "Hypotéka na investiční byt",
+    lead: "Byt na pronájem je matematika, ne pocit.",
+    body: "V regionech nese byt cashflow: nájem pokryje splátku i rezervu. V Praze a Brně bývá cashflow záporné a investor si vědomě platí růst hodnoty a amortizaci jistiny. Obě strategie jsou legitimní, pokud víte, kterou z nich děláte a příjem měsíční dotaci unese.",
+    questions: [
+      "Cashflow, nebo capital gain? A unese to příjem?",
+      "Kolik zbyde měsíčně po splátce, nákladech a dani?",
+      "Jak byt zapadá do dalšího nákupu za dva roky?",
     ],
-    questions: ["Cashflow, nebo capital gain? A unese to příjem?", "Kolik měsíčně po splátce, nákladech a dani?", "Jak byt zapadá do dalšího nákupu za dva roky?"],
-    egfin: { label: "Hypotéka na nájemní byt na egfin.cz", href: `${EGFIN.url}/financovani/hypoteka-na-najemni-byt` },
+    egfin: { label: "Hypotéka na nájemní byt", href: `${EGFIN.url}/financovani/hypoteka-na-najemni-byt` },
   },
   {
     id: "refinancovani",
     title: "Refinancování",
-    accent: "hypotéky.",
-    lead: "Konec fixace je jediný moment, kdy jde portfolio levně přestavět. Pasivní refix u stávající banky bývá nejdražší varianta, i když má nejnižší sazbu.",
-    body: [
-      "Refinancování není jen honba za sazbou. Je to prodloužení splatnosti jako nejúčinnější tlumič vyšších sazeb, přecenění nemovitosti po letech růstu a účelové navýšení úvěru, které se stane vlastními zdroji pro další nákup. Refinancování a rekonstrukce navíc nejsou předmětem přísnějšího doporučení ČNB pro nákup investiční nemovitosti.",
-      "U portfolií slaďuji fixace do vln, aby se konce fixací nerozpadly do náhodných termínů, ale otevíraly prostor pro další krok.",
+    lead: "Konec fixace je jediný moment, kdy jde portfolio levně přestavět.",
+    body: "Refinancování není honba za sazbou. Je to prodloužení splatnosti jako nejúčinnější tlumič vyšších sazeb, přecenění nemovitosti po letech růstu a účelové navýšení, které se stane vlastními zdroji na další nákup. Refinancování ani rekonstrukce nespadají pod přísnější doporučení pro nákup.",
+    questions: [
+      "Kolik hodnoty přibylo od posledního odhadu?",
+      "Prodloužit splatnost, nebo snížit sazbu?",
+      "Konsolidovat k jedné bance, nebo rozložit riziko?",
     ],
-    questions: ["Kolik hodnoty přibylo od posledního odhadu?", "Prodloužit splatnost, nebo snížit sazbu?", "Konsolidovat k jedné bance, nebo rozložit riziko?"],
-    egfin: { label: "Refinancování investičních úvěrů na egfin.cz", href: `${EGFIN.url}/financovani/refinancovani-investicnich-uveru` },
+    egfin: { label: "Refinancování investičních úvěrů", href: `${EGFIN.url}/financovani/refinancovani-investicnich-uveru` },
   },
   {
     id: "financovani-portfolia",
-    title: "Financování",
-    accent: "portfolia.",
-    lead: "Od druhé nemovitosti přestává být financování o hypotékách a začíná být o systému: která nemovitost nese kterou zástavu, kde je volná bonita a v jakém pořadí kupovat.",
-    body: [
-      "Audit úvěrů, zástav a fixací u rostoucích portfolií běžně ukáže deset až dvacet procent skryté kapacity. Křížové zástavy umí růst zrychlit i celé portfolio zamknout; záleží na tom, komu slouží. Plán akvizic s modelem bonity říká, kolik můžete koupit letos, kolik za dva roky a co pro to udělat teď.",
-      "Právě druhý a třetí nákup rozhodují, jestli za pět let vlastníte sedm jednotek, nebo jste zamčení na dvou. To je moje hlavní disciplína a stejným způsobem stavím i vlastní portfolio.",
+    title: "Financování portfolia",
+    lead: "Od druhé nemovitosti jde o systém, ne o jednotlivé hypotéky.",
+    body: "Audit úvěrů, zástav a fixací u rostoucích portfolií běžně ukáže deset až dvacet procent skryté kapacity. Křížové zástavy umí růst zrychlit i celé portfolio zamknout. Právě druhý a třetí nákup rozhodují, jestli za pět let vlastníte sedm jednotek, nebo jste zamčení na dvou.",
+    questions: [
+      "Kolik kapitálu ve vašich nemovitostech spí?",
+      "Která banka ponese pátý úvěr, když čtvrtý řekl ne?",
+      "Kdy se vyplatí část portfolia převést na s.r.o.?",
     ],
-    questions: ["Kolik kapitálu ve vašich nemovitostech spí?", "Která banka ponese pátý úvěr, když čtvrtý řekl ne?", "Kdy se vyplatí část portfolia převést na s.r.o.?"],
-    egfin: { label: "Financování portfolia na egfin.cz", href: `${EGFIN.url}/financovani/financovani-portfolia-nemovitosti` },
+    egfin: { label: "Financování portfolia", href: `${EGFIN.url}/financovani/financovani-portfolia-nemovitosti` },
   },
   {
     id: "financovani-pres-sro",
-    title: "Financování",
-    accent: "přes s.r.o.",
-    lead: "Nákup na s.r.o. je u větších portfolií standard: oddělení majetku, reinvestice zisku, snazší prodej. Cenou je dražší financování a přísnější posuzování přes DSCR.",
-    body: [
-      "Doporučení ČNB se na úvěry právnickým osobám nevztahuje. Banka se ale u firmy dívá na výkazy, historii a ručení: jiná pravidla, jiná příprava, jiné banky. Investiční úvěr dostane i nově založené s.r.o., rozhoduje kvalita projektu, vlastní zdroje a DSCR z doložitelných nájmů.",
-      "Bod zlomu, kdy se s.r.o. vyplatí, počítám na konkrétních číslech: daně, sazby, cashflow, časový test i exit. Rozhodnutí je matematika, ne dogma.",
+    title: "Financování přes s.r.o.",
+    lead: "U větších portfolií standard, ne daňový trik.",
+    body: "Doporučení ČNB se na úvěry právnickým osobám nevztahuje. Banka se ale u firmy dívá na výkazy, historii a ručení: jiná pravidla, jiná příprava, jiné banky. Investiční úvěr dostane i nově založené s.r.o., rozhoduje kvalita projektu, vlastní zdroje a DSCR z doložitelných nájmů.",
+    questions: [
+      "Fyzická osoba, nebo s.r.o.: kde je bod zlomu u vás?",
+      "Vklad, nebo půjčka společníka?",
+      "Jaké DSCR banka požaduje a jak ho zlepšit?",
     ],
-    questions: ["Fyzická osoba, nebo s.r.o.: kde je bod zlomu u vás?", "Vklad, nebo půjčka společníka?", "Jaké DSCR banka požaduje a jak ho zlepšit?"],
-    egfin: { label: "Financování přes s.r.o. na egfin.cz", href: `${EGFIN.url}/financovani/financovani-pres-sro` },
+    egfin: { label: "Financování přes s.r.o.", href: `${EGFIN.url}/financovani/financovani-pres-sro` },
   },
   {
     id: "hypoteka-pro-podnikatele",
-    title: "Hypotéka pro",
-    accent: "podnikatele a OSVČ.",
-    lead: "Paušál, optimalizace nebo krátká historie s.r.o. jsou pro většinu bank problém. Pro mě konkrétní zadání: která metodika dokáže uznat vaše reálné příjmy.",
-    body: [
-      "Každá banka počítá příjmy z podnikání jinak: z daňového přiznání, z obratu, z podílu na zisku, s různými koeficienty. Stejný podnikatel vychází v jedné bance na úvěr o miliony vyšší než v jiné. Žádost proto stavím podle metodiky konkrétní banky, ne podle formuláře na přepážce.",
+    title: "Hypotéka pro podnikatele a OSVČ",
+    lead: "Paušál a optimalizace jsou pro většinu bank problém. Pro mě zadání.",
+    body: "Každá banka počítá příjmy z podnikání jinak: z daňového přiznání, z obratu, z podílu na zisku, s různými koeficienty. Stejný podnikatel vychází v jedné bance na úvěr o miliony vyšší než v jiné. Žádost proto stavím podle metodiky konkrétní banky, ne podle formuláře na přepážce.",
+    questions: [
+      "Které příjmy banka uzná a v jaké výši?",
+      "Jak zapracovat nájmy a podíly na zisku?",
+      "Kdy dává smysl počkat na další daňové přiznání?",
     ],
-    questions: ["Které příjmy banka uzná a v jaké výši?", "Jak zapracovat nájmy a podíly na zisku?", "Kdy dává smysl počkat na další daňové přiznání?"],
-    egfin: { label: "Hypotéka pro podnikatele a OSVČ na egfin.cz", href: `${EGFIN.url}/financovani/hypoteka-pro-podnikatele-a-osvc` },
+    egfin: { label: "Hypotéka pro podnikatele a OSVČ", href: `${EGFIN.url}/financovani/hypoteka-pro-podnikatele-a-osvc` },
   },
   {
     id: "hypoteka-na-bydleni",
-    title: "Hypotéka na",
-    accent: "vlastní bydlení.",
-    lead: "I první bydlení je začátek portfolia. Úvěr, který dnes podepíšete, bude banka počítat do každé další žádosti.",
-    body: [
-      `Pro vlastní bydlení platí LTV až ${CNB_2026.ownHomeLtv} %, pro žadatele do 36 let až ${CNB_2026.ownHomeLtvUnder36} %. Fixaci, splatnost a zástavu nastavuji s ohledem na to, co má přijít za tři nebo pět let: první investiční byt, refinancování, uvolnění kapitálu. Hypotéka na bydlení není finále, je to první krok řady.`,
+    title: "Hypotéka na vlastní bydlení",
+    lead: "I první bydlení je začátek portfolia.",
+    body: `Pro vlastní bydlení platí LTV až ${CNB_2026.ownHomeLtv} %, pro žadatele do 36 let až ${CNB_2026.ownHomeLtvUnder36} %. Fixaci, splatnost a zástavu nastavuji s ohledem na to, co má přijít za tři nebo pět let: první investiční byt, refinancování, uvolnění kapitálu.`,
+    questions: [
+      "Jaká splatnost nechá bonitu na další úvěr?",
+      "Kdy se vyplatí kratší fixace?",
+      "Jak bydlení později poslouží jako zástava?",
     ],
-    questions: ["Jaká splatnost nechá bonitu na další úvěr?", "Kdy se vyplatí kratší fixace?", "Jak bydlení později poslouží jako zástava?"],
-    egfin: { label: "Hypotéka na bydlení na egfin.cz", href: `${EGFIN.url}/hypoteka-na-vlastni-bydleni` },
+    egfin: { label: "Hypotéka na bydlení", href: `${EGFIN.url}/hypoteka-na-vlastni-bydleni` },
   },
 ];
 
 const FAQ = [
-  { q: "Kolik stojí vaše služby?", a: "Pro klienty je zprostředkování hypotéky a investičních úvěrů ve většině případů zdarma, odměnu vyplácí banka jako provizi. Pokud by konkrétní struktura znamenala přímou platbu, například u nebankovního nebo developerského financování, dozvíte se to předem, písemně a s přesnou částkou." },
-  { q: "Čím se lišíte od běžného hypotečního poradce?", a: "Specializací a vlastní zkušeností. Neřeším pojištění ani rodinné finance. Dělám financování investičních nemovitostí, znám metodiky čtrnácti bank do detailu a stejné strategie používám na vlastním portfoliu od roku 2022." },
-  { q: "Jaké LTV dostanu na investiční nemovitost?", a: `Od dubna 2026 ČNB doporučuje pro nákup investiční nemovitosti LTV nejvýše ${CNB_2026.investmentLtv} % a DTI ${CNB_2026.investmentDti}. Konkrétní číslo záleží na typu nemovitosti, příjmech, dalších zástavách a struktuře. Refinancování a rekonstrukce pod přísnější doporučení nespadají.` },
-  { q: "Započítá banka nájem do příjmů?", a: "Většina ano, ale každá jinak: z odhadu nebo z daňového přiznání, v rozsahu od nuly po celý nájem. Právě tento rozdíl často rozhoduje o tom, zda další úvěr projde." },
-  { q: "Mám jen jeden byt na investici. Jsem malý klient?", a: "Ne. Většina klientů začínala jedním bytem. Právě u prvních nákupů se rozhoduje, jestli portfolio poroste, nebo se zamkne na dvou jednotkách." },
-  { q: "Funguje spolupráce online?", a: "Ano. Většinu financování řeším na dálku přes telefon a Google Meet, podklady se předávají elektronicky. Osobní schůzka v Praze je možná po domluvě." },
+  {
+    q: "Kolik stojí vaše služby?",
+    a: "Pro klienty je zprostředkování hypotéky a investičních úvěrů ve většině případů zdarma, odměnu vyplácí banka jako provizi. Pokud by konkrétní struktura znamenala přímou platbu, například u nebankovního nebo developerského financování, dozvíte se to předem, písemně a s přesnou částkou.",
+  },
+  {
+    q: "Čím se lišíte od běžného hypotečního poradce?",
+    a: "Specializací a vlastní zkušeností. Neřeším pojištění ani rodinné finance. Dělám financování investičních nemovitostí, znám metodiky čtrnácti bank do detailu a stejné strategie používám na vlastním portfoliu od roku 2022.",
+  },
+  {
+    q: "Jaké LTV dostanu na investiční nemovitost?",
+    a: `Od dubna 2026 ČNB doporučuje pro nákup investiční nemovitosti LTV nejvýše ${CNB_2026.investmentLtv} % a DTI ${CNB_2026.investmentDti}. Konkrétní číslo záleží na typu nemovitosti, příjmech, dalších zástavách a struktuře. Refinancování a rekonstrukce pod přísnější doporučení nespadají.`,
+  },
+  {
+    q: "Započítá banka nájem do příjmů?",
+    a: "Většina ano, ale každá jinak: z odhadu nebo z daňového přiznání, v rozsahu od nuly po celý nájem. Právě tento rozdíl často rozhoduje o tom, zda další úvěr projde.",
+  },
+  {
+    q: "Mám jen jeden byt na investici. Jsem malý klient?",
+    a: "Ne. Většina klientů začínala jedním bytem. Právě u prvních nákupů se rozhoduje, jestli portfolio poroste, nebo se zamkne na dvou jednotkách.",
+  },
 ];
 
 export default function FinancingPage() {
@@ -125,81 +141,85 @@ export default function FinancingPage() {
       <JsonLd data={[breadcrumbSchema([{ name: "Financování", path: "/financovani" }]), faqSchema(FAQ)]} />
 
       <PageHero
-        eyebrow="Financování investičních nemovitostí"
+        label="Financování investičních nemovitostí"
+        numeral="02"
         title={
           <>
-            Hypotéka není produkt. <span className="serif-accent text-moss-300">Je to nástroj.</span>
+            Hypotéka není produkt. <span className="italic-accent text-burgundy">Je to nástroj.</span>
           </>
         }
         lead={
           <p>
-            Jak přemýšlím o investiční hypotéce, refinancování, financování portfolia, s.r.o. a příjmech
-            podnikatelů. Ne katalog služeb, ale způsob uvažování, se kterým každý úvěr počítá s tím dalším.
+            Sedm situací, se kterými za mnou investoři chodí. Ne katalog služeb, ale způsob uvažování, ve kterém každý
+            úvěr počítá s tím dalším.
           </p>
-        }
-        aside={
-          <nav aria-label="Témata na této stránce" className="border-t border-(--line)">
-            {TOPICS.map((t, i) => (
-              <a key={t.id} href={`#${t.id}`} className="group flex items-baseline justify-between gap-4 border-b border-(--line) py-3 text-[0.95rem] transition-colors hover:text-moss-300">
-                <span className="flex items-baseline gap-3">
-                  <span className="font-mono text-[0.65rem] text-sand">0{i + 1}</span>
-                  {t.title} {t.accent}
-                </span>
-                <span aria-hidden="true" className="text-sand transition-transform group-hover:translate-y-0.5">↓</span>
-              </a>
-            ))}
-          </nav>
         }
       />
 
-      {TOPICS.map((t, i) => (
-        <Section key={t.id} id={t.id} theme={i % 2 === 0 ? "light" : "dark"} as="article" ariaLabelledby={`${t.id}-title`}>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-            <Reveal className="lg:col-span-5">
-              <Eyebrow index={`0${i + 1}`}>Téma</Eyebrow>
-              <h2 id={`${t.id}-title`} className="display display-md mt-6">
-                {t.title} <span className="serif-accent text-(--accent)">{t.accent}</span>
-              </h2>
-              <p className="lead mt-6 max-w-md text-(--muted)">{t.lead}</p>
-            </Reveal>
-            <Reveal className="lg:col-span-6 lg:col-start-7" delay={0.1}>
-              <div className="space-y-5 leading-relaxed">
-                {t.body.map((p) => (
-                  <p key={p.slice(0, 24)}>{p}</p>
-                ))}
+      <Section theme="paper" ariaLabelledby="topics-title" className="border-t border-(--line)">
+        <h2 id="topics-title" className="sr-only">
+          Oblasti financování
+        </h2>
+        <ol className="border-t border-(--line-strong)">
+          {TOPICS.map((t, i) => (
+            <Reveal
+              as="li"
+              key={t.id}
+              id={t.id}
+              delay={(i % 3) * 60}
+              className="grid gap-6 border-b border-(--line) py-10 lg:grid-cols-12 lg:gap-10 lg:py-14"
+            >
+              <div className="lg:col-span-5">
+                <span className="label-sm tabular text-(--accent)">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="display display-md mt-4">{t.title}</h3>
+                <p className="mt-4 max-w-sm text-[1.05rem] text-(--muted)">{t.lead}</p>
               </div>
-              <p className="mono-label mt-8 text-(--accent)">Na co se ptám</p>
-              <ul className="mt-3 divide-y divide-(--line) border-y border-(--line)">
-                {t.questions.map((qn) => (
-                  <li key={qn} className="py-3 text-[0.95rem]">{qn}</li>
-                ))}
-              </ul>
-              <a href={t.egfin.href} rel="noopener" className="group mt-6 inline-flex items-center gap-2 text-[0.9rem] text-(--muted) transition-colors hover:text-(--fg)">
-                Jak to řešíme v Evergreen Finance: {t.egfin.label}
-                <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↗</span>
-              </a>
+              <div className="lg:col-span-6 lg:col-start-7">
+                <p className="max-w-xl leading-relaxed">{t.body}</p>
+                <ul className="mt-7 border-t border-(--line)">
+                  {t.questions.map((q) => (
+                    <li key={q} className="border-b border-(--line) py-2.5 text-[0.95rem] text-(--muted)">
+                      {q}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={t.egfin.href}
+                  rel="noopener"
+                  className="label-xs mt-5 inline-block border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
+                >
+                  {t.egfin.label} na egfin.cz
+                </a>
+              </div>
+            </Reveal>
+          ))}
+        </ol>
+      </Section>
+
+      <Section theme="ink" ariaLabelledby="faq-title" className="overflow-hidden">
+        <Guilloche className="pointer-events-none absolute -right-32 top-10 size-[30rem]" tone="gold" opacity={0.12} />
+        <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-4">
+            <Reveal>
+              <SectionMark index="08">Otázky</SectionMark>
+            </Reveal>
+            <Reveal delay={60}>
+              <h2 id="faq-title" className="display display-md mt-10 max-w-[12ch]">
+                Na co se investoři <span className="italic-accent text-gold-300">ptají nejčastěji.</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={120} className="mt-10">
+              <Button href="/kontakt" variant="outline">
+                Probrat mé financování
+              </Button>
             </Reveal>
           </div>
-        </Section>
-      ))}
-
-      <Section theme="dark" ariaLabelledby="ffaq-title">
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
-          <Reveal className="lg:col-span-4">
-            <Eyebrow index="08">Otázky</Eyebrow>
-            <h2 id="ffaq-title" className="display display-md mt-6">
-              Na co se investoři <span className="serif-accent text-moss-300">ptají nejčastěji.</span>
-            </h2>
-            <div className="mt-8">
-              <Button href="/kontakt" magnetic>Probrat mé financování</Button>
-            </div>
-          </Reveal>
-          <Reveal className="lg:col-span-7 lg:col-start-6" delay={0.1}>
-            <dl className="divide-y divide-(--line) border-y border-(--line)">
+          <Reveal className="lg:col-span-7 lg:col-start-6" delay={100}>
+            <dl className="border-t border-(--line)">
               {FAQ.map((f) => (
-                <div key={f.q} className="py-6">
-                  <dt className="text-[1.1rem] font-medium">{f.q}</dt>
-                  <dd className="mt-2 max-w-2xl text-sand">{f.a}</dd>
+                <div key={f.q} className="border-b border-(--line) py-6">
+                  <dt className="display display-sm">{f.q}</dt>
+                  <dd className="mt-3 max-w-2xl text-[0.98rem] leading-relaxed text-(--muted)">{f.a}</dd>
                 </div>
               ))}
             </dl>
