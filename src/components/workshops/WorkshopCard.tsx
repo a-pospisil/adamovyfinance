@@ -1,10 +1,10 @@
 import { formatCzk } from "@/lib/format";
 import { formatDayMonth, formatWorkshopDate, workshopStatus, type Workshop } from "@/lib/workshops";
 
-type Props = { workshop: Workshop; now: Date; compact?: boolean };
+type Props = { workshop: Workshop; now: Date; compact?: boolean; headingLevel?: "h2" | "h3" };
 
 /** One workshop edition with date-aware pricing (early bird / regular / past). Rendered on the server. */
-export function WorkshopCard({ workshop, now, compact = false }: Props) {
+export function WorkshopCard({ workshop, now, compact = false, headingLevel: Heading = "h3" }: Props) {
   const status = workshopStatus(workshop, now);
   const when = formatWorkshopDate(workshop);
 
@@ -12,7 +12,7 @@ export function WorkshopCard({ workshop, now, compact = false }: Props) {
     <article className="flex flex-col justify-between border border-(--line) p-6 sm:p-8">
       <div>
         <p className="mono-label text-(--accent)">{workshop.level}</p>
-        <h3 className="display display-sm mt-3">{workshop.title}</h3>
+        <Heading className="display display-sm mt-3">{workshop.title}</Heading>
         <p className="mt-3 text-(--muted)">{workshop.claim}</p>
       </div>
 

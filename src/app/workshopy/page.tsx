@@ -114,7 +114,7 @@ export default function WorkshopsPage() {
         <div className="grid gap-5 lg:grid-cols-2">
           {WORKSHOPS.map((w, i) => (
             <Reveal key={w.slug} delay={i * 0.1}>
-              <WorkshopCard workshop={w} now={now} />
+              <WorkshopCard workshop={w} now={now} headingLevel="h2" />
             </Reveal>
           ))}
         </div>

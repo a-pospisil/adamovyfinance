@@ -146,7 +146,7 @@ export function Hero() {
           { opacity: 0, y: 16, duration: 0.9, stagger: 0.12 },
           1.4,
         );
-        tl.from(q("[data-cue]"), { opacity: 0, y: 10, duration: 1 }, 2.2);
+        tl.from(q("[data-cue]"), { opacity: 0, y: 10, duration: 1 }, 1.7);
       });
 
       return () => mm.revert();
@@ -163,7 +163,7 @@ export function Hero() {
       ref={root}
       data-theme="dark"
       aria-labelledby="hero-title"
-      className="themed relative overflow-hidden pt-28 pb-16 md:pt-36 lg:min-h-[100svh] lg:pt-40 lg:pb-16"
+      className="themed relative overflow-hidden pt-28 pb-16 md:pt-36 lg:pt-36 lg:pb-14"
     >
       <div className="container-x grid gap-16 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">

@@ -142,7 +142,7 @@ export function Story() {
             <li data-step className="border-t border-(--line) py-10 md:py-12">
               <div className="grid gap-4 md:grid-cols-[4rem_1fr] md:gap-8">
                 <span data-in className="numeral text-[1.75rem] text-(--muted)">04</span>
-                <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+                <div className="grid gap-8 xl:grid-cols-[1fr_auto] xl:items-end">
                   <div>
                     <p data-in className="mono-label text-(--muted)">Vzniká</p>
                     <p data-in className="display display-md mt-3">Struktura.</p>
@@ -174,7 +174,7 @@ export function Story() {
             <li data-step className="border-t border-b border-(--line) py-10 md:py-12">
               <div className="grid gap-4 md:grid-cols-[4rem_1fr] md:gap-8">
                 <span data-in className="numeral text-[1.75rem] text-(--muted)">05</span>
-                <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+                <div className="grid gap-8 xl:grid-cols-[1fr_auto] xl:items-end">
                   <div>
                     <p data-in className="mono-label text-(--muted)">Portfolio</p>
                     <p data-in className="display display-md mt-3">Roste.</p>
