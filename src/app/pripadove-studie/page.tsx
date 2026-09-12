@@ -13,7 +13,7 @@ import { EGFIN, SITE_URL } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({
   title: "Případové studie – čísla místo slibů",
   description:
-    "Anonymizované případy z praxe: investiční byt v Praze s vědomě záporným cashflow, refinancování portfolia tří bytů a bytový dům přes s.r.o. Problém, rozhodnutí, struktura, výsledek.",
+    "Tři anonymizované případy z praxe: investiční byt se záporným cashflow, refinancování portfolia tří bytů a bytový dům přes s.r.o. Čísla, ne sliby.",
   path: "/pripadove-studie",
 });
 
@@ -118,7 +118,7 @@ export default function CaseStudiesPage() {
                   href={c.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label-xs border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
+                  className="label-xs tap inline-block border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
                 >
                   Podrobná verze na egfin.cz
                 </a>

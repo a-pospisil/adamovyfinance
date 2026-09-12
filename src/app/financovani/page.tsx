@@ -10,9 +10,9 @@ import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { CNB_2026, EGFIN } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Financování investičních nemovitostí – investiční hypotéka, refinancování, s.r.o.",
+  title: "Financování investičních nemovitostí",
   description:
-    "Jak přemýšlím o financování: investiční hypotéka, hypotéka na investiční byt, refinancování, financování portfolia, financování přes s.r.o. a hypotéka pro podnikatele.",
+    "Jak přemýšlím o financování: investiční hypotéka, refinancování, financování portfolia i nákup přes s.r.o. Sedm situací, se kterými za mnou investoři chodí.",
   path: "/financovani",
 });
 
@@ -186,7 +186,7 @@ export default function FinancingPage() {
                 <a
                   href={t.egfin.href}
                   rel="noopener"
-                  className="label-xs mt-5 inline-block border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
+                  className="label-xs tap mt-5 inline-block border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent)"
                 >
                   {t.egfin.label} na egfin.cz
                 </a>
@@ -197,7 +197,7 @@ export default function FinancingPage() {
       </Section>
 
       <Section theme="ink" ariaLabelledby="faq-title" className="overflow-hidden">
-        <Guilloche className="pointer-events-none absolute -right-32 top-10 size-[30rem]" tone="gold" opacity={0.12} />
+        <Guilloche className="pointer-events-none absolute -right-32 top-10 size-[30rem]" opacity={0.12} />
         <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
             <Reveal>

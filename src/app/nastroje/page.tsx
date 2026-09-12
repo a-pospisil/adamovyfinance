@@ -10,7 +10,7 @@ import { breadcrumbSchema } from "@/lib/schema";
 import { EGFIN } from "@/lib/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Nástroje – kalkulačka investiční hypotéky, LTV, cashflow, DSCR",
+  title: "Kalkulačka investiční hypotéky a cashflow",
   description:
     "Kalkulačka financování investičního bytu: úvěr, vlastní zdroje, splátka, cashflow, DSCR a výnos na vlastní kapitál. Plus kalkulačky Evergreen Finance.",
   path: "/nastroje",

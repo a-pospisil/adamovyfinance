@@ -1,4 +1,4 @@
-import { EGFIN, FACTS, SITE, SITE_URL } from "@/lib/site";
+import { EGFIN, SITE, SITE_URL } from "@/lib/site";
 
 export const PERSON_ID = `${SITE_URL}/#adam-pospisil`;
 export const ORG_ID = `${SITE_URL}/#evergreen-finance`;
@@ -88,7 +88,8 @@ export function professionalServiceSchema() {
       addressCountry: "CZ",
     },
     areaServed: { "@type": "Country", name: "Česká republika" },
-    serviceType: [
+    // serviceType patří na Service, ne na LocalBusiness — proto přes makesOffer.
+    makesOffer: [
       "Hypoteční poradenství",
       "Investiční hypotéka",
       "Financování investičních nemovitostí",
@@ -96,14 +97,11 @@ export function professionalServiceSchema() {
       "Financování nemovitostí přes s.r.o.",
       "Financování realitního portfolia",
       "Workshop financování nemovitostí",
-    ],
+    ].map((name) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name, serviceType: name, provider: { "@id": PERSON_ID } },
+    })),
     knowsAbout: ["hypotéky", "investiční nemovitosti", "bankovní metodiky", "financování portfolia"],
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: FACTS.googleRating.replace(",", "."),
-      bestRating: "5",
-      ratingCount: FACTS.googleReviews,
-    },
     sameAs: [SITE.instagram, SITE.linkedin],
   };
 }
@@ -118,6 +116,21 @@ export function websiteSchema() {
     inLanguage: "cs",
     about: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID },
+  };
+}
+
+/** Homepage je profil Adama — ProfilePage to říká vyhledávačům explicitně. */
+export function profilePageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${SITE_URL}/#profil`,
+    url: SITE_URL,
+    name: "Adam Pospíšil",
+    inLanguage: "cs",
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntity: { "@id": PERSON_ID },
+    about: { "@id": PERSON_ID },
   };
 }
 

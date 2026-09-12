@@ -18,7 +18,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = pageMetadata({
   title: "Workshop financování investičních nemovitostí",
   description:
-    "Workshop Adama Pospíšila v Praze: bonita, LTV, DTI, zástavy, refinancování, s.r.o. a metodiky bank. Dvě úrovně pro začínající i pokročilé investory, max. 30 lidí.",
+    "Workshop Adama Pospíšila v Praze: bonita, LTV, DTI, zástavy, refinancování a metodiky bank. Dvě úrovně pro začínající i pokročilé, max. 30 lidí.",
   path: "/workshopy",
 });
 
@@ -103,7 +103,7 @@ export default function WorkshopsPage() {
         }
         aside={
           <div className="relative">
-            <CornerOrnament className="absolute -left-3 -top-3 z-10 size-9" tone="gold" opacity={0.7} />
+            <CornerOrnament className="absolute -left-3 -top-3 z-10 size-9" opacity={0.7} />
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="/images/adam-suit.jpg"
@@ -337,7 +337,7 @@ export default function WorkshopsPage() {
                 </div>
               ))}
             </dl>
-            <MicroStrip text="Praha · Baťův palác · Investment financing" repeat={3} className="mt-10" />
+            <MicroStrip text="Praha · Baťův palác · Investiční nemovitosti" repeat={3} className="mt-10" />
           </Reveal>
         </div>
       </Section>

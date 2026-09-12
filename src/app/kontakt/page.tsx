@@ -12,7 +12,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({
   title: "Kontakt – probrat financování",
   description:
-    "Napište Adamu Pospíšilovi, kde s financováním stojíte a co chcete koupit nebo změnit. Konkrétní odpověď do 48 pracovních hodin. Telefon, WhatsApp, e-mail, kancelář v Praze 1.",
+    "Napište Adamu Pospíšilovi, kde s financováním stojíte a co chcete koupit nebo změnit. Konkrétní odpověď do 48 pracovních hodin. Praha 1.",
   path: "/kontakt",
 });
 
@@ -29,7 +29,7 @@ export default function ContactPage() {
       <JsonLd data={breadcrumbSchema([{ name: "Kontakt", path: "/kontakt" }])} />
 
       <section data-theme="paper" className="themed relative overflow-hidden pb-20 pt-28 sm:pt-32 lg:pt-36">
-        <Guilloche className="pointer-events-none absolute -right-40 top-20 size-[34rem]" tone="gold" opacity={0.14} />
+        <Guilloche className="pointer-events-none absolute -right-40 top-20 size-[34rem]" opacity={0.14} />
         <Numeral
           value="05"
           className="pointer-events-none absolute -right-4 bottom-10 text-[16rem] leading-none"
@@ -58,14 +58,14 @@ export default function ContactPage() {
                 <div>
                   <dt className="label-xs">Telefon / WhatsApp</dt>
                   <dd className="display mt-1 text-3xl">
-                    <a href={SITE.phoneHref}>{SITE.phone}</a>
+                    <a href={SITE.phoneHref} className="tap inline-block">{SITE.phone}</a>
                   </dd>
                   <dd className="mt-1">
                     <a
                       href={SITE.whatsapp}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="label-xs border-b border-(--line-strong) pb-0.5 hover:border-burgundy hover:text-burgundy"
+                      className="label-xs tap inline-block border-b border-(--line-strong) pb-0.5 hover:border-burgundy hover:text-burgundy"
                     >
                       Napsat na WhatsApp
                     </a>
@@ -74,7 +74,7 @@ export default function ContactPage() {
                 <div>
                   <dt className="label-xs">E-mail</dt>
                   <dd className="mt-1 text-[1.05rem]">
-                    <a href={`mailto:${SITE.email}`} className="underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy">
+                    <a href={`mailto:${SITE.email}`} className="tap inline-block underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy">
                       {SITE.email}
                     </a>
                   </dd>
@@ -82,7 +82,7 @@ export default function ContactPage() {
                 <div>
                   <dt className="label-xs">Kancelář</dt>
                   <dd className="mt-1 text-(--muted)">
-                    <a href={SITE.office.mapUrl} target="_blank" rel="noopener noreferrer">
+                    <a href={SITE.office.mapUrl} target="_blank" rel="noopener noreferrer" className="tap inline-block">
                       {SITE.office.street}, {SITE.office.zip} {SITE.office.city}
                     </a>
                     <span className="mt-0.5 block text-[0.9rem]">Osobně po domluvě, jinak Google Meet nebo telefon.</span>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                   </li>
                 ))}
               </ol>
-              <MicroStrip text="Adam Pospíšil · Investment financing" repeat={3} className="mt-10" />
+              <MicroStrip text="Adam Pospíšil · Praha" repeat={3} className="mt-10" />
             </Reveal>
           </div>
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={100}>
