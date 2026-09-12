@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+/* ---------- Design tokens ---------- */
+@theme {
+  --color-ink-950: #0a0d0c;
+  --color-ink-900: #101513;
+  --color-ink-800: #171e1b;
+  --color-ink-700: #232c28;
+  --color-ivory-50: #f5f2eb;
+  --color-ivory-100: #ede8dd;
+  --color-ivory-200: #e0dacc;
+  --color-ivory-300: #cdc5b3;
+  --color-moss-200: #c6d8cb;
+  --color-moss-300: #a3c0ac;
+  --color-moss-400: #74a084;
+  --color-moss-600: #35634b;
+  --color-moss-700: #264a38;
+  --color-sand: #b3ab9b;
+  --color-stone: #67625a;
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ---------- Section themes (components stay theme-agnostic) ---------- */
+@layer base {
+  :root,
+  [data-theme="dark"] {
+    --bg: var(--color-ink-950);
+    --surface: var(--color-ink-900);
+    --fg: var(--color-ivory-100);
+    --muted: var(--color-sand);
+    --line: rgb(237 232 221 / 0.14);
+    --line-strong: rgb(237 232 221 / 0.32);
+    --accent: var(--color-moss-300);
+    --accent-strong: var(--color-moss-200);
+    --btn-bg: var(--color-ivory-100);
+    --btn-fg: var(--color-ink-950);
+    color-scheme: dark;
+  }
+  [data-theme="light"] {
+    --bg: var(--color-ivory-50);
+    --surface: var(--color-ivory-100);
+    --fg: var(--color-ink-950);
+    --muted: var(--color-stone);
+    --line: rgb(10 13 12 / 0.14);
+    --line-strong: rgb(10 13 12 / 0.36);
+    --accent: var(--color-moss-600);
+    --accent-strong: var(--color-moss-700);
+    --btn-bg: var(--color-ink-950);
+    --btn-fg: var(--color-ivory-50);
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--color-ink-950);
+    color: var(--color-ivory-100);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "ss01";
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-moss-600);
+    color: var(--color-ivory-50);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  strong { font-weight: 600; }
+
+  button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* ---------- Utilities ---------- */
+@utility themed {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 108rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 4.5rem);
+}
+
+@utility section-y {
+  padding-block: clamp(5.5rem, 12vw, 11rem);
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@utility mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility display {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+}
+
+@utility display-xl {
+  font-size: clamp(3.25rem, 10.4vw, 10.75rem);
+}
+@utility display-lg {
+  font-size: clamp(2.75rem, 7.4vw, 7.25rem);
+}
+@utility display-md {
+  font-size: clamp(2.125rem, 5vw, 4.75rem);
+}
+@utility display-sm {
+  font-size: clamp(1.625rem, 2.8vw, 2.625rem);
+}
+
+@utility serif-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-variation-settings: "opsz" 72;
+}
+
+@utility lead {
+  font-size: clamp(1.125rem, 1.5vw, 1.4rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+@utility hairline {
+  border-color: var(--line);
+}
+
+@utility numeral {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Reveal helpers: initial states are applied only when JS + motion are available. */
+@utility will-reveal {
+  will-change: transform, opacity;
+}
+
+/* Terminal-like row */
+@utility term-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 0.65rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Hide scrollbar for horizontal story rails */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Form fields share one look across themes */
+@utility field {
+  margin-top: 0.5rem;
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  padding: 0.85rem 1rem;
+  border-radius: 2px;
+  color: var(--fg);
+  transition: border-color 0.2s ease;
+  &::placeholder {
+    color: color-mix(in srgb, var(--muted) 70%, transparent);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--fg);
+  }
+}
+
+/* Range slider: hairline track, square thumb, themed */
+@utility range {
+  display: block;
+  width: 100%;
+  height: 1.25rem;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  &::-webkit-slider-runnable-track {
+    height: 1px;
+    background: var(--line-strong);
+  }
+  &::-moz-range-track {
+    height: 1px;
+    background: var(--line-strong);
+  }
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -6.5px;
+    background: var(--fg);
+    border: 1px solid var(--bg);
+    border-radius: 1px;
+  }
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--fg);
+    border: 1px solid var(--bg);
+    border-radius: 1px;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+  }
+}
