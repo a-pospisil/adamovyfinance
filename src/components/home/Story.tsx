@@ -42,8 +42,7 @@ export function Story() {
                 stejná rozhodnutí. Pracuji ve společnosti{" "}
                 <a
                   href={EGFIN.url}
-                  className="text-(--fg) underline decoration-(--line-strong) underline-offset-4 transition-colors hover:decoration-burgundy"
-                >
+                  className="text-(--fg) underline decoration-(--line-strong) underline-offset-4 transition-colors hover:decoration-burgundy" target="_blank" rel="noopener noreferrer">
                   Evergreen Finance
                 </a>
                 , kterou jsem v roce 2018 založil.

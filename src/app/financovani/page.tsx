@@ -108,7 +108,7 @@ export default function FinancingPage() {
         lead={
           <p>
             Sedm oblastí, ve kterých s investory pracuji. Tady jen přehled — každou mám podrobně rozepsanou na{" "}
-            <a href={EGFIN.url} rel="noopener" className="underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy">
+            <a href={EGFIN.url} className="underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy" target="_blank" rel="noopener noreferrer">
               Evergreen Finance
             </a>
             .
@@ -134,9 +134,7 @@ export default function FinancingPage() {
               <p className="text-(--muted) lg:col-span-4">{t.lead}</p>
               <a
                 href={t.egfin}
-                rel="noopener"
-                className="label-xs tap mt-2 inline-block justify-self-start whitespace-nowrap border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent) lg:col-span-3 lg:mt-0 lg:justify-self-end"
-              >
+                className="label-xs tap mt-2 inline-block justify-self-start whitespace-nowrap border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent) lg:col-span-3 lg:mt-0 lg:justify-self-end" target="_blank" rel="noopener noreferrer">
                 Podrobně na egfin.cz
               </a>
             </Reveal>

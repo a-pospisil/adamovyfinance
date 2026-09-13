@@ -50,7 +50,7 @@ export function Contact() {
                   <dt className="label-xs">Kde mě najdete</dt>
                   <dd className="mt-1 max-w-sm text-(--muted)">
                     Financování řeším ve společnosti{" "}
-                    <a href={EGFIN.url} className="tap text-(--fg) underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)">
+                    <a href={EGFIN.url} className="tap text-(--fg) underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)" target="_blank" rel="noopener noreferrer">
                       Evergreen Finance
                     </a>
                     , {SITE.office.street}, {SITE.office.zip} {SITE.office.city}.

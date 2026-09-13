@@ -23,7 +23,7 @@ export function Footer() {
             <p className="mt-6 max-w-sm text-[0.95rem] text-(--muted)">
               Adam Pospíšil — financování investičních nemovitostí pro investory. Praha. Financování řeším ve
               společnosti{" "}
-              <a href={EGFIN.url} className="tap text-paper underline decoration-(--line-strong) underline-offset-4 hover:decoration-gold-300">
+              <a href={EGFIN.url} className="tap text-paper underline decoration-(--line-strong) underline-offset-4 hover:decoration-gold-300" target="_blank" rel="noopener noreferrer">
                 Evergreen Finance
               </a>
               .
@@ -52,17 +52,17 @@ export function Footer() {
               <h2 className="label-xs mb-5">Evergreen Finance</h2>
               <ul className="space-y-2.5">
                 <li>
-                  <a href={EGFIN.url} className="tap text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
+                  <a href={EGFIN.url} className="tap text-[0.95rem] transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     egfin.cz
                   </a>
                 </li>
                 <li>
-                  <a href={EGFIN.calculators} className="tap text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
+                  <a href={EGFIN.calculators} className="tap text-[0.95rem] transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     Kalkulačky
                   </a>
                 </li>
                 <li>
-                  <a href={EGFIN.portfolioAnalysis} className="tap text-[0.95rem] transition-colors hover:text-gold-300" rel="noopener">
+                  <a href={EGFIN.portfolioAnalysis} className="tap text-[0.95rem] transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     Analýza portfolia
                   </a>
                 </li>
