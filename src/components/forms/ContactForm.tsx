@@ -33,7 +33,7 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
       const res = await fetch("/api/kontakt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, page: window.location.pathname }),
       });
       if (res.ok) {
         setStatus("sent");
