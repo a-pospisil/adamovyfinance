@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </div>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
