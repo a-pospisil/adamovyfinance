@@ -6,7 +6,7 @@ import {
   formatIsoWithOffset,
   localParts,
   localToInstant,
-  parseHourRange,
+  parseTimeRange,
   parseWeekdays,
   type Interval,
   type WorkingHoursConfig,
@@ -62,7 +62,8 @@ export type RaynetConfigResult =
 export const RAYNET_DEFAULTS = {
   apiUrl: "https://app.raynet.cz/api/v2",
   timeZone: "Europe/Prague",
-  workHours: [9, 18] as const,
+  /** 9:00–17:00 v minutách od půlnoci; poslední 15minutový slot začíná v 16:45. */
+  workHours: [9 * 60, 17 * 60] as const,
   /** Pracovní dny pondělí–pátek (ISO 1–7). */
   workDays: [1, 2, 3, 4, 5] as const,
   slotMinutes: 15,
@@ -104,8 +105,8 @@ export function raynetConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Rayne
     return { kind: "invalid", message: "RAYNET_ACTIVITY_TYPE musí být phoneCall nebo task" };
   }
 
-  const hours = env.RAYNET_WORK_HOURS?.trim() ? parseHourRange(env.RAYNET_WORK_HOURS) : RAYNET_DEFAULTS.workHours;
-  if (!hours) return { kind: "invalid", message: "RAYNET_WORK_HOURS musí mít tvar 9-18" };
+  const hours = env.RAYNET_WORK_HOURS?.trim() ? parseTimeRange(env.RAYNET_WORK_HOURS) : RAYNET_DEFAULTS.workHours;
+  if (!hours) return { kind: "invalid", message: "RAYNET_WORK_HOURS musí mít tvar 9-17 nebo 9:00-16:45" };
 
   const days = env.RAYNET_WORK_DAYS?.trim() ? parseWeekdays(env.RAYNET_WORK_DAYS) : new Set(RAYNET_DEFAULTS.workDays);
   if (!days) return { kind: "invalid", message: "RAYNET_WORK_DAYS musí mít tvar 1-5 nebo 1,2,3 (1 = pondělí, 7 = neděle)" };
@@ -124,7 +125,7 @@ export function raynetConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Rayne
       leadCategoryId: parseId(env.RAYNET_LEAD_CATEGORY_ID),
       contactSourceId: parseId(env.RAYNET_CONTACT_SOURCE_ID),
       activityType,
-      hours: { timeZone: RAYNET_DEFAULTS.timeZone, startHour: hours[0], endHour: hours[1], days, slotMinutes },
+      hours: { timeZone: RAYNET_DEFAULTS.timeZone, startMinute: hours[0], endMinute: hours[1], days, slotMinutes },
     },
   };
 }

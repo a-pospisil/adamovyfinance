@@ -15,10 +15,10 @@ export type LocalDateTime = LocalDate & { hour: number; minute: number; second: 
 export type WorkingHoursConfig = {
   /** IANA zóna, např. "Europe/Prague". */
   timeZone: string;
-  /** Začátek pracovní doby (celá hodina, 0–23). */
-  startHour: number;
-  /** Konec pracovní doby (celá hodina, 1–24), exkluzivně. */
-  endHour: number;
+  /** Začátek pracovní doby v minutách od půlnoci (9:00 = 540). */
+  startMinute: number;
+  /** Konec pracovní doby v minutách od půlnoci, exkluzivně (17:00 = 1020). */
+  endMinute: number;
   /** Pracovní dny jako ISO čísla: 1 = pondělí … 7 = neděle. */
   days: ReadonlySet<number>;
   /** Délka slotu v minutách; sloty na sebe navazují od začátku pracovní doby. */
@@ -99,8 +99,8 @@ export function addDays(date: LocalDate, n: number): LocalDate {
 /** Sloty pracovní doby daného dne, které začínají nejdřív v `notBefore`. Mimo pracovní dny prázdné. */
 export function daySlots(cfg: WorkingHoursConfig, date: LocalDate, notBefore: number): Interval[] {
   if (!cfg.days.has(date.weekday)) return [];
-  const dayStart = localToInstant(cfg.timeZone, date.year, date.month, date.day, cfg.startHour);
-  const dayEnd = localToInstant(cfg.timeZone, date.year, date.month, date.day, cfg.endHour);
+  const dayStart = localToInstant(cfg.timeZone, date.year, date.month, date.day, Math.floor(cfg.startMinute / 60), cfg.startMinute % 60);
+  const dayEnd = localToInstant(cfg.timeZone, date.year, date.month, date.day, Math.floor(cfg.endMinute / 60), cfg.endMinute % 60);
   const step = cfg.slotMinutes * 60_000;
   const slots: Interval[] = [];
   for (let from = dayStart; from + step <= dayEnd; from += step) {
@@ -118,13 +118,18 @@ export function firstFree(slots: readonly Interval[], busy: readonly Interval[])
   return slots.find((slot) => !busy.some((b) => overlaps(slot, b)));
 }
 
-/** "9-18" → [9, 18]; neplatný zápis → undefined. */
-export function parseHourRange(spec: string): [number, number] | undefined {
-  const m = spec.trim().match(/^(\d{1,2})\s*-\s*(\d{1,2})$/);
+/** "9-17" nebo "9:00-16:45" → [540, 1005] v minutách od půlnoci; neplatný zápis → undefined. */
+export function parseTimeRange(spec: string): [number, number] | undefined {
+  const m = spec.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*-\s*(\d{1,2})(?::(\d{2}))?$/);
   if (!m) return undefined;
-  const start = Number(m[1]);
-  const end = Number(m[2]);
-  return start >= 0 && end <= 24 && start < end ? [start, end] : undefined;
+  const minutes = (hour: string, minute: string | undefined): number | undefined => {
+    const h = Number(hour);
+    const mm = Number(minute ?? 0);
+    return h <= 24 && mm < 60 ? h * 60 + mm : undefined;
+  };
+  const start = minutes(m[1], m[2]);
+  const end = minutes(m[3], m[4]);
+  return start !== undefined && end !== undefined && start < end && end <= 24 * 60 ? [start, end] : undefined;
 }
 
 /** "1-5", "1,2,3", "1-5,7" → množina ISO dnů v týdnu; neplatný zápis → undefined. */

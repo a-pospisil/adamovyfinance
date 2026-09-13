@@ -121,7 +121,8 @@ npm run build && npm start
 1. **Raynet CRM** (`src/lib/raynet.ts`) – založí lead s předmětem „Jméno Příjmení“ (zdroj kontaktu „web/poptávka“,
    kategorie tipaře, poznámka se stránkou, tématem a zprávou) a k němu naplánuje telefonát **„Zavolat: Jméno Příjmení“**
    na **nejbližší volný slot v pracovní době**. Volný slot se hledá v kalendáři vlastníka (`GET /activity/`, aktivity,
-   kde je účastníkem; zrušené a realizované se nepočítají) po 15 minutách v pracovní dny 9–18 h, až 30 dní dopředu.
+   kde je účastníkem; zrušené a realizované se nepočítají) po 15 minutách v pracovní dny od 9:00, poslední slot
+   16:45–17:00, až 30 dní dopředu.
    Když volný slot není, naplánuje první slot následujícího pracovního dne po přijetí poptávky a v e-mailu na kolizi
    upozorní.
 2. **E-mail přes [Resend](https://resend.com)** – text poptávky plus řádek s výsledkem CRM (číslo leadu a termín
@@ -142,7 +143,7 @@ neselže; když CRM lead založí a e-mail selže (nebo naopak), poptávka se po
 | `RAYNET_OWNER_ID`          | ID uživatele, který lead i telefonát vlastní a v jehož kalendáři se hledá slot  |
 | `RAYNET_LEAD_CATEGORY_ID`  | volitelně kategorie leadu (číselník LeadCategory)                               |
 | `RAYNET_CONTACT_SOURCE_ID` | volitelně zdroj kontaktu (číselník ContactSource)                               |
-| `RAYNET_WORK_HOURS`        | volitelně pracovní doba, výchozí `9-18`                                         |
+| `RAYNET_WORK_HOURS`        | volitelně pracovní doba, výchozí `9-17` (konec exkluzivní), lze i `9:00-16:45`  |
 | `RAYNET_WORK_DAYS`         | volitelně pracovní dny (1 = pondělí … 7 = neděle), výchozí `1-5`; s víkendem `1-7` |
 | `RAYNET_SLOT_MINUTES`      | volitelně délka slotu v minutách, výchozí `15`                                  |
 | `RAYNET_ACTIVITY_TYPE`     | volitelně `phoneCall` (výchozí) nebo `task`                                     |
