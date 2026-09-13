@@ -39,7 +39,12 @@ export const EGFIN = {
   linkedin: "https://www.linkedin.com/company/71705854/",
 } as const;
 
-/** Verified figures (egfin.cz, workshop pages, 2026). Update here only. */
+/**
+ * Verified figures (egfin.cz, workshop pages, 2026). Update here only.
+ *
+ * Pozor na `clients`: 500+ jsou klienti Adama, ne celé firmy. Evergreen Finance
+ * jako celek uvádí 1 000+ klientů — to číslo na tenhle web nepatří.
+ */
 export const FACTS = {
   yearsInFinance: 15,
   sinceYear: 2010,
