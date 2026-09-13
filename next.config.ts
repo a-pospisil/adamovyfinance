@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
       // Příběh, timeline i principy jsou nově přímo na homepage.
       { source: "/o-adamovi", destination: "/", permanent: true },
       { source: "/o-mne", destination: "/", permanent: true },
+      { source: "/pripadove-studie", destination: "/", permanent: true },
       { source: "/kalkulacky", destination: "/nastroje", permanent: true },
     ];
   },

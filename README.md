@@ -51,7 +51,7 @@ a nikdy nepředstírají bankovní nebo právní údaje.
 ## Struktura
 
 ```
-src/app              stránky (/, /financovani, /workshopy, /pripadove-studie, /nastroje, /kontakt,
+src/app              stránky (/, /financovani, /workshopy, /nastroje, /kontakt,
                      /ochrana-osobnich-udaju), sitemap.ts, robots.ts, not-found.tsx, api/kontakt
 src/components/home  devět sekcí homepage: Hero, Story, SkinInTheGame, Philosophy, Figures, Reviews,
                      Workshop, Cases, Contact
@@ -64,7 +64,7 @@ scripts              build-engraving.mjs (generátor SVG rytin)
 
 ### Navigace a homepage
 
-Menu má **Financování · Workshopy · Případové studie · Kontakt** plus CTA „Probrat financování“. Homepage **je**
+Menu má **Financování · Workshopy · Kontakt** plus CTA „Probrat financování“. Homepage **je**
 stránka o Adamovi, proto v menu žádná taková položka není a `/o-adamovi` se trvale přesměrovává na `/`
 (`next.config.ts`). `/financovani` je záměrně krátký rozcestník — drží klíčová slova a odkazy na podrobné stránky
 Evergreen Finance, ne vlastní odborný obsah. `/nastroje` je dostupná z obsahu, z patičky a z mobilního menu —
@@ -81,7 +81,7 @@ Homepage vede jeden příběh v pořadí osobnost → příběh → investor →
 | 05 | Zkušenost | ověřená čísla |
 | 06 | Co říkají klienti | skutečné Google recenze |
 | 07 | Workshop | nejbližší termíny |
-| 08 | Případové studie | tři mini příběhy |
+| 08 | Případová studie | Petr H.: stejná banka, o 4 miliony víc |
 | 09 | Kontakt | otázka + formulář |
 
 Všechna čísla, termíny a ceny se mění na jednom místě:
@@ -89,7 +89,7 @@ Všechna čísla, termíny a ceny se mění na jednom místě:
 - `src/lib/site.ts` – `FACTS` (roky praxe, objemy úvěrů, klienti, partneři), `CNB_2026`, kontakty
 - `src/lib/workshops.ts` – termíny, místo, ceny, early bird (stránky s workshopy se přegenerují každou hodinu
   a samy přepnou early bird → běžná cena → „další termín připravuji“)
-- `src/lib/caseStudies.ts` – případové studie
+- `src/lib/caseStudies.ts` – jediná případová studie (Petr H.) na homepage
 - `src/lib/model.ts` – modelový příklad (cena, LTV, sazba, nájem) pro kalkulačku a ukázky
 - `src/lib/reviews.ts` – recenze klientů
 
@@ -140,7 +140,7 @@ Viz `.env.example`.
 1. Přidat property typu **Doména** `adamovyfinance.cz`, ověřit DNS TXT záznamem u registrátora.
 2. Sitemaps → odeslat `https://adamovyfinance.cz/sitemap.xml`.
 3. URL Inspection → `https://adamovyfinance.cz/` → Request indexing.
-4. Totéž pro `/financovani`, `/workshopy`, `/pripadove-studie`.
+4. Totéž pro `/financovani` a `/workshopy`.
 5. Ověřit strukturovaná data v [Rich Results Test](https://search.google.com/test/rich-results): Person,
    ProfilePage, Organization, ProfessionalService, Event (workshopy), FAQPage, BreadcrumbList.
    Poslední kontrola přes validator.schema.org: 0 chyb a 0 varování na všech stránkách.
