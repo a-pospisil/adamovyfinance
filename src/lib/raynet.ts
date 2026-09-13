@@ -63,10 +63,13 @@ export const RAYNET_DEFAULTS = {
   apiUrl: "https://app.raynet.cz/api/v2",
   timeZone: "Europe/Prague",
   workHours: [9, 18] as const,
-  /** „Denně“ – včetně víkendu. Jen pracovní dny: RAYNET_WORK_DAYS=1-5. */
-  workDays: [1, 2, 3, 4, 5, 6, 7] as const,
-  slotMinutes: 60,
-  /** Kolik dní dopředu se hledá volný slot; každý den = jeden dotaz na kalendář. */
+  /** Pracovní dny pondělí–pátek (ISO 1–7). */
+  workDays: [1, 2, 3, 4, 5] as const,
+  slotMinutes: 15,
+  /**
+   * Kolik dní dopředu se hledá volný slot; každý den = jeden dotaz na kalendář.
+   * Když se nic nenajde, plánuje se první slot následujícího pracovního dne po přijetí poptávky.
+   */
   lookaheadDays: 30,
   /** Společný limit pro celou synchronizaci (lead + kalendář + aktivita). */
   timeoutMs: 8_000,
@@ -236,17 +239,19 @@ type Client = ReturnType<typeof createClient>;
 async function findSlot(api: Client, hours: WorkingHoursConfig, now: number): Promise<{ slot: Interval; calendarFull: boolean }> {
   const notBefore = now + RAYNET_DEFAULTS.minNoticeMinutes * 60_000;
   const today = localParts(now, hours.timeZone);
-  let earliest: Interval | undefined;
   for (let offset = 0; offset < RAYNET_DEFAULTS.lookaheadDays; offset++) {
     const slots = daySlots(hours, addDays(today, offset), notBefore);
     if (slots.length === 0) continue;
-    earliest ??= slots[0];
     const busy = await api.busy(slots[0].from, slots[slots.length - 1].till);
     const free = firstFree(slots, busy);
     if (free) return { slot: free, calendarFull: false };
   }
-  if (!earliest) throw new RaynetApiError("pracovní doba neobsahuje žádný slot");
-  return { slot: earliest, calendarFull: true };
+  // Kalendář je plný: první slot následujícího pracovního dne po přijetí poptávky, i když koliduje.
+  for (let offset = 1; offset <= 7; offset++) {
+    const slots = daySlots(hours, addDays(today, offset), notBefore);
+    if (slots.length > 0) return { slot: slots[0], calendarFull: true };
+  }
+  throw new RaynetApiError("pracovní doba neobsahuje žádný slot");
 }
 
 function errorMessage(e: unknown): string {
@@ -342,7 +347,9 @@ export function describeRaynetResult(result: RaynetSyncResult, activityType: Ray
     case "created":
       return (
         `Raynet: lead #${result.leadId} založen, ${activity} naplánován na ${formatSlot(result.slot)}.` +
-        (result.calendarFull ? " Pozor: v kalendáři nebyl žádný volný slot, termín koliduje s jinou aktivitou." : "")
+        (result.calendarFull
+          ? ` Pozor: v kalendáři nebyl ${RAYNET_DEFAULTS.lookaheadDays} dní žádný volný slot, termín je první slot následujícího pracovního dne a koliduje s jinou aktivitou.`
+          : "")
       );
     case "failed":
       if (result.step === "config") return `Raynet: přeskočeno, neplatná konfigurace (${result.message}).`;
