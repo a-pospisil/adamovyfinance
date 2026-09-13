@@ -32,7 +32,7 @@ export function Section({
   );
 }
 
-/** Číslované záhlaví sekce: „7) WORKSHOP“ — číslo bez nuly, závorka, žádná linka. */
+/** Číslované záhlaví sekce: „7) Workshop“ — číslo bez nuly, závorka, popisek malými písmeny, žádná linka. */
 export function SectionMark({
   index,
   children,
@@ -46,7 +46,7 @@ export function SectionMark({
   return (
     <div className={`flex items-baseline gap-3 ${className}`}>
       <span className="label-sm tabular text-(--accent)">{Number.isNaN(n) ? index : `${n})`}</span>
-      <span className="label-xs">{children}</span>
+      <span className="label-xs normal-case tracking-[0.08em]">{children}</span>
     </div>
   );
 }
