@@ -72,7 +72,6 @@ export const CNB_2026 = {
 export const NAV = [
   { href: "/financovani", label: "Financování" },
   { href: "/workshopy", label: "Workshopy" },
-  { href: "/pripadove-studie", label: "Případové studie" },
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
 

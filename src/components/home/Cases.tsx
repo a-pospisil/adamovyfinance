@@ -1,78 +1,63 @@
-import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
+import { FEATURED_CASE } from "@/lib/caseStudies";
 
-/**
- * 08 — Případové studie jako tři věty, ne tabulky. Čísla i podrobnosti
- * zůstávají na /pripadove-studie; tady jde jen o důkaz, že to funguje.
- */
-const CASES = [
-  {
-    slug: "refinancovani-portfolia",
-    label: "3 byty → 4 byty",
-    situation: "Investor se třemi byty narazil na strop bonity, konec levných fixací mu hrozil zastavit růst.",
-    action: "Neřešili jsme další hypotéku. Přestavěli jsme celé financování k jedné bance a navýšili proti nárůstu hodnoty.",
-    result: "Čtvrtý byt a cashflow +5 000 Kč měsíčně, s vlastní hotovostí jen 400 tisíc.",
-  },
-  {
-    slug: "praha-capital-gain",
-    label: "Dvě banky řekly ne",
-    situation: "Pražský byt se záporným cashflow, dvě banky ho klientce rozmluvily jako ztrátový.",
-    action: "Spočítali jsme celou rovnici: amortizaci jistiny i růst hodnoty, ne jen měsíční zůstatek.",
-    result: "Výnos na vložený kapitál přes 12 % ročně a připravený druhý nákup.",
-  },
-  {
-    slug: "bytovy-dum-sro",
-    label: "Dům, který banka neviděla",
-    situation: "Zanedbaný dům se šesti byty. Banka viděla nízké nájmy, ne potenciál po rekonstrukci.",
-    action: "Žádost jsme postavili na stabilizovaném stavu a čerpání rozdělili na etapy.",
-    result: "Hodnota +5,4 milionu za 14 měsíců a 2,7 milionu zpátky z refinancování.",
-  },
-];
-
+/** 08 — Jedna případová studie z workshopů: problém, co se změnilo, výsledek. */
 export function Cases() {
+  const c = FEATURED_CASE;
   return (
     <Section theme="paper" ariaLabelledby="cases-title" className="border-t border-(--line)">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal>
-          <SectionMark index="08">Případové studie</SectionMark>
-          <h2 id="cases-title" className="display display-md mt-8 max-w-[12ch]">
-            Tři situace, <span className="italic-accent text-burgundy">tři jiné cesty.</span>
+          <SectionMark index="08">Případová studie</SectionMark>
+          <h2 id="cases-title" className="display display-md mt-8 max-w-[14ch]">
+            Stejný klient, stejná banka, <span className="italic-accent text-burgundy">jiná struktura.</span>
           </h2>
         </Reveal>
         <Reveal delay={80}>
           <p className="max-w-xs text-[0.9rem] text-(--muted) md:text-right">
-            Anonymizované případy z praxe mého týmu. Čísla skutečná, zaokrouhlená.
+            Případ z workshopu. Jméno změněné, čísla skutečná.
           </p>
         </Reveal>
       </div>
 
-      <ol className="mt-14 border-t border-(--line-strong)">
-        {CASES.map((c, i) => (
-          <Reveal as="li" key={c.slug} delay={i * 70} className="border-b border-(--line)">
-            <Link
-              href={`/pripadove-studie#${c.slug}`}
-              className="group grid gap-4 py-8 lg:grid-cols-12 lg:gap-10"
-            >
-              <div className="lg:col-span-4">
-                <span className="label-xs tabular text-(--accent)">0{i + 1}</span>
-                <p className="display display-sm mt-3">{c.label}</p>
+      <Reveal delay={100} className="mt-14 grid gap-10 border-t border-(--line-strong) pt-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-5">
+          <p className="label-xs">{c.who}</p>
+          <h3 className="display display-sm mt-3">{c.title}</h3>
+          <dl className="mt-8 grid grid-cols-3 gap-x-6 gap-y-6 border-t border-(--line) pt-6">
+            {c.metrics.map((m) => (
+              <div key={m.label}>
+                <dd className="nominal text-2xl sm:text-3xl">{m.value}</dd>
+                <dt className="label-xs mt-2">{m.label}</dt>
               </div>
-              <div className="space-y-2 lg:col-span-7 lg:pt-6">
-                <p className="text-[0.98rem] text-(--muted)">{c.situation}</p>
-                <p className="text-[0.98rem] text-(--muted)">{c.action}</p>
-                <p className="text-[1.02rem]">{c.result}</p>
-              </div>
-              <span
-                aria-hidden="true"
-                className="label-xs self-end text-(--accent) lg:col-span-1 lg:pt-6 lg:text-right"
-              >
-                Detail
-              </span>
-            </Link>
-          </Reveal>
-        ))}
-      </ol>
+            ))}
+          </dl>
+        </div>
+
+        <div className="lg:col-span-6 lg:col-start-7">
+          <dl className="space-y-6">
+            <div>
+              <dt className="label-xs">Výchozí situace</dt>
+              <dd className="mt-2 text-[0.98rem] text-(--muted)">{c.problem}</dd>
+            </div>
+            <div>
+              <dt className="label-xs">Co se změnilo</dt>
+              <dd className="mt-2 text-[0.98rem] text-(--muted)">{c.change}</dd>
+            </div>
+            <div>
+              <dt className="label-xs">Výsledek</dt>
+              <dd className="mt-2 text-[1.02rem]">{c.result}</dd>
+            </div>
+          </dl>
+          <div className="mt-8">
+            <Button href="/workshopy" variant="quiet">
+              Rozebíráme na workshopu
+            </Button>
+          </div>
+        </div>
+      </Reveal>
     </Section>
   );
 }
