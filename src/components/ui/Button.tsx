@@ -21,22 +21,31 @@ const variants: Record<Variant, string> = {
     "pb-1 border-b border-(--line-strong) text-(--fg) hover:border-(--accent) hover:text-(--accent)",
 };
 
-function Rule() {
+/** Tenká šipka jako z rytiny; na hover se posune doprava. Sdílí ji tlačítko i textové odkazy. */
+export function Arrow({ className = "" }: { className?: string }) {
   return (
-    <span
+    <svg
       aria-hidden="true"
-      className="h-px w-5 bg-current transition-[width] duration-300 ease-out group-hover:w-8"
-    />
+      viewBox="0 0 20 10"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`h-[10px] w-5 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 ${className}`}
+    >
+      <path d="M0.75 5h17.5M13.5 1.25 18.25 5l-4.75 3.75" />
+    </svg>
   );
 }
 
-/** Tlačítko ve stylu tištěného formuláře: bez rádiusů, bez stínů, s tenkou linkou místo šipky. */
+/** Tlačítko ve stylu tištěného formuláře: bez rádiusů, bez stínů, s tenkou šipkou. */
 export function Button({ href, variant = "solid", className = "", children, external, ...rest }: Props) {
   const classes = `${base} ${variants[variant]} ${className}`;
   const content = (
     <>
       <span>{children}</span>
-      <Rule />
+      <Arrow />
     </>
   );
 

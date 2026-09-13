@@ -1,3 +1,4 @@
+import { Arrow } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
 import { GOOGLE_PROFILE_URL, GOOGLE_RATING, REVIEWS } from "@/lib/reviews";
@@ -58,7 +59,7 @@ export function Reviews() {
           className="label-sm tap group inline-flex items-center gap-3 border-b border-(--line-strong) pb-1 transition-colors hover:border-(--accent) hover:text-(--accent)"
         >
           Zobrazit všechny recenze
-          <span aria-hidden="true" className="h-px w-5 bg-current transition-[width] duration-300 group-hover:w-8" />
+          <Arrow />
         </a>
       </Reveal>
     </Section>

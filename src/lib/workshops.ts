@@ -1,3 +1,4 @@
+import { nb } from "@/lib/format";
 import { EGFIN, FACTS } from "@/lib/site";
 
 export type Workshop = {
@@ -30,10 +31,10 @@ export const WORKSHOPS: Workshop[] = [
   {
     slug: "zacatecnici",
     level: "Pro začínající investory",
-    title: "Financování investičních nemovitostí",
+    title: "Financování prvních 4 nemovitostí",
     claim: "Získejte od banky víc, než vám nabídnou na přepážce.",
     description:
-      "Večerní workshop pro investory na startu: bonita, LTV, výběr banky a postup, jak bezpečně financovat první až třetí investiční nemovitost.",
+      "Večerní workshop pro investory na startu: jak postavit portfolio tak, abyste příští nemovitost financovali bezpečně — bez zamítnutí kvůli bonitě a bez čekání, až naspoříte dost vlastních zdrojů.",
     start: "2026-09-23T18:00:00+02:00",
     end: "2026-09-23T20:30:00+02:00",
     place: PLACE,
@@ -47,11 +48,12 @@ export const WORKSHOPS: Workshop[] = [
       "Chcete mít od začátku systém, který vydrží i pátý nákup.",
     ],
     takeaways: [
-      "Jak banka čte vaši žádost dřív, než ji otevře: příjmy, závazky, zástavy.",
-      "Kolik z nájmu vám která banka uzná a proč se to liší.",
-      "Jak pracovat s bonitou a zástavou tak, aby nedošly vlastní zdroje.",
-      "Která banka se hodí na vaši situaci a kam nemá smysl chodit.",
-      "Co znamená doporučení ČNB od dubna 2026 pro první investiční byt.",
+      "Jak koupit další nemovitost, aniž byste na ni měli předem naspořeno.",
+      "Co banka posuzuje ještě předtím, než otevře vaši žádost: příjmy, závazky, zástavy.",
+      "Kolik z nájmu vám která banka uzná — rozpětí je 60 až 70 % a každá to má jinak.",
+      "Jak přestavět svou situaci tak, aby pro banku vypadala neodolatelně, bez navyšování příjmu.",
+      "Jak pracovat se zástavou, aby vám nikdy nedošly vlastní zdroje.",
+      "Co doporučení ČNB od dubna 2026 znamená pro první investiční byt: na pražský byt o milion vlastních zdrojů víc.",
     ],
     program: [
       { time: "17:45", title: "Příchod účastníků" },
@@ -66,10 +68,10 @@ export const WORKSHOPS: Workshop[] = [
   {
     slug: "pokrocile",
     level: "Pro pokročilé investory",
-    title: "Portfolio, s.r.o. a strop bonity",
-    claim: "Máte čtyři a více nemovitostí a narazili jste na strop.",
+    title: "Strategie, portfolio, růst",
+    claim: "Máte čtyři a více nemovitostí a potřebujete zvednout svůj strop.",
     description:
-      "Večerní workshop pro investory se zavedeným portfoliem: struktury přes s.r.o., refinancování portfolia, doporučení ČNB (LTV 70 %, DTI 7) a jednání s bankou na úrovni, kterou znají jen největší klienti.",
+      "Večerní workshop pro investory se zavedeným portfoliem: kde je váš strop DTI 7 a jak s ním pracuje struktura, financování přes s.r.o., refinancování pro reinvestici a jednání s bankou s čísly místo argumentů.",
     start: "2026-09-24T18:00:00+02:00",
     end: "2026-09-24T20:30:00+02:00",
     place: PLACE,
@@ -79,15 +81,16 @@ export const WORKSHOPS: Workshop[] = [
     audience: [
       "Máte 4 a více investičních nemovitostí a banka odmítla další úvěr.",
       "Narazili jste na strop bonity nebo zástavní hodnoty.",
-      "Potřebujete vědět, co DTI 7 a LTV 70 % znamenají pro škálování, ne pro jednu koupi.",
+      "Potřebujete vědět, co DTI 7 a LTV 70 % znamenají pro škálování, ne pro jednu koupi. Dozvíte se, jak zařídit, aby vás tohle nezastavilo.",
       "Řešíte, kdy a jak přejít na s.r.o.",
     ],
     takeaways: [
-      "Kde je váš strop DTI 7 a jak s ním pracuje struktura, ne akontace.",
-      "Kdy má smysl financovat přes s.r.o. a co banka čte ve výkazech.",
+      "Kde je váš strop DTI 7 a proč s ním hne struktura, ne akontace. DTI 7 není strop.",
+      "Jak nastavit a udržet bonitu, aby vás nezastavila při škálování na pátou, šestou a další nemovitost.",
+      "Kdy financovat přes s.r.o., co je pro banku důležité a jak pracovat s výkazy.",
       "Kdy je refinancování jedné nemovitosti krok k růstu a kdy portfolio prodražuje.",
       "Jak pracovat se zástavami při více nemovitostech a na co si dát pozor.",
-      "Jak vyjednávat s bankou fundovaně, s čísly místo argumentů.",
+      "Jak vyjednávat s bankou fundovaně a jít si rovnou pro peníze, které vám dosud odmítala dát.",
     ],
     program: [
       { time: "17:45", title: "Příchod účastníků" },
@@ -122,6 +125,35 @@ export function workshopStatus(w: Workshop, now = new Date()): WorkshopStatus {
   return { phase: "regular", priceNow: w.price, regularPrice: w.price, earlyUntil: null };
 }
 
+/**
+ * Balíček „Dva workshopy + nástroje pro investora“ — na egfin.cz označený jako nejprodávanější.
+ * Ceny a obsah převzaté ze stránek workshopů; early bird končí stejně jako u jednotlivých večerů.
+ */
+export const BUNDLE = {
+  name: "Obě úrovně + nástroje pro investora",
+  price: 8640,
+  earlyBird: { price: 5990, until: "2026-09-14T23:59:59+02:00" },
+  includes: [
+    "vstup na oba večery, 23. a 24. 9.",
+    "Excel na správu portfolia",
+    "seznam dokumentů k hypotéce",
+    "kalkulačka bonity",
+    "roční přístup do aplikace na portfolio",
+  ],
+  url: `${EGFIN.workshopBeginners}#balicky`,
+} as const;
+
+/** Stav balíčku: early bird do 14. 9., běžná cena, po druhém večeru „past“. */
+export function bundleStatus(now = new Date()): WorkshopStatus {
+  const t = now.getTime();
+  const lastEnd = Math.max(...WORKSHOPS.map((w) => new Date(w.end).getTime()));
+  if (t > lastEnd) return { phase: "past", priceNow: BUNDLE.price, regularPrice: BUNDLE.price, earlyUntil: null };
+  if (t <= new Date(BUNDLE.earlyBird.until).getTime()) {
+    return { phase: "early", priceNow: BUNDLE.earlyBird.price, regularPrice: BUNDLE.price, earlyUntil: BUNDLE.earlyBird.until };
+  }
+  return { phase: "regular", priceNow: BUNDLE.price, regularPrice: BUNDLE.price, earlyUntil: null };
+}
+
 const dateFmt = new Intl.DateTimeFormat("cs-CZ", { day: "numeric", month: "numeric", year: "numeric", timeZone: "Europe/Prague" });
 const timeFmt = new Intl.DateTimeFormat("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
 const weekdayFmt = new Intl.DateTimeFormat("cs-CZ", { weekday: "long", timeZone: "Europe/Prague" });
@@ -130,7 +162,7 @@ export function formatWorkshopDate(w: Workshop) {
   const s = new Date(w.start);
   const e = new Date(w.end);
   return {
-    date: dateFmt.format(s).replace(/\s/g, " "),
+    date: nb(dateFmt.format(s)),
     weekday: weekdayFmt.format(s),
     time: `${timeFmt.format(s)}–${timeFmt.format(e)}`,
   };
@@ -138,7 +170,7 @@ export function formatWorkshopDate(w: Workshop) {
 
 export function formatDayMonth(iso: string) {
   const d = new Date(iso);
-  return new Intl.DateTimeFormat("cs-CZ", { day: "numeric", month: "numeric", timeZone: "Europe/Prague" }).format(d).replace(/\s/g, " ");
+  return nb(new Intl.DateTimeFormat("cs-CZ", { day: "numeric", month: "numeric", timeZone: "Europe/Prague" }).format(d));
 }
 
 /** Terms explained in the interactive workshop map. */

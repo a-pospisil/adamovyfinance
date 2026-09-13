@@ -64,10 +64,11 @@ scripts              build-engraving.mjs (generátor SVG rytin)
 
 ### Navigace a homepage
 
-Menu má jen **Workshopy · Případové studie · Kontakt** plus CTA „Probrat financování“. Homepage **je** stránka
-o Adamovi, proto v menu žádná taková položka není a `/o-adamovi` se trvale přesměrovává na `/` (`next.config.ts`).
-Odborné stránky `/financovani` a `/nastroje` jsou dostupné z obsahu, z patičky a z mobilního menu — `DEEP_PAGES`
-v `src/lib/site.ts`.
+Menu má **Financování · Workshopy · Případové studie · Kontakt** plus CTA „Probrat financování“. Homepage **je**
+stránka o Adamovi, proto v menu žádná taková položka není a `/o-adamovi` se trvale přesměrovává na `/`
+(`next.config.ts`). `/financovani` je záměrně krátký rozcestník — drží klíčová slova a odkazy na podrobné stránky
+Evergreen Finance, ne vlastní odborný obsah. `/nastroje` je dostupná z obsahu, z patičky a z mobilního menu —
+`DEEP_PAGES` v `src/lib/site.ts`.
 
 Homepage vede jeden příběh v pořadí osobnost → příběh → investor → expert → důkazy → EGFIN:
 

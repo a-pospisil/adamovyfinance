@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Arrow } from "@/components/ui/Button";
 import { useId, useState, type FormEvent } from "react";
 import { SITE } from "@/lib/site";
 
@@ -130,7 +131,7 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
           className="label-sm group inline-flex h-12 items-center gap-3 bg-(--btn-bg) px-7 text-(--btn-fg) transition-colors hover:bg-(--accent) disabled:opacity-60"
         >
           {status === "sending" ? "Odesílám" : "Odeslat"}
-          <span aria-hidden="true" className="h-px w-5 bg-current transition-[width] duration-300 group-hover:w-8" />
+          <Arrow />
         </button>
         <p className="text-[0.85rem] text-(--muted)">Odpovídám {SITE.responseTime}.</p>
       </div>

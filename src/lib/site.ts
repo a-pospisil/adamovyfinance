@@ -70,13 +70,11 @@ export const CNB_2026 = {
 
 /** Hlavní navigace. Homepage je „Adam Pospíšil“ — proto v menu není žádná stránka o něm. */
 export const NAV = [
+  { href: "/financovani", label: "Financování" },
   { href: "/workshopy", label: "Workshopy" },
   { href: "/pripadove-studie", label: "Případové studie" },
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
 /** Odborné stránky: dostupné z obsahu a z patičky, ne z hlavního menu. */
-export const DEEP_PAGES = [
-  { href: "/financovani", label: "Financování do hloubky" },
-  { href: "/nastroje", label: "Kalkulačka a nástroje" },
-] as const;
+export const DEEP_PAGES = [{ href: "/nastroje", label: "Kalkulačka a nástroje" }] as const;
