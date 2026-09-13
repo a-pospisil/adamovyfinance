@@ -58,7 +58,8 @@ src/components/home  devět sekcí homepage: Hero, Story, SkinInTheGame, Philoso
 src/components/engraving  rytina: guilloché, rozeta, vlnové pole, rohy, nominály, mikrotypografie
 src/components/ui    Button, Section/SectionMark, Reveal, RevealObserver, PageHero, JsonLd
 src/lib              site.ts (kontakty, ověřená čísla, ČNB limity), reviews.ts, workshops.ts, caseStudies.ts,
-                     model.ts, schema.ts, format.ts, metadata.ts
+                     model.ts, schema.ts, format.ts, metadata.ts, raynet.ts (lead + telefonát v CRM),
+                     workingHours.ts (pracovní hodiny, volné sloty)
 scripts              build-engraving.mjs (generátor SVG rytin)
 ```
 
@@ -115,23 +116,44 @@ npm run build && npm start
 
 ## Kontaktní formulář
 
-`POST /api/kontakt` posílá poptávku e-mailem přes [Resend](https://resend.com). Bez nastavených proměnných vrací
-503 a formulář nabídne přímé kanály (WhatsApp, telefon, e-mail), takže nikdy „tiše“ neselže.
+`POST /api/kontakt` zpracuje poptávku dvěma kanály, v tomto pořadí:
 
-| Proměnná           | Význam                                                            |
-| ------------------ | ----------------------------------------------------------------- |
-| `RESEND_API_KEY`   | API klíč Resend                                                   |
-| `LEAD_TO_EMAIL`    | kam poptávky chodí (např. adam.pospisil@egfin.cz)                 |
-| `LEAD_FROM_EMAIL`  | odesílatel s ověřenou doménou, výchozí `web@adamovyfinance.cz`    |
+1. **Raynet CRM** (`src/lib/raynet.ts`) – založí lead s předmětem „Jméno Příjmení“ (zdroj kontaktu „web/poptávka“,
+   kategorie tipaře, poznámka se stránkou, tématem a zprávou) a k němu naplánuje telefonát **„Zavolat: Jméno Příjmení“**
+   na **nejbližší volnou pracovní hodinu**. Volný slot se hledá v kalendáři vlastníka (`GET /activity/`, aktivity, kde je
+   účastníkem; zrušené a realizované se nepočítají) po celých hodinách 9–18 h, denně, až 30 dní dopředu. Když volný
+   slot není, naplánuje první možný termín a v e-mailu na kolizi upozorní.
+2. **E-mail přes [Resend](https://resend.com)** – text poptávky plus řádek s výsledkem CRM (číslo leadu a termín
+   telefonátu, případně proč se lead nebo telefonát nepodařilo založit).
 
-Viz `.env.example`.
+Výpočet slotů (`src/lib/workingHours.ts`) běží v zóně Europe/Prague nezávisle na zóně serveru. Bez nastaveného
+e-mailu ani CRM vrací endpoint 503 a formulář nabídne přímé kanály (WhatsApp, telefon, e-mail), takže nikdy „tiše“
+neselže; když CRM lead založí a e-mail selže (nebo naopak), poptávka se považuje za doručenou.
+
+| Proměnná                   | Význam                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`           | API klíč Resend                                                                 |
+| `LEAD_TO_EMAIL`            | kam poptávky chodí (např. adam.pospisil@egfin.cz)                               |
+| `LEAD_FROM_EMAIL`          | odesílatel s ověřenou doménou, výchozí `web@adamovyfinance.cz`                  |
+| `RAYNET_API_KEY`           | API klíč Raynet (Nastavení aplikace → Pro vývojáře → API klíče)                 |
+| `RAYNET_USERNAME`          | přihlašovací e-mail uživatele, pod kterým API volá                              |
+| `RAYNET_INSTANCE_NAME`     | název instance (`evergreen`)                                                    |
+| `RAYNET_OWNER_ID`          | ID uživatele, který lead i telefonát vlastní a v jehož kalendáři se hledá slot  |
+| `RAYNET_LEAD_CATEGORY_ID`  | volitelně kategorie leadu (číselník LeadCategory)                               |
+| `RAYNET_CONTACT_SOURCE_ID` | volitelně zdroj kontaktu (číselník ContactSource)                               |
+| `RAYNET_WORK_HOURS`        | volitelně pracovní doba, výchozí `9-18`                                         |
+| `RAYNET_WORK_DAYS`         | volitelně pracovní dny `1-7` (1 = pondělí), výchozí denně; jen všední dny `1-5` |
+| `RAYNET_SLOT_MINUTES`      | volitelně délka slotu, výchozí `60`                                             |
+| `RAYNET_ACTIVITY_TYPE`     | volitelně `phoneCall` (výchozí) nebo `task`                                     |
+
+Viz `.env.example` – jsou v něm i konkrétní ID číselníků instance Evergreen.
 
 ## Nasazení (Vercel)
 
 1. Importovat repozitář do Vercelu, framework Next.js, bez dalších nastavení.
 2. Přidat domény `adamovyfinance.cz` (primární) a `www.adamovyfinance.cz` (Vercel ji přesměruje 308 na primární).
    HTTP → HTTPS a HSTS řeší Vercel + hlavičky v `next.config.ts`.
-3. Nastavit proměnné prostředí pro formulář (viz výše).
+3. Nastavit proměnné prostředí pro formulář a Raynet (viz výše).
 4. U registrátora (aktuálně parkování VEDOS) přesměrovat DNS: `A 76.76.21.21` pro apex a `CNAME cname.vercel-dns.com`
    pro `www`, případně podle instrukcí ve Vercelu.
 
