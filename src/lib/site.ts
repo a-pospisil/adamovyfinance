@@ -6,7 +6,7 @@ export const SITE = {
   url: SITE_URL,
   tagline: "Hypotéky a financování investičních nemovitostí",
   description:
-    "Adam Pospíšil – finanční poradce, hypoteční specialista a investor. Financování investičních nemovitostí, které počítá s celým portfoliem, ne s jedním úvěrem. Workshopy pro investory.",
+    "Adam Pospíšil – specialista na financování investičních nemovitostí, hypotéky a strukturování financování investičních portfolií.",
   locale: "cs_CZ",
   phone: "+420 775 313 596",
   phoneHref: "tel:+420775313596",
@@ -39,7 +39,12 @@ export const EGFIN = {
   linkedin: "https://www.linkedin.com/company/71705854/",
 } as const;
 
-/** Verified figures (egfin.cz, workshop pages, 2026). Update here only. */
+/**
+ * Verified figures (egfin.cz, workshop pages, 2026). Update here only.
+ *
+ * Pozor na `clients`: 500+ jsou klienti Adama, ne celé firmy. Evergreen Finance
+ * jako celek uvádí 1 000+ klientů — to číslo na tenhle web nepatří.
+ */
 export const FACTS = {
   yearsInFinance: 15,
   sinceYear: 2010,
@@ -52,8 +57,6 @@ export const FACTS = {
   teamSpecialists: 6,
   workshopAlumni: 100,
   workshopCapacity: 30,
-  googleRating: "5,0",
-  googleReviews: 31,
 } as const;
 
 /** ČNB recommendation effective 1 April 2026 (source: ČNB press release). */
@@ -65,11 +68,15 @@ export const CNB_2026 = {
   ownHomeLtvUnder36: 90,
 } as const;
 
+/** Hlavní navigace. Homepage je „Adam Pospíšil“ — proto v menu není žádná stránka o něm. */
 export const NAV = [
-  { href: "/financovani", label: "Financování" },
   { href: "/workshopy", label: "Workshopy" },
   { href: "/pripadove-studie", label: "Případové studie" },
-  { href: "/o-adamovi", label: "O Adamovi" },
-  { href: "/nastroje", label: "Nástroje" },
   { href: "/kontakt", label: "Kontakt" },
+] as const;
+
+/** Odborné stránky: dostupné z obsahu a z patičky, ne z hlavního menu. */
+export const DEEP_PAGES = [
+  { href: "/financovani", label: "Financování do hloubky" },
+  { href: "/nastroje", label: "Kalkulačka a nástroje" },
 ] as const;

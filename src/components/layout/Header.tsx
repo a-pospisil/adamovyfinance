@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
-import { NAV, SITE } from "@/lib/site";
+import { DEEP_PAGES, NAV, SITE } from "@/lib/site";
 
 /** Hlavička jako záhlaví tištěného dokumentu: monogram, jméno, tenká linka. */
 export function Header() {
@@ -48,9 +48,8 @@ export function Header() {
       </a>
 
       <div className="container-x flex h-16 items-center justify-between gap-6 lg:h-[4.75rem]">
-        <Link href="/" className="group flex items-baseline gap-3" aria-label="Adam Pospíšil — úvod">
+        <Link href="/" className="tap flex items-baseline" aria-label="Adam Pospíšil — úvod">
           <span className="display whitespace-nowrap text-[1.35rem] leading-none tracking-[0.01em]">Adam Pospíšil</span>
-          <span className="microtype hidden whitespace-nowrap translate-y-[-1px] xl:block">Investment financing</span>
         </Link>
 
         <nav aria-label="Hlavní navigace" className="hidden items-center gap-7 lg:flex">
@@ -77,9 +76,20 @@ export function Header() {
           </Link>
         </nav>
 
+        <div className="flex items-center gap-4 lg:hidden">
+          <a
+            href={SITE.phoneHref}
+            className="label-sm flex h-11 min-w-11 items-center justify-center gap-2 text-ink/80 transition-colors hover:text-ink sm:min-w-0 sm:justify-start"
+            aria-label={`Zavolat na ${SITE.phone}`}
+          >
+            <svg aria-hidden="true" viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.3">
+              <path d="M4.5 2.5h3l1.5 4-2 1.2a10 10 0 0 0 5.3 5.3l1.2-2 4 1.5v3a1.5 1.5 0 0 1-1.7 1.5C8.5 16.4 3.6 11.5 3 5.2A1.5 1.5 0 0 1 4.5 2.5Z" />
+            </svg>
+            <span className="hidden sm:inline">Zavolat</span>
+          </a>
         <button
           type="button"
-          className="label-sm relative z-[60] -mr-1 flex h-11 items-center gap-3 px-1 lg:hidden"
+          className="label-sm relative z-[60] -mr-1 flex h-11 items-center gap-3 px-1"
           aria-expanded={open}
           aria-controls={menuId}
           onClick={() => setOpen((v) => !v)}
@@ -98,6 +108,7 @@ export function Header() {
             />
           </span>
         </button>
+        </div>
       </div>
 
       <div id={menuId} hidden={!open} className="fixed inset-0 top-16 z-50 overflow-y-auto bg-paper lg:hidden">
@@ -113,13 +124,28 @@ export function Header() {
               <span className="display text-[clamp(1.75rem,8vw,2.5rem)] leading-none">{item.label}</span>
             </Link>
           ))}
-          <div className="mt-10 flex flex-col gap-2">
+          <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+            {DEEP_PAGES.map((item) => (
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="label-sm tap text-ink/70">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-col gap-3">
             <a href={SITE.phoneHref} className="display text-2xl">
               {SITE.phone}
             </a>
-            <a href={SITE.instagram} className="label-sm text-ink/70" target="_blank" rel="noopener noreferrer">
+            <a href={SITE.instagram} className="label-sm tap text-ink/70" target="_blank" rel="noopener noreferrer">
               Instagram {SITE.instagramHandle}
             </a>
+            <Link
+              href="/kontakt"
+              onClick={() => setOpen(false)}
+              className="label-sm mt-4 inline-flex h-12 w-full items-center justify-center bg-ink text-paper"
+            >
+              Probrat financování
+            </Link>
           </div>
         </nav>
       </div>

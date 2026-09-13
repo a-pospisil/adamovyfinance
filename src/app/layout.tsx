@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import Script from "next/script";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -25,7 +26,7 @@ const sans = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Adam Pospíšil – financování investičních nemovitostí",
+    default: "Adam Pospíšil | Financování investičních nemovitostí",
     template: "%s | Adam Pospíšil",
   },
   description: SITE.description,
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     locale: SITE.locale,
     siteName: SITE.name,
     url: `${SITE_URL}/`,
-    title: "Adam Pospíšil – financování investičních nemovitostí",
+    title: "Adam Pospíšil | Financování investičních nemovitostí",
     description: SITE.description,
     images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Adam Pospíšil – Banka vidí úvěr. Já vidím portfolio." }],
   },
@@ -62,6 +63,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="cs" className={`${display.variable} ${sans.variable} h-full`}>
       <body className="flex min-h-full flex-col">
+        {/* Označí dokument dřív, než se vykreslí obsah: jen tehdy se smí obsah
+            skrýt kvůli animaci odhalení. Bez JS zůstane všechno viditelné. */}
+        <Script id="js-flag" strategy="beforeInteractive">
+          {`document.documentElement.dataset.js="1"`}
+        </Script>
         <JsonLd data={[personSchema(), organizationSchema(), professionalServiceSchema(), websiteSchema()]} />
         <RevealObserver />
         <Header />

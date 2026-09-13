@@ -16,7 +16,7 @@ export function PageHero({ label, title, lead, aside, numeral }: Props) {
     <section data-theme="paper" className="themed relative overflow-hidden pb-16 pt-28 sm:pt-32 lg:pb-20 lg:pt-36">
       <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1/2 max-w-3xl">
         <WaveField className="absolute inset-0 h-full w-full" tone="brown" opacity={0.06} />
-        <Guilloche className="absolute -right-24 top-1/2 size-[30rem] -translate-y-1/2" tone="gold" opacity={0.14} />
+        <Guilloche className="absolute -right-24 top-1/2 size-[30rem] -translate-y-1/2" opacity={0.14} />
         {numeral && (
           <Numeral
             value={numeral}

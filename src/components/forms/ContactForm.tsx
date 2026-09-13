@@ -113,7 +113,7 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
       </div>
 
       <label className="flex items-start gap-3 text-[0.85rem] text-(--muted) sm:col-span-2">
-        <input type="checkbox" name="consent" required className="mt-1 size-4 accent-(--accent)" />
+        <input type="checkbox" name="consent" required className="mt-0.5 size-5 shrink-0 accent-(--accent)" />
         <span>
           Souhlasím se zpracováním osobních údajů za účelem vyřízení poptávky.{" "}
           <Link href="/ochrana-osobnich-udaju" className="underline underline-offset-4 hover:text-(--fg)">

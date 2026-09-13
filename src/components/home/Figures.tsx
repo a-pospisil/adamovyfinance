@@ -1,47 +1,41 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { MicroStrip, Rosette } from "@/components/engraving/Engraving";
 import { FACTS } from "@/lib/site";
 
 const FIGURES = [
-  { value: `${FACTS.yearsInFinance}+`, label: "let ve financích", note: `od roku ${FACTS.sinceYear}` },
-  { value: `${FACTS.loansTotalBil}+ mld.`, label: "Kč sjednaných úvěrů", note: `${FACTS.loans2025Mil} mil. Kč v roce 2025` },
-  { value: `${FACTS.bankPartners}`, label: "bank a metodik", note: "bankovních i nebankovních partnerů" },
-  { value: `${FACTS.clients}+`, label: "klientů", note: `tým ${FACTS.teamSpecialists} specialistů` },
+  { value: `${FACTS.yearsInFinance}+`, label: "let ve financích" },
+  { value: `${FACTS.loansTotalBil}+ mld.`, label: "Kč sjednaných úvěrů" },
+  { value: `${FACTS.bankPartners}`, label: "bank a partnerů" },
+  { value: `${FACTS.clients}+`, label: "klientů" },
 ];
 
-/** 03 — Zkušenost. Nominální hodnoty jako na bankovce: čísla, linky, prostor. */
+/** 05 — Zkušenost. Čísla až po příběhu, na jednom řádku, bez karet. */
 export function Figures() {
   return (
-    <Section theme="paper" ariaLabelledby="figures-title">
+    <Section theme="paper" ariaLabelledby="figures-title" className="border-t border-(--line)">
       <Reveal>
-        <SectionMark index="03">Zkušenost</SectionMark>
+        <SectionMark index="05">Zkušenost</SectionMark>
       </Reveal>
+      <h2 id="figures-title" className="sr-only">
+        Zkušenost v číslech
+      </h2>
 
-      <Reveal delay={60}>
-        <h2 id="figures-title" className="sr-only">
-          Zkušenost v číslech
-        </h2>
-      </Reveal>
-
-      <dl className="mt-12 border-t border-(--line-strong)">
+      <dl className="mt-12 grid gap-x-10 gap-y-10 border-t border-(--line-strong) pt-10 sm:grid-cols-2 lg:grid-cols-4">
         {FIGURES.map((f, i) => (
-          <Reveal
-            key={f.label}
-            delay={i * 80}
-            className="grid items-baseline gap-x-8 gap-y-1 border-b border-(--line) py-7 sm:grid-cols-12 sm:py-9"
-          >
-            <dd className="nominal text-[clamp(3.25rem,9vw,7rem)] text-ink sm:col-span-5">{f.value}</dd>
-            <dt className="display display-sm sm:col-span-4">{f.label}</dt>
-            <dd className="label-xs sm:col-span-3 sm:text-right">{f.note}</dd>
+          <Reveal key={f.label} delay={i * 70}>
+            <dd className="nominal text-[clamp(2.75rem,6vw,4.5rem)]">{f.value}</dd>
+            <dt className="label-xs mt-3">{f.label}</dt>
           </Reveal>
         ))}
       </dl>
 
-      <div className="mt-8 flex items-center justify-between gap-6">
-        <MicroStrip text="Adam Pospíšil · Investment financing" repeat={3} className="hidden max-w-[60%] sm:block" />
-        <Rosette className="size-10 shrink-0" opacity={0.4} />
-      </div>
+      <Reveal delay={120}>
+        <p className="mt-10 max-w-xl text-[0.9rem] text-(--muted)">
+          Z toho {FACTS.loans2025Mil} milionů korun sjednaných úvěrů v roce 2025, s týmem{" "}
+          {FACTS.teamSpecialists} specialistů Evergreen Finance. Vlastní portfolio stavím od roku{" "}
+          {FACTS.ownPortfolioSince}.
+        </p>
+      </Reveal>
     </Section>
   );
 }

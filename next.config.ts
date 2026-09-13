@@ -26,7 +26,9 @@ const nextConfig: NextConfig = {
     return [
       // Legacy/alternate paths people may type or that were linked historically.
       { source: "/workshop", destination: "/workshopy", permanent: true },
-      { source: "/o-mne", destination: "/o-adamovi", permanent: true },
+      // Příběh, timeline i principy jsou nově přímo na homepage.
+      { source: "/o-adamovi", destination: "/", permanent: true },
+      { source: "/o-mne", destination: "/", permanent: true },
       { source: "/kalkulacky", destination: "/nastroje", permanent: true },
     ];
   },
