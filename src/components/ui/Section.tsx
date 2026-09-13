@@ -32,7 +32,7 @@ export function Section({
   );
 }
 
-/** Číslované záhlaví sekce: „01 — O MNĚ“ s tenkou linkou a rozetou. */
+/** Číslované záhlaví sekce: „7) WORKSHOP“ — číslo bez nuly, závorka, žádná linka. */
 export function SectionMark({
   index,
   children,
@@ -42,10 +42,10 @@ export function SectionMark({
   children: ReactNode;
   className?: string;
 }) {
+  const n = Number(index);
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
-      <span className="label-sm tabular text-(--accent)">{index}</span>
-      <span aria-hidden="true" className="h-px w-10 bg-(--line-strong)" />
+    <div className={`flex items-baseline gap-3 ${className}`}>
+      <span className="label-sm tabular text-(--accent)">{Number.isNaN(n) ? index : `${n})`}</span>
       <span className="label-xs">{children}</span>
     </div>
   );
