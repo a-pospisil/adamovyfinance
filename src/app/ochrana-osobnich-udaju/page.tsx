@@ -29,7 +29,7 @@ const SECTIONS = [
   },
   {
     title: "Komu údaje předávám",
-    text: "Údaje předávám pouze bankám a poskytovatelům úvěrů, u kterých pro vás financování sjednávám, a to až po vaší výslovné žádosti. S doručením zpráv technicky pomáhá poskytovatel e-mailové služby, se kterým je uzavřena smlouva o zpracování. Údaje neprodávám ani nepředávám za marketingovými účely.",
+    text: "Údaje předávám pouze bankám a poskytovatelům úvěrů, u kterých pro vás financování sjednávám, a to až po vaší výslovné žádosti. S doručením zpráv technicky pomáhá poskytovatel e-mailové služby a poptávky eviduji v CRM systému RAYNET; s oběma provozovateli je uzavřena smlouva o zpracování. Údaje neprodávám ani nepředávám za marketingovými účely.",
   },
   {
     title: "Cookies a měření",
