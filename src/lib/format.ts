@@ -2,7 +2,7 @@ const NBSP = " ";
 const czk = new Intl.NumberFormat("cs-CZ", { maximumFractionDigits: 0 });
 
 /** Normalises locale whitespace (regular, NBSP, narrow NBSP) to NBSP so numbers never wrap and every font renders them. */
-function nb(s: string): string {
+export function nb(s: string): string {
   return s.replace(/[\s  ]/g, NBSP);
 }
 

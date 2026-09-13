@@ -11,7 +11,7 @@ import { formatCzk } from "@/lib/format";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, faqSchema, ORG_ID, PERSON_ID } from "@/lib/schema";
 import { CNB_2026, EGFIN, FACTS, SITE_URL } from "@/lib/site";
-import { formatDayMonth, formatWorkshopDate, workshopStatus, WORKSHOPS } from "@/lib/workshops";
+import { BUNDLE, bundleStatus, formatDayMonth, formatWorkshopDate, workshopStatus, WORKSHOPS } from "@/lib/workshops";
 
 export const revalidate = 3600;
 
@@ -43,6 +43,8 @@ const FAQ = [
 
 export default function WorkshopsPage() {
   const now = new Date();
+  const bundle = bundleStatus(now);
+  const upcoming = WORKSHOPS.filter((w) => workshopStatus(w, now).phase !== "past");
   const events = WORKSHOPS.map((w) => {
     const s = workshopStatus(w, now);
     return {
@@ -88,7 +90,7 @@ export default function WorkshopsPage() {
       <JsonLd data={[...events, breadcrumbSchema([{ name: "Workshopy", path: "/workshopy" }]), faqSchema(FAQ)]} />
 
       <PageHero
-        label={`Workshop Adama Pospíšila · Praha · max. ${FACTS.workshopCapacity} lidí`}
+        label="Workshop Adama Pospíšila · Praha · dvě úrovně"
         numeral="04"
         title={
           <>
@@ -96,10 +98,18 @@ export default function WorkshopsPage() {
           </>
         }
         lead={
-          <p>
-            Naučím vás přemýšlet o financování tak, jak o něm přemýšlí banka. Metodiky, bonita, struktura. Dvě úrovně
-            podle toho, kde dnes stojí vaše portfolio.
-          </p>
+          <>
+            <p>
+              Získejte od banky víc, než vám nabídnou na přepážce. Naučím vás číst žádost očima banky: metodiky, bonita,
+              struktura. Dvě úrovně podle toho, kde dnes stojí vaše portfolio, a jen postupy, které používám na tom svém.
+            </p>
+            <p className="label-xs mt-6">
+              {FACTS.workshopAlumni}+ absolventů · max. {FACTS.workshopCapacity} lidí
+              {upcoming.length === WORKSHOPS.length && (
+                <> · {formatDayMonth(WORKSHOPS[0].start)} a {formatWorkshopDate(WORKSHOPS[1]).date}</>
+              )}
+            </p>
+          </>
         }
         aside={
           <div className="relative">
@@ -134,7 +144,12 @@ export default function WorkshopsPage() {
             const status = workshopStatus(w, now);
             const when = formatWorkshopDate(w);
             return (
-              <Reveal as="article" key={w.slug} delay={i * 80} className="border-t border-(--line-strong) pt-7">
+              <Reveal
+                as="article"
+                key={w.slug}
+                delay={i * 80}
+                className="border-t border-(--line-strong) pt-7 lg:row-span-6 lg:grid lg:grid-rows-subgrid lg:gap-y-0"
+              >
                 <p className="label-xs text-(--accent)">{w.level}</p>
                 <h3 className="display display-md mt-3">{w.title}</h3>
                 <p className="mt-4 max-w-md text-(--muted)">{w.claim}</p>
@@ -166,7 +181,9 @@ export default function WorkshopsPage() {
                       {formatCzk(status.priceNow)}
                       {status.phase === "early" && status.earlyUntil && (
                         <span className="label-xs mt-1.5 block">
-                          early bird do {formatDayMonth(status.earlyUntil)}, poté {formatCzk(status.regularPrice)}
+                          early bird do {formatDayMonth(status.earlyUntil)},
+                          <br />
+                          poté {formatCzk(status.regularPrice)}
                         </span>
                       )}
                     </dd>
@@ -188,7 +205,7 @@ export default function WorkshopsPage() {
                   ))}
                 </ul>
 
-                <div className="mt-8">
+                <div className="mt-8 lg:self-end">
                   <Button
                     href={status.phase === "past" ? "/kontakt" : w.url}
                     external={status.phase !== "past"}
@@ -202,9 +219,39 @@ export default function WorkshopsPage() {
           })}
         </div>
 
-        <p className="mt-10 max-w-3xl text-[0.85rem] text-(--muted)">
+        {bundle.phase !== "past" && (
+          <Reveal delay={160} className="mt-14 border-t border-(--line-strong) pt-7">
+            <div className="grid gap-8 md:grid-cols-12 md:items-end">
+              <div className="md:col-span-7">
+                <p className="label-xs text-(--accent)">Nejčastější volba</p>
+                <h3 className="display display-sm mt-3">{BUNDLE.name}</h3>
+                <p className="mt-3 max-w-lg text-[0.95rem] text-(--muted)">
+                  Oba večery za sebou a k tomu nástroje, které budete používat ještě měsíce po workshopu:{" "}
+                  {BUNDLE.includes.slice(1).join(", ")}.
+                </p>
+              </div>
+              <div className="md:col-span-5 md:text-right">
+                <p className="nominal text-3xl">{formatCzk(bundle.priceNow)}</p>
+                {bundle.phase === "early" && bundle.earlyUntil && (
+                  <p className="label-xs mt-1.5">
+                    early bird do {formatDayMonth(bundle.earlyUntil)},
+                    <br />
+                    poté {formatCzk(bundle.regularPrice)}
+                  </p>
+                )}
+                <div className="mt-5">
+                  <Button href={BUNDLE.url} external variant="outline">
+                    Chci obě úrovně
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        )}
+
+        <p className="mt-10 max-w-3xl text-[0.8rem] text-(--muted)">
           Rezervace míst a platba probíhá přes stránky workshopů Evergreen Finance. Pořadatelem je Monopoly advisory
-          s.r.o. Nejčastěji lidé berou obě úrovně za sebou.
+          s.r.o.
         </p>
       </Section>
 
