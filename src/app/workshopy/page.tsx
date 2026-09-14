@@ -75,6 +75,7 @@ export default function WorkshopsPage() {
         url: w.url,
         price: s.priceNow,
         priceCurrency: "CZK",
+        validFrom: w.saleStart,
         availability: s.phase === "past" ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
         ...(s.earlyUntil ? { priceValidUntil: s.earlyUntil.slice(0, 10) } : {}),
       },
