@@ -212,6 +212,42 @@ Kód dodá signály, zbytek je mimo repozitář. V pořadí podle dopadu:
   tohoto webu na Evergreen Finance odkazuje a meta description ho zmiňuje, takže
   vazba vede oběma směry.
 
+## Search Console hlásí přesměrování — co s tím
+
+Po přechodu z WordPressu na Next.js přijde e-mail „Nové důvody, které brání
+indexování“ se dvěma položkami. Nejsou si rovné:
+
+**„Stránka s přesměrováním“ — není chyba.** Je to informace, že URL přesměrovává,
+takže se neindexuje ona, ale její cíl. Přesně to má dělat: staré WordPressové
+adresy, `/o-mne`, `/kalkulacky`, varianty s `www`, s `http` a s koncovým lomítkem.
+Po migraci tahle čísla vždycky vyskočí a nic se s nimi nedělá. Redirecty přidané
+kvůli značce toto číslo ještě zvednou — taky v pořádku.
+
+**„Chyba přesměrování“ — to je skutečná chyba.** Znamená, že robot přesměrování
+nedokončil: smyčka, příliš dlouhý řetězec, nebo prázdná či neplatná URL v řetězci.
+
+Aktuální stav je proměřený a čistý:
+
+- žádná smyčka; každá cesta z `next.config.ts` končí na 200 nebo 404
+- nejdelší řetězec jsou 4 hopy v nejhorší kombinaci
+  `http://www.adamovyfinance.cz/stara-cesta/` → https → apex → bez lomítka → cíl;
+  Google jich následuje až 10, takže délka problém není
+- `www` i `http` varianty se korektně sbíhají na `https://adamovyfinance.cz`
+
+Nejpravděpodobnější příčina hlášených chyb je tedy **okno migrace** — přepnutí DNS
+z parkování na Vercel, kdy robot trefil doménu v mezistavu. Takové chyby zmizí při
+dalším průchodu. Postup: v Search Console otevřít report, u obou položek dát
+**Ověřit opravu**, a pokud se „Chyba přesměrování“ vrátí, exportovat seznam URL —
+teprve ten řekne, o které adresy jde.
+
+### Poznámka k `permanent: true`
+
+Redirecty v `next.config.ts` vracejí 308, který si prohlížeč i Google cachují
+natrvalo a špatně se berou zpátky. Proto jsou v seznamu jen adresy, o kterých
+víme, že existovaly, nebo které se jako cesta znovu nepoužijí. Spekulativní
+`/blog`, `/reference`, `/investice` a `/sluzby` tam schválně nejsou — ať zůstanou
+volné pro budoucí stránky.
+
 ## Google Search Console – po nasazení
 
 1. Přidat property typu **Doména** `adamovyfinance.cz`, ověřit DNS TXT záznamem u registrátora.

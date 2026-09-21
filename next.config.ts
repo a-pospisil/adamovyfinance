@@ -35,16 +35,19 @@ const nextConfig: NextConfig = {
       // Adresy původního WordPressu na adamovyfinance.cz. Google je pořád drží
       // v indexu (ověřeno u /uspory-a-investice/) a dnes na nich dostává 404 —
       // tedy přesně na URL, které nesly jméno „Adamovy finance“ v titulku.
-      // Definitivní seznam patří vytáhnout ze Search Console → Stránky →
-      // „Nenalezeno (404)“ a doplnit sem.
+      //
+      // Schválně tu nejsou spekulativní cesty typu /blog nebo /reference:
+      // `permanent: true` je 308, který si prohlížeč i Google cachují natrvalo,
+      // takže redirect na cestu, kterou možná jednou budeme chtít použít, se
+      // špatně bere zpátky. Zbytek seznamu patří vytáhnout ze Search Console →
+      // Indexování → Stránky → „Nenalezeno (404)“ a doplnit sem.
       { source: "/uspory-a-investice", destination: "/nastroje", permanent: true },
       { source: "/hypoteky", destination: "/financovani", permanent: true },
       { source: "/hypoteka", destination: "/financovani", permanent: true },
-      { source: "/investice", destination: "/financovani", permanent: true },
-      { source: "/sluzby", destination: "/financovani", permanent: true },
-      { source: "/pojisteni", destination: "/kontakt", permanent: true },
-      { source: "/blog", destination: "/", permanent: true },
-      { source: "/reference", destination: "/", permanent: true },
+      // Pojištění na webu nemá protějšek; homepage je relevantnější cíl než
+      // formulář na /kontakt, kam by uživatel spadl bez kontextu.
+      { source: "/pojisteni", destination: "/", permanent: true },
+      // Artefakt WordPressu, jako cesta se nikdy znovu nepoužije.
       { source: "/feed", destination: "/", permanent: true },
     ];
   },
