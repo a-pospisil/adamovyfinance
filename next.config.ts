@@ -44,9 +44,10 @@ const nextConfig: NextConfig = {
       { source: "/uspory-a-investice", destination: "/nastroje", permanent: true },
       { source: "/hypoteky", destination: "/financovani", permanent: true },
       { source: "/hypoteka", destination: "/financovani", permanent: true },
-      // Pojištění na webu nemá protějšek; homepage je relevantnější cíl než
-      // formulář na /kontakt, kam by uživatel spadl bez kontextu.
-      { source: "/pojisteni", destination: "/", permanent: true },
+      // Pojištění na tomhle webu protějšek nemá — míří na kalkulačku pojištění
+      // nemovitosti na egfin.cz. Stejnou URL i s fragmentem používá egfin.cz ve
+      // vlastní navigaci, takže `#pojisteni` tam přepne správný panel.
+      { source: "/pojisteni", destination: "https://www.egfin.cz/kalkulacky#pojisteni", permanent: true },
       // Artefakt WordPressu, jako cesta se nikdy znovu nepoužije.
       { source: "/feed", destination: "/", permanent: true },
     ];
