@@ -184,10 +184,12 @@ Kód dodá signály, zbytek je mimo repozitář. V pořadí podle dopadu:
    <https://business.google.com>: název „Adamovy finance“, adresa Palackého 715/15,
    Praha 1, kategorie *Hypoteční makléř* / *Finanční poradce*, web
    `https://adamovyfinance.cz` — a **ověřit**; bez ověření se panel nezobrazí.
-2. **Na Facebooku `@adamovyfinance` doplnit do „O nás“ odkaz na `adamovyfinance.cz`.**
-   FB stránka je dnes na dotaz první. Až z ní povede odkaz na web, Google obě
-   entity spojí a s přesnou shodou domény i titulku obvykle převezme první pozici
-   web. Totéž v biu na Instagramu.
+2. **Facebook `@adamovyfinance` — hotovo** (v Odkazech je egfin.cz i „Osobní web“
+   → adamovyfinance.cz). Zbývá **bio na Instagramu `@adampospis`**, které dnes vede
+   na `evergreen-finance-web.vercel.app/workshopy/zacatecnici`. Ta preview doména
+   je veřejně procházená i indexovatelná, jen ji zachraňuje správný canonical na
+   `www.egfin.cz` — duplicitu tedy Google konsoliduje, ale lidem z Instagramu se
+   v adresním řádku ukazuje `vercel.app`. Bio přesměrovat na `adamovyfinance.cz`.
 3. **Search Console → Stránky → „Nenalezeno (404)“.** Vytáhnout skutečný seznam
    starých WP adres a doplnit ho do bloku redirectů v `next.config.ts`. Ty, co
    jsou tam teď, jsou potvrzená `/uspory-a-investice/` plus obvyklé cesty webu
@@ -234,19 +236,34 @@ Aktuální stav je proměřený a čistý:
   Google jich následuje až 10, takže délka problém není
 - `www` i `http` varianty se korektně sbíhají na `https://adamovyfinance.cz`
 
-Nejpravděpodobnější příčina hlášených chyb je tedy **okno migrace** — přepnutí DNS
-z parkování na Vercel, kdy robot trefil doménu v mezistavu. Takové chyby zmizí při
-dalším průchodu. Postup: v Search Console otevřít report, u obou položek dát
-**Ověřit opravu**, a pokud se „Chyba přesměrování“ vrátí, exportovat seznam URL —
-teprve ten řekne, o které adresy jde.
+Příčinou je tedy **okno migrace** — doména byla do Search Console přidána 13. 9. a
+robot ji trefil v mezistavu přepínání DNS z parkování na Vercel. Potvrzeno na datech
+ze Search Console:
+
+| Nález | Stav |
+| --- | --- |
+| Chyba přesměrování na `/o-adamovi` (13. 9.) | redirect dnes funguje; 12 měření proti kontrolní `/o-mne` dalo shodnou chybovost, tedy žádná odchylka — historické |
+| 404 na `/category/financovani/feed` | opraveno redirectem na `/financovani` |
+| 404 na `/favicon.ico` (2×) | opraveno, viz níže |
+
+Postup: v Search Console otevřít report a u obou položek dát **Ověřit opravu**.
+
+### Favicon
+
+Next.js z `src/app/icon.svg` obslouží `/icon.svg`, ale `/favicon.ico` **ne** — a
+prohlížeče i roboti si ho vyžádají podle konvence, takže vracel 404. Konvence
+Next.js: musí to být `.ico` přímo v kořeni `app/`. Soubor generuje
+`npm run favicon` ze stejného monogramu (16/32/48 px). Po změně značkové ikony
+v `icon.svg` je potřeba skript pustit znovu.
 
 ### Poznámka k `permanent: true`
 
 Redirecty v `next.config.ts` vracejí 308, který si prohlížeč i Google cachují
 natrvalo a špatně se berou zpátky. Proto jsou v seznamu jen adresy, o kterých
-víme, že existovaly, nebo které se jako cesta znovu nepoužijí. Spekulativní
-`/blog`, `/reference`, `/investice` a `/sluzby` tam schválně nejsou — ať zůstanou
-volné pro budoucí stránky.
+víme, že existovaly, nebo které se jako cesta znovu nepoužijí — sem patří i
+prefix `/category/*`, což je konvence WordPressu. Spekulativní `/blog`,
+`/reference`, `/investice` a `/sluzby` tam schválně nejsou — ať zůstanou volné
+pro budoucí stránky.
 
 ## Google Search Console – po nasazení
 

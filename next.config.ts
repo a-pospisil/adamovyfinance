@@ -50,6 +50,12 @@ const nextConfig: NextConfig = {
       { source: "/pojisteni", destination: "https://www.egfin.cz/kalkulacky#pojisteni", permanent: true },
       // Artefakt WordPressu, jako cesta se nikdy znovu nepoužije.
       { source: "/feed", destination: "/", permanent: true },
+      // Rubriky původního WordPressu. Search Console zachytila
+      // /category/financovani/feed; `:path*` bere i nulový počet segmentů,
+      // takže jedno pravidlo pokryje archiv rubriky i její feed. Prefix
+      // /category je WP konvence, kterou tenhle web znovu nepoužije.
+      { source: "/category/financovani/:path*", destination: "/financovani", permanent: true },
+      { source: "/category/:path*", destination: "/", permanent: true },
     ];
   },
 };
