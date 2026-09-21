@@ -159,15 +159,71 @@ Viz `.env.example` – jsou v něm i konkrétní ID číselníků instance Everg
 4. U registrátora (aktuálně parkování VEDOS) přesměrovat DNS: `A 76.76.21.21` pro apex a `CNAME cname.vercel-dns.com`
    pro `www`, případně podle instrukcí ve Vercelu.
 
+## Značka „Adamovy finance“ ve vyhledávání
+
+Na dotaz „Adamovy finance“ vracel Google jako první facebookovou stránku, napravo
+zobrazoval cizí firmu **ADAM finance, a.s.** (IČO 28367243) a web sám nikde.
+Příčiny byly na straně kódu tyhle a všechny jsou vyřešené:
+
+| Problém | Stav před | Řešení |
+| --- | --- | --- |
+| Fráze „Adamovy finance“ nebyla v title, description ani ve strukturovaných datech — jen jednou drobným písmem v patičce | Google neměl důvod spojit doménu se značkou | `SITE.brand`; title `Adamovy finance – Adam Pospíšil \| …`; šablona podstránek `%s \| Adamovy finance – Adam Pospíšil` |
+| `og:site_name` i `WebSite.name` zněly „Adam Pospíšil“ | Google bere název webu právě odsud, takže značku nikdy nezobrazil | obojí je teď `Adamovy finance`, `alternateName` drží „Adam Pospíšil“ |
+| Facebook `@adamovyfinance` nebyl z webu odkazovaný ani v `sameAs` | web a FB byly pro Google dvě nesouvisející entity | odkaz v patičce + `sameAs` v `Person`, `Brand` i `ProfessionalService` |
+| Neexistovala entita pojmenovaná „Adamovy finance“ | Google dotaz spároval s nejbližší firmou v rejstříku | nový uzel `Brand` (`brandSchema()`) s logem, sloganem a `sameAs` |
+| Staré WordPressové adresy vracely 404, přestože je Google drží v indexu (ověřeno na `/uspory-a-investice/`) — a byly to právě ony, co nesly „Adamovy finance“ v titulku | ztracená historie domény | trvalé redirecty v `next.config.ts` |
+
+### Co je potřeba dodělat ručně
+
+Kód dodá signály, zbytek je mimo repozitář. V pořadí podle dopadu:
+
+1. **Google Business Profile pro „Adamovy finance“.** Jediná věc, která reálně
+   přepíše panel vpravo. Panel *ADAM finance, a.s.* tam není kvůli webu — Google
+   dotaz vyhodnotí jako hledání firmy a vezme nejbližší ověřený profil. Dokud pro
+   „Adamovy finance“ žádný neexistuje, zůstane tam cizí firma. Založit na
+   <https://business.google.com>: název „Adamovy finance“, adresa Palackého 715/15,
+   Praha 1, kategorie *Hypoteční makléř* / *Finanční poradce*, web
+   `https://adamovyfinance.cz` — a **ověřit**; bez ověření se panel nezobrazí.
+2. **Na Facebooku `@adamovyfinance` doplnit do „O nás“ odkaz na `adamovyfinance.cz`.**
+   FB stránka je dnes na dotaz první. Až z ní povede odkaz na web, Google obě
+   entity spojí a s přesnou shodou domény i titulku obvykle převezme první pozici
+   web. Totéž v biu na Instagramu.
+3. **Search Console → Stránky → „Nenalezeno (404)“.** Vytáhnout skutečný seznam
+   starých WP adres a doplnit ho do bloku redirectů v `next.config.ts`. Ty, co
+   jsou tam teď, jsou potvrzená `/uspory-a-investice/` plus obvyklé cesty webu
+   finančního poradce; reálný seznam zná jen Search Console.
+4. **Nahlásit špatný panel:** u panelu *ADAM finance, a.s.* → „O těchto údajích“ →
+   zpětná vazba, že výsledek neodpovídá dotazu. Samo o sobě zabírá zřídka, spolu
+   s bodem 1 pomáhá.
+5. **Seznam.cz Firmy** — na českém trhu se zápis vyplatí.
+
+### Čeho se dá reálně dosáhnout
+
+- **Web na 1. pozici:** vysoká šance. Značkový dotaz s přesnou shodou domény je
+  nejsnazší kategorie; chyběla jen shoda v titulku a propojení entit.
+- **Panel vpravo:** Google cizí firmu nesmaže — nahradí ji, až bude pro „Adamovy
+  finance“ silnější entita. Stojí a padá to s ověřeným Business Profilem (bod 1).
+- **Evergreen Finance na 2. pozici:** z tohoto repozitáře to zařídit nejde a není
+  realistické to nastavit přesně. Na značkový dotaz obsazuje Google přední místa
+  vlastními profily značky (web, FB, Instagram, LinkedIn), takže druhá bude spíš
+  facebooková stránka. Aby se `egfin.cz` do výsledků vůbec dostal, musí se na něm
+  fráze „Adamovy finance“ objevit — stačí řádek v Adamově profilu na stránce týmu:
+  „Adam Pospíšil — Adamovy finance“ s odkazem na `adamovyfinance.cz`. Patička
+  tohoto webu na Evergreen Finance odkazuje a meta description ho zmiňuje, takže
+  vazba vede oběma směry.
+
 ## Google Search Console – po nasazení
 
 1. Přidat property typu **Doména** `adamovyfinance.cz`, ověřit DNS TXT záznamem u registrátora.
 2. Sitemaps → odeslat `https://adamovyfinance.cz/sitemap.xml`.
-3. URL Inspection → `https://adamovyfinance.cz/` → Request indexing.
+3. URL Inspection → `https://adamovyfinance.cz/` → Request indexing. Po změně titulků
+   a strukturovaných dat je nutné reindexaci vyžádat znovu, jinak se projeví až při
+   dalším průchodu robota.
 4. Totéž pro `/financovani` a `/workshopy`.
 5. Ověřit strukturovaná data v [Rich Results Test](https://search.google.com/test/rich-results): Person,
-   ProfilePage, Organization, ProfessionalService, Event (workshopy), FAQPage, BreadcrumbList.
-   Poslední kontrola přes validator.schema.org: 0 chyb a 0 varování na všech stránkách.
+   Brand, ProfilePage, Organization, ProfessionalService, Event (workshopy), FAQPage, BreadcrumbList.
+6. Sledovat ve **Výkon → Dotazy** pozici na „adamovy finance“, „adamovy finance praha“
+   a „adam pospíšil hypotéky“.
 
 - Sitemap: `https://adamovyfinance.cz/sitemap.xml`
 - Robots: `https://adamovyfinance.cz/robots.txt`

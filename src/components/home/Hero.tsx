@@ -14,7 +14,7 @@ export function Hero() {
 
       <div className="container-x relative grid min-h-[100svh] items-center gap-12 pb-16 pt-24 sm:pt-28 lg:grid-cols-12 lg:gap-10 lg:pb-20 lg:pt-28">
         <div className="lg:col-span-7">
-          <p className="label-xs">Adam Pospíšil</p>
+          <p className="label-xs">Adamovy finance · Adam Pospíšil</p>
 
           <h1 id="hero-title" className="display display-xl mt-6 max-w-[13ch]">
             Banka vidí úvěr.
@@ -57,7 +57,7 @@ export function Hero() {
       </div>
 
       <div className="container-x relative hidden border-t border-(--line) py-4 lg:block">
-        <MicroStrip text="Investice · Hypotéky · Portfolio" repeat={6} />
+        <MicroStrip text="Adamovy finance · Investice · Hypotéky · Portfolio" repeat={5} />
       </div>
     </section>
   );

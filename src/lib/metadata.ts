@@ -18,11 +18,11 @@ export function pageMetadata({ title, description, path, image = "/og.jpg", type
     openGraph: {
       type,
       locale: SITE.locale,
-      siteName: SITE.name,
+      siteName: SITE.brand,
       url: path,
       title,
       description,
-      images: [{ url: image, width: 1200, height: 630, alt: `${SITE.name} – ${SITE.tagline}` }],
+      images: [{ url: image, width: 1200, height: 630, alt: `${SITE.brand} – ${SITE.tagline}` }],
     },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };

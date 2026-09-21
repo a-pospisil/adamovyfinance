@@ -31,6 +31,21 @@ const nextConfig: NextConfig = {
       { source: "/o-mne", destination: "/", permanent: true },
       { source: "/pripadove-studie", destination: "/", permanent: true },
       { source: "/kalkulacky", destination: "/nastroje", permanent: true },
+
+      // Adresy původního WordPressu na adamovyfinance.cz. Google je pořád drží
+      // v indexu (ověřeno u /uspory-a-investice/) a dnes na nich dostává 404 —
+      // tedy přesně na URL, které nesly jméno „Adamovy finance“ v titulku.
+      // Definitivní seznam patří vytáhnout ze Search Console → Stránky →
+      // „Nenalezeno (404)“ a doplnit sem.
+      { source: "/uspory-a-investice", destination: "/nastroje", permanent: true },
+      { source: "/hypoteky", destination: "/financovani", permanent: true },
+      { source: "/hypoteka", destination: "/financovani", permanent: true },
+      { source: "/investice", destination: "/financovani", permanent: true },
+      { source: "/sluzby", destination: "/financovani", permanent: true },
+      { source: "/pojisteni", destination: "/kontakt", permanent: true },
+      { source: "/blog", destination: "/", permanent: true },
+      { source: "/reference", destination: "/", permanent: true },
+      { source: "/feed", destination: "/", permanent: true },
     ];
   },
 };

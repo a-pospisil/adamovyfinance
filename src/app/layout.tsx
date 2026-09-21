@@ -6,7 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { RevealObserver } from "@/components/ui/RevealObserver";
-import { organizationSchema, personSchema, professionalServiceSchema, websiteSchema } from "@/lib/schema";
+import { brandSchema, organizationSchema, personSchema, professionalServiceSchema, websiteSchema } from "@/lib/schema";
 import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -24,25 +24,34 @@ const sans = Inter({
   display: "swap",
 });
 
+/**
+ * Značka „Adamovy finance“ stojí v title vepředu záměrně. Je to dotaz, kterým
+ * web lidé hledají, a doména mu přesně odpovídá; bez shody v title Google
+ * vrací na ten dotaz Facebook a cizí firmu ADAM finance, a.s.
+ */
+const HOME_TITLE = `${SITE.brand} – Adam Pospíšil | Financování investičních nemovitostí`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Adam Pospíšil | Financování investičních nemovitostí",
-    template: "%s | Adam Pospíšil",
+    default: HOME_TITLE,
+    template: `%s | ${SITE.brand} – Adam Pospíšil`,
   },
   description: SITE.description,
-  applicationName: SITE.name,
+  // Název webu pro Google (site name) se čte z og:site_name a WebSite.name.
+  applicationName: SITE.brand,
   authors: [{ name: "Adam Pospíšil", url: SITE_URL }],
   creator: "Adam Pospíšil",
+  publisher: SITE.brand,
   alternates: { canonical: `${SITE_URL}/` },
   openGraph: {
     type: "website",
     locale: SITE.locale,
-    siteName: SITE.name,
+    siteName: SITE.brand,
     url: `${SITE_URL}/`,
-    title: "Adam Pospíšil | Financování investičních nemovitostí",
+    title: HOME_TITLE,
     description: SITE.description,
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Adam Pospíšil – Banka vidí úvěr. Já vidím portfolio." }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: `${SITE.brand} – Adam Pospíšil` }],
   },
   twitter: { card: "summary_large_image" },
   robots: {
@@ -69,7 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="js-flag" strategy="beforeInteractive">
           {`document.documentElement.dataset.js="1"`}
         </Script>
-        <JsonLd data={[personSchema(), organizationSchema(), professionalServiceSchema(), websiteSchema()]} />
+        <JsonLd data={[personSchema(), brandSchema(), organizationSchema(), professionalServiceSchema(), websiteSchema()]} />
         <RevealObserver />
         <Header />
         <div id="obsah" className="flex-1">

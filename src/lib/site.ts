@@ -2,16 +2,24 @@ export const SITE_URL = "https://adamovyfinance.cz";
 
 export const SITE = {
   name: "Adam Pospíšil",
+  /**
+   * Jméno značky, pod kterým lidé web hledají („Adamovy finance“). Musí být
+   * v title, og:site_name a ve WebSite.name — jinak Google na dotaz „Adamovy
+   * finance“ nemá důvod vrátit tenhle web místo Facebooku nebo cizí firmy.
+   */
+  brand: "Adamovy finance",
   domain: "adamovyfinance.cz",
   url: SITE_URL,
   tagline: "Hypotéky a financování investičních nemovitostí",
   description:
-    "Adam Pospíšil – specialista na financování investičních nemovitostí, hypotéky a strukturování financování investičních portfolií.",
+    "Adamovy finance – web Adama Pospíšila, specialisty na financování investičních nemovitostí a hypotéky. Praha, Evergreen Finance.",
   locale: "cs_CZ",
   phone: "+420 775 313 596",
   phoneHref: "tel:+420775313596",
   whatsapp: "https://wa.me/420775313596",
   email: "adam.pospisil@egfin.cz",
+  facebook: "https://www.facebook.com/adamovyfinance",
+  facebookHandle: "@adamovyfinance",
   instagram: "https://www.instagram.com/adampospis/",
   instagramHandle: "@adampospis",
   linkedin: "https://www.linkedin.com/in/adam-pospisil/",
