@@ -2,6 +2,8 @@ import { EGFIN, SITE, SITE_URL } from "@/lib/site";
 
 export const PERSON_ID = `${SITE_URL}/#adam-pospisil`;
 export const ORG_ID = `${SITE_URL}/#evergreen-finance`;
+/** „Adamovy finance“ jako samostatná entita — pod tímhle jménem web lidé hledají. */
+export const BRAND_ID = `${SITE_URL}/#adamovy-finance`;
 const SERVICE_ID = `${SITE_URL}/#service`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 
@@ -22,6 +24,7 @@ export function personSchema() {
       "Finanční poradce a hypoteční specialista zaměřený na financování investičních nemovitostí. Zakladatel Evergreen Finance, investor do nájemních nemovitostí a lektor workshopů pro investory.",
     worksFor: { "@id": ORG_ID },
     affiliation: { "@id": ORG_ID },
+    brand: { "@id": BRAND_ID },
     email: SITE.email,
     telephone: SITE.phone,
     knowsAbout: [
@@ -38,7 +41,30 @@ export function personSchema() {
     knowsLanguage: "cs",
     nationality: { "@type": "Country", name: "Česká republika" },
     homeLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: "Praha", addressCountry: "CZ" } },
-    sameAs: [SITE.instagram, SITE.linkedin, `${EGFIN.url}/o-nas`],
+    sameAs: [SITE.facebook, SITE.instagram, SITE.linkedin, `${EGFIN.url}/o-nas`],
+  };
+}
+
+/**
+ * Značka „Adamovy finance“. Bez téhle entity nemá Google na dotaz „Adamovy
+ * finance“ co nabídnout a spáruje ho s nejbližší firmou v rejstříku
+ * (ADAM finance, a.s.). `sameAs` drží pohromadě web, Facebook a Instagram,
+ * které dneska Google vidí jako tři různé věci.
+ */
+export function brandSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Brand",
+    "@id": BRAND_ID,
+    name: SITE.brand,
+    alternateName: "Adam Pospíšil",
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
+    image: `${SITE_URL}/og.jpg`,
+    slogan: "Banka vidí úvěr. Já vidím portfolio.",
+    description:
+      "Adamovy finance je osobní značka Adama Pospíšila, hypotečního specialisty na financování investičních nemovitostí. Financování realizuje ve společnosti Evergreen Finance.",
+    sameAs: [SITE.facebook, SITE.instagram, SITE.linkedin],
   };
 }
 
@@ -70,8 +96,11 @@ export function professionalServiceSchema() {
     "@context": "https://schema.org",
     "@type": ["ProfessionalService", "FinancialService"],
     "@id": SERVICE_ID,
-    name: "Adam Pospíšil – hypotéky a financování investičních nemovitostí",
+    name: `${SITE.brand} – Adam Pospíšil`,
+    alternateName: "Adam Pospíšil",
     url: SITE_URL,
+    // Organization-level logo — tohle Google čte při stavbě entity firmy.
+    logo: `${SITE_URL}/logo.png`,
     image: `${SITE_URL}/og.jpg`,
     description: SITE.description,
     telephone: SITE.phone,
@@ -79,6 +108,7 @@ export function professionalServiceSchema() {
     priceRange: "Konzultace zdarma",
     founder: { "@id": PERSON_ID },
     employee: { "@id": PERSON_ID },
+    brand: { "@id": BRAND_ID },
     parentOrganization: { "@id": ORG_ID },
     address: {
       "@type": "PostalAddress",
@@ -102,7 +132,7 @@ export function professionalServiceSchema() {
       itemOffered: { "@type": "Service", name, serviceType: name, provider: { "@id": PERSON_ID } },
     })),
     knowsAbout: ["hypotéky", "investiční nemovitosti", "bankovní metodiky", "financování portfolia"],
-    sameAs: [SITE.instagram, SITE.linkedin],
+    sameAs: [SITE.facebook, SITE.instagram, SITE.linkedin],
   };
 }
 
@@ -112,7 +142,9 @@ export function websiteSchema() {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     url: SITE_URL,
-    name: SITE.name,
+    // Google bere název webu ve výsledcích právě odsud (+ z og:site_name).
+    name: SITE.brand,
+    alternateName: "Adam Pospíšil",
     inLanguage: "cs",
     about: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID },
@@ -126,7 +158,8 @@ export function profilePageSchema() {
     "@type": "ProfilePage",
     "@id": `${SITE_URL}/#profil`,
     url: SITE_URL,
-    name: "Adam Pospíšil",
+    name: `${SITE.brand} – Adam Pospíšil`,
+    alternateName: SITE.brand,
     inLanguage: "cs",
     isPartOf: { "@id": WEBSITE_ID },
     mainEntity: { "@id": PERSON_ID },

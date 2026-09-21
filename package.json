@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "engraving": "node scripts/build-engraving.mjs"
+    "engraving": "node scripts/build-engraving.mjs",
+    "favicon": "node scripts/build-favicon.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
