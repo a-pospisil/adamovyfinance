@@ -57,47 +57,49 @@ export default function ContactPage() {
                 </p>
               </div>
             </Reveal>
-            <Reveal delay={200}>
-              <dl className="mt-12 space-y-7 border-t border-(--line) pt-8">
-                <div>
-                  <dt className="label-xs">Telefon / WhatsApp</dt>
-                  <dd className="display mt-1 text-3xl">
-                    <a href={SITE.phoneHref} className="tap inline-block">{SITE.phone}</a>
-                  </dd>
-                  <dd className="mt-1">
-                    <a
-                      href={SITE.whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="label-xs tap inline-block border-b border-(--line-strong) pb-0.5 hover:border-burgundy hover:text-burgundy"
-                    >
-                      Napsat na WhatsApp
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-xs">E-mail</dt>
-                  <dd className="mt-1 text-[1.05rem]">
-                    <a href={`mailto:${SITE.email}`} className="tap inline-block underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy">
-                      {SITE.email}
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-xs">Kancelář</dt>
-                  <dd className="mt-1 text-(--muted)">
-                    <a href={SITE.office.mapUrl} target="_blank" rel="noopener noreferrer" className="tap inline-block">
-                      {SITE.office.street}, {SITE.office.zip} {SITE.office.city}
-                    </a>
-                    <span className="mt-0.5 block text-[0.9rem]">Osobně po domluvě, jinak Google Meet nebo telefon.</span>
-                  </dd>
-                </div>
-              </dl>
-            </Reveal>
           </div>
 
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={160}>
             <ContactForm />
+          </Reveal>
+
+          {/* Kontakty vedle sebe přes celou šířku pod úvodem a formulářem. */}
+          <Reveal className="lg:col-span-12" delay={200}>
+            <dl className="grid gap-7 border-t border-(--line) pt-8 sm:grid-cols-3 sm:gap-10">
+              <div>
+                <dt className="label-xs">Telefon / WhatsApp</dt>
+                <dd className="display mt-1 text-3xl">
+                  <a href={SITE.phoneHref} className="tap inline-block">{SITE.phone}</a>
+                </dd>
+                <dd className="mt-1">
+                  <a
+                    href={SITE.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="label-xs tap inline-block border-b border-(--line-strong) pb-0.5 hover:border-burgundy hover:text-burgundy"
+                  >
+                    Napsat na WhatsApp
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="label-xs">E-mail</dt>
+                <dd className="mt-1 text-[1.05rem]">
+                  <a href={`mailto:${SITE.email}`} className="tap inline-block underline decoration-(--line-strong) underline-offset-4 hover:decoration-burgundy">
+                    {SITE.email}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="label-xs">Kancelář</dt>
+                <dd className="mt-1 text-(--muted)">
+                  <a href={SITE.office.mapUrl} target="_blank" rel="noopener noreferrer" className="tap inline-block">
+                    {SITE.office.street}, {SITE.office.zip} {SITE.office.city}
+                  </a>
+                  <span className="mt-0.5 block text-[0.9rem]">Osobně po domluvě, jinak Google Meet nebo telefon.</span>
+                </dd>
+              </div>
+            </dl>
           </Reveal>
         </div>
       </section>
