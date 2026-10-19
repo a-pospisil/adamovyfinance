@@ -105,7 +105,7 @@ export function professionalServiceSchema() {
     description: SITE.description,
     telephone: SITE.phone,
     email: SITE.email,
-    priceRange: "Konzultace zdarma",
+    priceRange: "Vstup do spolupráce 15 000 Kč",
     founder: { "@id": PERSON_ID },
     employee: { "@id": PERSON_ID },
     brand: { "@id": BRAND_ID },

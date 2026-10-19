@@ -50,7 +50,8 @@ export default function ContactPage() {
             <Reveal delay={140}>
               <p className="lead mt-8 max-w-md">
                 Napište, kde dnes stojíte a co chcete koupit nebo změnit. Odpovím konkrétně: co je možné, za jakých
-                podmínek a v jakém pořadí. Zdarma a bez závazku.
+                podmínek a v jakém pořadí. Úvodní odpověď je bez závazku. Vstup do spolupráce stojí jednorázově
+                15&nbsp;000&nbsp;Kč předem (analýza příjmů a výdajů a roadmapa financování).
               </p>
             </Reveal>
             <Reveal delay={200}>

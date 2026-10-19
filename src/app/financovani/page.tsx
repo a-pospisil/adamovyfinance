@@ -75,7 +75,7 @@ const TOPICS: Topic[] = [
 const FAQ = [
   {
     q: "Kolik stojí vaše služby?",
-    a: "Zprostředkování hypotéky a investičních úvěrů je pro klienty ve většině případů zdarma, odměnu vyplácí banka. Pokud by konkrétní struktura znamenala přímou platbu, dozvíte se to předem, písemně a s přesnou částkou.",
+    a: "Jednorázový poplatek 15 000 Kč pro vstup do spolupráce přímo se mnou, hradí se předem. Zahrnuje prvotní analýzu příjmů a výdajů a roadmapu pro dlouhodobé financování investičních nemovitostí. Nenahrazuje odměnu od banky.",
   },
   {
     q: "Jaké LTV dostanu na investiční nemovitost?",

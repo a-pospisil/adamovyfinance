@@ -66,37 +66,55 @@ export function ContactForm({ defaultTopic }: { defaultTopic?: string }) {
   return (
     <form onSubmit={onSubmit} className="grid gap-7 sm:grid-cols-2">
       <div>
-        <label htmlFor={`${id}-name`} className="label-xs">
+        <label htmlFor={`${id}-name`} className="label-xs block">
           Jméno a příjmení
         </label>
         <input id={`${id}-name`} name="name" required minLength={2} maxLength={100} autoComplete="name" className="field" />
       </div>
       <div>
-        <label htmlFor={`${id}-phone`} className="label-xs">
+        <label htmlFor={`${id}-phone`} className="label-xs block">
           Telefon
         </label>
         <input id={`${id}-phone`} name="phone" type="tel" required autoComplete="tel" inputMode="tel" className="field" />
       </div>
       <div>
-        <label htmlFor={`${id}-email`} className="label-xs">
+        <label htmlFor={`${id}-email`} className="label-xs block">
           E-mail
         </label>
         <input id={`${id}-email`} name="email" type="email" required autoComplete="email" className="field" />
       </div>
       <div>
-        <label htmlFor={`${id}-topic`} className="label-xs">
+        <label htmlFor={`${id}-topic`} className="label-xs block">
           Co řešíte
         </label>
-        <select id={`${id}-topic`} name="topic" defaultValue={defaultTopic ?? TOPICS[0]} className="field">
-          {TOPICS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        {/* Bez nativního vzhledu, aby select měl stejnou výšku, odsazení a linku jako ostatní pole. */}
+        <div className="relative">
+          <select
+            id={`${id}-topic`}
+            name="topic"
+            defaultValue={defaultTopic ?? TOPICS[0]}
+            className="field cursor-pointer appearance-none pr-8"
+          >
+            {TOPICS.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 12 8"
+            className="pointer-events-none absolute right-1 bottom-[1.15rem] h-2 w-3 text-(--muted)"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          >
+            <path d="M1 1.5 6 6.5 11 1.5" />
+          </svg>
+        </div>
       </div>
       <div className="sm:col-span-2">
-        <label htmlFor={`${id}-message`} className="label-xs">
+        <label htmlFor={`${id}-message`} className="label-xs block">
           Situace v pár větách
         </label>
         <textarea
