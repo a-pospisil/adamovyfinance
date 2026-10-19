@@ -75,7 +75,7 @@ const TOPICS: Topic[] = [
 const FAQ = [
   {
     q: "Kolik stojí vaše služby?",
-    a: "Vstup do spolupráce se mnou je zpoplatněn jednorázovým poplatkem 15 000 Kč, který se hradí předem. Zahrnuje prvotní analýzu příjmů a výdajů a nastavení roadmapy pro získání dlouhodobého financování investičních nemovitostí. Poplatek nenahrazuje odměnu, kterou vyplácí banka za zprostředkování úvěru. Pokud by konkrétní struktura znamenala další přímou platbu, dozvíte se to předem, písemně a s přesnou částkou.",
+    a: "Jednorázový poplatek 15 000 Kč pro vstup do spolupráce přímo s Adamem, hradí se předem. Zahrnuje prvotní analýzu příjmů a výdajů a roadmapu pro dlouhodobé financování investičních nemovitostí. Nenahrazuje odměnu od banky.",
   },
   {
     q: "Jaké LTV dostanu na investiční nemovitost?",
