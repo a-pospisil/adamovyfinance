@@ -55,7 +55,10 @@ export async function POST(request: Request) {
 
   const crm = await syncInquiryToRaynet(inquiry);
   if (crm.status === "failed") console.error(`[raynet] ${crm.step}: ${crm.message}`);
-  const crmDelivered = crm.status === "created" || (crm.status === "failed" && crm.leadId !== undefined);
+  const crmDelivered =
+    crm.status === "created" ||
+    crm.status === "existingClient" ||
+    (crm.status === "failed" && (crm.leadId !== undefined || crm.businessCaseId !== undefined));
 
   let emailed = false;
   if (emailConfigured) {
