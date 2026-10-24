@@ -11,7 +11,8 @@ export type Workshop = {
   end: string;
   place: { name: string; street: string; city: string; zip: string; mapUrl: string };
   price: number;
-  earlyBird: { price: number; until: string } | null;
+  earlyBird: { price: number; until: string } | null
+  saleStart: string;
   capacity: number;
   audience: string[];
   takeaways: string[];
@@ -38,6 +39,7 @@ export const WORKSHOPS: Workshop[] = [
     start: "2026-09-23T18:00:00+02:00",
     end: "2026-09-23T20:30:00+02:00",
     place: PLACE,
+    saleStart: "2026-09-12T00:00:00+02:00",
     price: 3800,
     earlyBird: { price: 2649, until: "2026-09-14T23:59:59+02:00" },
     capacity: FACTS.workshopCapacity,
@@ -75,6 +77,7 @@ export const WORKSHOPS: Workshop[] = [
     start: "2026-09-24T18:00:00+02:00",
     end: "2026-09-24T20:30:00+02:00",
     place: PLACE,
+    saleStart: "2026-09-12T00:00:00+02:00",
     price: 4800,
     earlyBird: { price: 3649, until: "2026-09-14T23:59:59+02:00" },
     capacity: FACTS.workshopCapacity,
