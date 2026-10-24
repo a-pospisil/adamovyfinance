@@ -15,6 +15,9 @@ import {
 /**
  * Raynet CRM: z poptávky z webu založí lead (předmět = jméno a příjmení) a
  * k němu naplánuje telefonát na nejbližší volnou pracovní hodinu vlastníka.
+ * Když už poptávající v Raynetu je jako klient (Company), lead se nezakládá:
+ * vznikne obchodní případ na klienta a úkol, obojí vždy na vlastníka z
+ * RAYNET_OWNER_ID (Adam) – klient sám (kategorie, vlastník) zůstává beze změny.
  *
  * REST API v2 (https://app.raynetcrm.com/api/doc/index-en.html):
  * basic auth uživatel + API klíč, hlavička X-Instance-Name, časy jako ISO 8601
@@ -51,8 +54,33 @@ export type RaynetConfig = {
 
 export type RaynetSyncResult =
   | { status: "skipped" }
-  | { status: "created"; leadId: number; activityId: number; slot: Interval; calendarFull: boolean }
-  | { status: "failed"; step: "config" | "lead" | "calendar" | "activity"; message: string; leadId?: number };
+  | {
+      status: "created";
+      leadId: number;
+      activityId: number;
+      slot: Interval;
+      calendarFull: boolean;
+      /** Víc klientů se stejným e-mailem/telefonem – lead založen s upozorněním. */
+      possibleDuplicates?: number[];
+    }
+  | {
+      status: "existingClient";
+      companyId: number;
+      businessCaseId: number;
+      /** Opakované odeslání do 24 h: jen doplněný popis otevřeného OP, bez nového úkolu. */
+      repeated: boolean;
+      activityId?: number;
+      slot?: Interval;
+      calendarFull?: boolean;
+    }
+  | {
+      status: "failed";
+      step: "config" | "lead" | "businessCase" | "calendar" | "activity";
+      message: string;
+      leadId?: number;
+      companyId?: number;
+      businessCaseId?: number;
+    };
 
 export type RaynetConfigResult =
   | { kind: "off" }
@@ -72,6 +100,8 @@ export const RAYNET_DEFAULTS = {
    * Když se nic nenajde, plánuje se první slot následujícího pracovního dne po přijetí poptávky.
    */
   lookaheadDays: 30,
+  /** Opakované odeslání formuláře od existujícího klienta v tomhle okně nezakládá druhý OP. */
+  repeatSubmissionMs: 24 * 3600 * 1000,
   /** Společný limit pro celou synchronizaci (lead + kalendář + aktivita). */
   timeoutMs: 8_000,
   /** Slot musí začínat aspoň takhle dlouho po přijetí poptávky. */
@@ -146,12 +176,14 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]);
 }
 
-/** Poznámka k leadu a zadání telefonátu – Raynet ji zobrazuje jako HTML, proto `<br>` a escapování. */
-export function buildNote(inquiry: Inquiry): string {
+/** Poznámka k leadu a zadání telefonátu – Raynet ji zobrazuje jako HTML, proto `<br>` a escapování.
+ *  `extra` = upozornění pro tým (např. možný duplicitní klient), jde hned pod hlavičku. */
+export function buildNote(inquiry: Inquiry, extra?: string): string {
   const lines = [
     `Nový lead z webu ${SITE.domain}`,
     "Typ: klientská poptávka",
     `Tipař: ${SITE.name}`,
+    extra ?? null,
     inquiry.page ? `Stránka: ${inquiry.page}` : null,
     `Téma: ${inquiry.topic || "neuvedeno"}`,
     `Telefon: ${inquiry.phone}`,
@@ -171,6 +203,56 @@ type RaynetEnvelope = { success?: boolean; message?: string; translatedMessage?:
 
 type RaynetActivityRow = { status?: string; scheduledFrom?: string | null; scheduledTill?: string | null };
 
+type RaynetContactInfo = { email?: string | null; email2?: string | null; tel1?: string | null; tel2?: string | null };
+
+export type RaynetCompanyRow = {
+  id: number;
+  primaryAddress?: { contactInfo?: RaynetContactInfo | null } | null;
+  addresses?: { contactInfo?: RaynetContactInfo | null }[] | null;
+};
+
+type RaynetBusinessCaseRow = {
+  id: number;
+  name?: string;
+  company?: { id: number } | null;
+  rowInfo?: { createdAt?: string | null } | null;
+};
+
+/** Typ OP „Úvěrový proces“ (jediný v číselníku) a kategorie „hypoteční úvěr“ – ověřeno v Raynetu 24. 10. 2026. */
+const BUSINESS_CASE_TYPE_LOAN = 64;
+const BUSINESS_CASE_CATEGORY_MORTGAGE = 116;
+
+/** Telefon na posledních 9 číslic – "+420 777 123 456", "00420777123456" i "777123456" vyjdou stejně. */
+export function normalizePhone(v?: string | null): string | null {
+  const digits = (v ?? "").replace(/\D/g, "");
+  return digits.length >= 9 ? digits.slice(-9) : null;
+}
+
+function contactInfos(row: RaynetCompanyRow): RaynetContactInfo[] {
+  return [row.primaryAddress?.contactInfo, ...(row.addresses ?? []).map((a) => a.contactInfo)].filter(
+    (ci): ci is RaynetContactInfo => !!ci,
+  );
+}
+
+function rowHasEmail(row: RaynetCompanyRow, email: string): boolean {
+  const e = email.trim().toLowerCase();
+  return contactInfos(row).some((ci) => [ci.email, ci.email2].some((x) => x?.trim().toLowerCase() === e));
+}
+
+function rowHasPhone(row: RaynetCompanyRow, phone: string): boolean {
+  return contactInfos(row).some((ci) => [ci.tel1, ci.tel2].some((x) => normalizePhone(x) === phone));
+}
+
+/** Název OP pro poptávku existujícího klienta; běžná pomlčka "-", ne "–". Podle názvu se pozná i opakované odeslání. */
+export function businessCaseName(inquiry: Inquiry): string {
+  return `Web poptávka - ${inquiry.topic || "kontakt"} (${SITE.domain})`;
+}
+
+/** Hypoteční témata formuláře (ContactForm TOPICS) → kategorie OP „hypoteční úvěr“. */
+function businessCaseCategory(topic: string): number | undefined {
+  return /hypoték|refinanc/i.test(topic) ? BUSINESS_CASE_CATEGORY_MORTGAGE : undefined;
+}
+
 /** Raynet vrací ISO 8601 s posunem (při dateFormat=ISO8601), jinak `yyyy-MM-dd HH:mm` v zóně uživatele API. */
 export function parseRaynetDateTime(value: string, timeZone: string): number {
   const local = value.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/);
@@ -181,7 +263,7 @@ export function parseRaynetDateTime(value: string, timeZone: string): number {
 function createClient(cfg: RaynetConfig, fetchImpl: typeof fetch, signal: AbortSignal) {
   const authorization = `Basic ${Buffer.from(`${cfg.username}:${cfg.apiKey}`).toString("base64")}`;
 
-  async function call<T>(method: "GET" | "PUT", path: string, query?: Record<string, string>, body?: unknown): Promise<T> {
+  async function call<T>(method: "GET" | "PUT" | "POST", path: string, query?: Record<string, string>, body?: unknown): Promise<T> {
     const url = `${cfg.apiUrl}/${path}${query ? `?${new URLSearchParams(query)}` : ""}`;
     const res = await fetchImpl(url, {
       method,
@@ -209,6 +291,58 @@ function createClient(cfg: RaynetConfig, fetchImpl: typeof fetch, signal: AbortS
       const id = json.data?.id;
       if (typeof id !== "number") throw new RaynetApiError(`PUT ${path}: odpověď bez ID záznamu`);
       return id;
+    },
+
+    /** POST = úprava existujícího záznamu. */
+    async update(path: string, body: Record<string, unknown>): Promise<void> {
+      await call("POST", path, undefined, body);
+    },
+
+    /**
+     * Existující klienti (Company) se stejným e-mailem, a když e-mail nic nevrátí, se stejným
+     * telefonem. Každý výsledek se v odpovědi znovu ověří (shoda adresy): fulltext vrací i
+     * částečné shody a selhává na e-mailech s „+“, proto napřed přesný filtr na e-mail
+     * primární adresy a fulltext až potom.
+     */
+    async findClients(email: string, phone: string): Promise<RaynetCompanyRow[]> {
+      const search = async (query: Record<string, string>) =>
+        (await call<{ data?: RaynetCompanyRow[] }>("GET", "company/", { ...query, limit: "20" })).data ?? [];
+      const found = new Map<number, RaynetCompanyRow>();
+
+      const mail = email.trim();
+      const emailQueries: Record<string, string>[] = [{ "primaryAddress.contactInfo.email": mail }, { fulltext: mail }];
+      for (const query of mail ? emailQueries : []) {
+        // Neznámý filtr Raynet odmítne – pak rozhodne fulltext.
+        const rows = await search(query).catch((e) => (e instanceof RaynetApiError ? [] : Promise.reject(e)));
+        for (const row of rows) if (rowHasEmail(row, mail)) found.set(row.id, row);
+        if (found.size) return [...found.values()];
+      }
+
+      const tel = normalizePhone(phone);
+      if (tel) {
+        // Fulltext páruje celá slova a telefon bývá uložený různě – několik podob, shoda po normalizaci.
+        for (const v of new Set([phone.trim(), tel, `${tel.slice(0, 3)} ${tel.slice(3, 6)} ${tel.slice(6)}`])) {
+          for (const row of await search({ fulltext: v })) if (rowHasPhone(row, tel)) found.set(row.id, row);
+        }
+      }
+      return [...found.values()];
+    },
+
+    /** Otevřený OP klienta se stejným názvem založený v posledních 24 h (opakované odeslání). */
+    async recentBusinessCase(companyId: number, name: string, now: number): Promise<number | undefined> {
+      const json = await call<{ data?: RaynetBusinessCaseRow[] }>("GET", "businessCase/", {
+        company: String(companyId),
+        status: "B_ACTIVE",
+        sortColumn: "id",
+        sortDirection: "DESC",
+        limit: "20",
+        dateFormat: "ISO8601",
+      });
+      const since = now - RAYNET_DEFAULTS.repeatSubmissionMs;
+      return (json.data ?? []).find((bc) => {
+        const created = bc.rowInfo?.createdAt ? parseRaynetDateTime(bc.rowInfo.createdAt, cfg.hours.timeZone) : NaN;
+        return (bc.company?.id ?? companyId) === companyId && bc.name === name && created >= since;
+      })?.id;
     },
 
     /** Obsazené intervaly vlastníka (jako účastníka) překrývající okno – bez zrušených a realizovaných aktivit. */
@@ -280,7 +414,20 @@ export async function syncInquiryToRaynet(inquiry: Inquiry, options: SyncOptions
   const now = options.now ?? Date.now();
   const api = createClient(cfg, options.fetch ?? fetch, AbortSignal.timeout(RAYNET_DEFAULTS.timeoutMs));
   const fullName = inquiry.name.trim().replace(/\s+/g, " ");
-  const note = buildNote(inquiry);
+
+  // Výpadek hledání klienta nesmí poptávku shodit – pak lead jako dřív.
+  let clients: RaynetCompanyRow[] = [];
+  try {
+    clients = await api.findClients(inquiry.email, inquiry.phone);
+  } catch (e) {
+    console.error(`[raynet] hledání existujícího klienta: ${errorMessage(e)}`);
+  }
+  if (clients.length === 1) return syncToExistingClient(api, cfg, inquiry, clients[0].id, now);
+  const possibleDuplicates = clients.length > 1 ? clients.map((c) => c.id) : undefined;
+  const note = buildNote(
+    inquiry,
+    possibleDuplicates ? `Možný duplicitní klient: ${possibleDuplicates.map((id) => `ID ${id}`).join(", ")}` : undefined,
+  );
 
   let leadId: number;
   try {
@@ -326,9 +473,83 @@ export async function syncInquiryToRaynet(inquiry: Inquiry, options: SyncOptions
       cfg.activityType === "task"
         ? await api.insert("task/", { ...activity, title: `Ozvat se: ${fullName}`, resolver: cfg.ownerId, deadline: activity.scheduledTill })
         : await api.insert("phoneCall/", { ...activity, title: `Zavolat: ${fullName}` });
-    return { status: "created", leadId, activityId, slot, calendarFull };
+    return { status: "created", leadId, activityId, slot, calendarFull, ...(possibleDuplicates ? { possibleDuplicates } : {}) };
   } catch (e) {
     return { status: "failed", step: "activity", message: errorMessage(e), leadId };
+  }
+}
+
+/** Místní datum "yyyy-MM-dd" v zóně pracovní doby (validFrom OP). */
+function localDate(t: number, timeZone: string): string {
+  const p = localParts(t, timeZone);
+  return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+}
+
+/**
+ * Poptávka od existujícího klienta (právě jedna shoda): místo leadu OP na klienta + úkol
+ * navázaný na klienta i OP. Vlastník OP i úkolu je vždy RAYNET_OWNER_ID (na tomhle webu
+ * Adam), na Company se nic neposílá – kategorie (tipař) ani vlastník klienta se nemění.
+ */
+async function syncToExistingClient(
+  api: Client,
+  cfg: RaynetConfig,
+  inquiry: Inquiry,
+  companyId: number,
+  now: number,
+): Promise<RaynetSyncResult> {
+  const tz = cfg.hours.timeZone;
+  const note = buildNote(inquiry);
+  const name = businessCaseName(inquiry);
+
+  let businessCaseId: number;
+  try {
+    const repeated = await api.recentBusinessCase(companyId, name, now);
+    if (repeated) {
+      await api.update(`businessCase/${repeated}/`, { description: note });
+      return { status: "existingClient", companyId, businessCaseId: repeated, repeated: true };
+    }
+    const category = businessCaseCategory(inquiry.topic);
+    businessCaseId = await api.insert("businessCase/", {
+      name,
+      company: companyId,
+      owner: cfg.ownerId,
+      businessCaseType: BUSINESS_CASE_TYPE_LOAN,
+      ...(category ? { category } : {}),
+      ...(cfg.contactSourceId ? { source: cfg.contactSourceId } : {}),
+      validFrom: localDate(now, tz),
+      description: note,
+    });
+  } catch (e) {
+    return { status: "failed", step: "businessCase", message: errorMessage(e), companyId };
+  }
+
+  let slot: Interval;
+  let calendarFull: boolean;
+  try {
+    ({ slot, calendarFull } = await findSlot(api, cfg.hours, now));
+  } catch (e) {
+    return { status: "failed", step: "calendar", message: errorMessage(e), companyId, businessCaseId };
+  }
+
+  try {
+    // Deadline = konec téhož pracovního dne (nejdřív konec slotu).
+    const p = localParts(slot.from, tz);
+    const endOfDay = localToInstant(tz, p.year, p.month, p.day, Math.floor(cfg.hours.endMinute / 60), cfg.hours.endMinute % 60);
+    const activityId = await api.insert("task/", {
+      title: `Kontaktovat klienta - poptávka z webu (${SITE.domain})`,
+      priority: "DEFAULT",
+      owner: cfg.ownerId,
+      resolver: cfg.ownerId,
+      company: companyId,
+      businessCase: businessCaseId,
+      scheduledFrom: formatIsoWithOffset(slot.from, tz),
+      scheduledTill: formatIsoWithOffset(slot.till, tz),
+      deadline: formatIsoWithOffset(Math.max(endOfDay, slot.till), tz),
+      description: note,
+    });
+    return { status: "existingClient", companyId, businessCaseId, repeated: false, activityId, slot, calendarFull };
+  } catch (e) {
+    return { status: "failed", step: "activity", message: errorMessage(e), companyId, businessCaseId };
   }
 }
 
@@ -342,18 +563,34 @@ export function formatSlot(slot: Interval, timeZone = RAYNET_DEFAULTS.timeZone):
 /** Jednořádkové shrnutí do e-mailu s poptávkou; null když je CRM vypnuté. */
 export function describeRaynetResult(result: RaynetSyncResult, activityType: RaynetActivityType = "phoneCall"): string | null {
   const activity = activityType === "task" ? "úkol" : "telefonát";
+  const calendarFullNote = ` Pozor: v kalendáři nebyl ${RAYNET_DEFAULTS.lookaheadDays} dní žádný volný slot, termín je první slot následujícího pracovního dne a koliduje s jinou aktivitou.`;
   switch (result.status) {
     case "skipped":
       return null;
     case "created":
       return (
         `Raynet: lead #${result.leadId} založen, ${activity} naplánován na ${formatSlot(result.slot)}.` +
-        (result.calendarFull
-          ? ` Pozor: v kalendáři nebyl ${RAYNET_DEFAULTS.lookaheadDays} dní žádný volný slot, termín je první slot následujícího pracovního dne a koliduje s jinou aktivitou.`
+        (result.calendarFull ? calendarFullNote : "") +
+        (result.possibleDuplicates
+          ? ` Pozor: možný duplicitní klient (${result.possibleDuplicates.map((id) => `ID ${id}`).join(", ")}), zkontrolujte a případně lead převeďte ručně.`
           : "")
+      );
+    case "existingClient":
+      if (result.repeated) {
+        return `Raynet: existující klient #${result.companyId}, opakovaná poptávka – doplněn popis otevřeného OP #${result.businessCaseId}, nový úkol se nezakládal.`;
+      }
+      return (
+        `Raynet: existující klient #${result.companyId} – lead se nezakládal, založen OP #${result.businessCaseId}` +
+        (result.slot ? ` a úkol naplánovaný na ${formatSlot(result.slot)}.` : ".") +
+        (result.calendarFull ? calendarFullNote : "")
       );
     case "failed":
       if (result.step === "config") return `Raynet: přeskočeno, neplatná konfigurace (${result.message}).`;
+      if (result.companyId !== undefined) {
+        return result.businessCaseId === undefined
+          ? `Raynet: existující klient #${result.companyId}, ale OP se nepodařilo založit (${result.message}). Založte ho prosím ručně.`
+          : `Raynet: existující klient #${result.companyId}, OP #${result.businessCaseId} založen, ale úkol se nepodařilo naplánovat (${result.message}). Naplánujte ho prosím ručně.`;
+      }
       if (result.leadId === undefined) return `Raynet: lead se nepodařilo založit (${result.message}). Založte ho prosím ručně.`;
       return `Raynet: lead #${result.leadId} založen, ale ${activity} se nepodařilo naplánovat (${result.message}). Naplánujte ho prosím ručně.`;
   }
