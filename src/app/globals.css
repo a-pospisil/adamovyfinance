@@ -171,6 +171,20 @@
     mask: url("/engraving/bricks-mask.svg") 0 0 / 120px 60px repeat;
   }
 
+  /* Stavební výkresy: půdorys, pohled a rozpiska místo ochranné sítě (sekce s recenzemi). */
+  .plans .bn-ground::before { display: none; }
+  .plans::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--gold);
+    opacity: 0.12;
+    -webkit-mask: url("/engraving/plans-mask.svg") right -3rem bottom 1.5rem / min(68rem, 92%) auto no-repeat;
+    mask: url("/engraving/plans-mask.svg") right -3rem bottom 1.5rem / min(68rem, 92%) auto no-repeat;
+  }
+
   /* Švy carouselu: svislá bordura na obou okrajích sekce a půlka rozety na švu.
      Dvě sousední sekce při přejezdu složí bordury i rozetu do jednoho celku. */
   .seam {

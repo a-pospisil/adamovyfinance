@@ -122,11 +122,9 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
   );
 
   useEffect(() => {
-    let frame = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(render);
-    };
+    // Překreslit hned v události scrollu, ne až v dalším snímku: se zpožděním o snímek
+    // obsah při každém kroku kolečka chvíli stál a pak dorovnal (viditelné poskakování).
+    const onScroll = () => render();
     let lastW = window.innerWidth;
     const onResize = () => {
       if (window.innerWidth === lastW && layout.current) return render();
@@ -139,7 +137,6 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(frame);
       ro.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);

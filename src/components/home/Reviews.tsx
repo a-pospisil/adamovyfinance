@@ -15,7 +15,7 @@ function Stars() {
 /** 5) Co říkají klienti. Skutečné recenze z veřejného profilu na Google. */
 export function Reviews() {
   return (
-    <Section theme="ink" ariaLabelledby="reviews-title">
+    <Section theme="ink" ariaLabelledby="reviews-title" className="plans overflow-hidden">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal>
           <SectionMark index="05">Co říkají klienti</SectionMark>
