@@ -394,3 +394,9 @@
   transform: none;
   transition: none;
 }
+
+/* V carouselu menší svislé odstupy než u samostatné sekce, aby se sekce lépe vešla na obrazovku.
+   Mimo vrstvy, aby přebil utilitu `section-y`. */
+.carousel-slide .section-y {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
