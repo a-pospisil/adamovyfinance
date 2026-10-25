@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { BanknoteGround, BanknoteRosette, GrandRosette } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
@@ -107,11 +107,8 @@ export default function ContactPage() {
         </div>
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <Reveal>
-              <SectionMark index="01">Před první schůzkou</SectionMark>
-            </Reveal>
             <Reveal delay={60}>
-              <h2 id="prepare-title" className="display display-md mt-10 max-w-[10ch]">
+              <h2 id="prepare-title" className="display display-md max-w-[10ch]">
                 Co si <span className="italic-accent text-gold-300">připravit.</span>
               </h2>
             </Reveal>

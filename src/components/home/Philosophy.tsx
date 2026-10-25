@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 
 const PRINCIPLES = [
   "První financování rozhoduje o druhém nákupu.",
@@ -9,18 +9,14 @@ const PRINCIPLES = [
   "Portfolio se financuje jako celek, ne po jednom úvěru.",
 ];
 
-/** 3) Jak přemýšlím. Značkové tvrzení, čtyři věty a fotka. */
+/** Jak přemýšlím. Značkové tvrzení, čtyři věty a fotka. */
 export function Philosophy() {
   return (
     <Section theme="paper" ariaLabelledby="phil-title" className="overflow-hidden">
       <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">
-          <Reveal>
-            <SectionMark index="03">Jak přemýšlím</SectionMark>
-          </Reveal>
-
           <Reveal delay={60}>
-            <h2 id="phil-title" className="display display-lg mt-10 max-w-[16ch]">
+            <h2 id="phil-title" className="display display-lg max-w-[16ch]">
               Jedna hypotéka <span className="italic-accent text-burgundy">není investiční strategie.</span>
             </h2>
           </Reveal>

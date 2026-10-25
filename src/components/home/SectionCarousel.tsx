@@ -7,224 +7,92 @@ import { BanknoteRosette, GrandRosette, Townhouse } from "@/components/engraving
 /** `dark`: sekce na tmavém podkladu (ink, cocoa) — rozeta na švu je pak zlatá. */
 export type Slide = { id: string; label: string; content: ReactNode; dark?: boolean };
 
-/** Od této šířky mají všechny sekce stejnou výšku (= stejně dlouhý scroll). */
+/** Od této šířky mají všechny sekce stejnou výšku (švy se pak potkají i dole). */
 const UNIFORM_QUERY = "(min-width: 1024px)";
-/**
- * Mezera ve scrollu mezi dočtením sekce a začátkem další (podíl výšky pódia). V jejím
- * středu se spustí vodorovný přejezd; ten je časový, ne vázaný na scroll.
- */
-const GAP_RATIO = 0.35;
-/** Délka vodorovného přejezdu mezi sekcemi. */
-const SLIDE_MS = 850;
-const SLIDE_EASE = "cubic-bezier(0.65, 0, 0.2, 1)";
-
-type Layout = {
-  stageH: number;
-  starts: number[]; // scroll pozice, kde začíná čtení sekce i
-  reads: number[]; // kolik se sekce i posune svisle, než je dočtená
-  transition: number; // mezera mezi dočtením a další sekcí
-  total: number;
-};
 
 /**
- * Animace řízené scrollem (Chrome, Edge, Safari 26+): svislé čtení sekce počítá prohlížeč
- * ve vlákně scrollu, takže jede přesně s ním. Bez podpory (Firefox) ho nastavuje JavaScript.
- */
-const supportsScrollTimeline = () =>
-  typeof CSS !== "undefined" && CSS.supports("animation-timeline: scroll()") && CSS.supports("animation-range: 0px 1px");
-
-/**
- * Svislý posun každé sekce na časové ose scrollu (vlastnost `transform`, lineárně).
- * Vodorovná poloha je zvlášť ve vlastnosti `translate` a mění se časovou animací.
- */
-function scrollTimelineCss(l: Layout, count: number, rangeStart: number): string {
-  const total = Math.max(1, l.total);
-  const pct = (v: number) => `${((v / total) * 100).toFixed(4)}%`;
-  const range = `animation-range: ${rangeStart}px ${rangeStart + total}px;`;
-  const rules: string[] = [];
-  for (let j = 0; j < count; j++) {
-    const start = l.starts[j];
-    const end = start + l.reads[j];
-    const frames = [`0% { transform: translateY(0); }`];
-    if (start > 0) frames.push(`${pct(start)} { transform: translateY(0); }`);
-    frames.push(`${pct(end)} { transform: translateY(${-l.reads[j]}px); }`, `100% { transform: translateY(${-l.reads[j]}px); }`);
-    rules.push(`@keyframes carousel-slide-${j} { ${frames.join(" ")} }`);
-    rules.push(`.carousel [data-slide="${j}"] { animation: carousel-slide-${j} linear both; animation-timeline: scroll(root block); ${range} }`);
-  }
-  return rules.join("\n");
-}
-
-/**
- * Sekce 1)–8) úvodní stránky jako carousel ovládaný scrollem. Obal má výšku
- * celé „trasy“, uvnitř je přilepené pódium. Při scrollu se aktuální sekce
- * nejdřív dočte svisle a pak odjede doleva a zprava přijede další.
- * Záložky 1)–8) a šipky jen posunou stránku na začátek dané sekce.
- * Bez JS se sekce vykreslí pod sebou (CSS v globals.css, [data-js]).
+ * Sekce 1)–8) úvodní stránky jako vodorovný carousel. Stránka se scrolluje normálně
+ * dolů; mezi sekcemi se přechází šipkami, záložkami, tažením prstem nebo vodorovným
+ * gestem na trackpadu. Posun dělá nativní vodorovný scroll s přichycením (scroll-snap),
+ * takže je plynulý v každém prohlížeči a funguje i bez JavaScriptu.
  */
 export function SectionCarousel({ slides }: { slides: Slide[] }) {
   const count = slides.length;
   const [active, setActive] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const navRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const probeRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const layout = useRef<Layout | null>(null);
   const activeRef = useRef(0);
-  const timelineRef = useRef<HTMLStyleElement | null>(null);
 
-  const headerH = () => document.querySelector("header")?.getBoundingClientRect().height ?? 0;
-
-  /** Aktuální scroll uvnitř trasy carouselu (0 … total). */
-  const trackScroll = useCallback(() => {
-    const root = rootRef.current;
-    const l = layout.current;
-    if (!root || !l) return 0;
-    return Math.max(0, Math.min(l.total, headerH() - root.getBoundingClientRect().top));
-  }, []);
-
-  const render = useCallback(() => {
-    const l = layout.current;
-    if (!l) return;
-    const s = trackScroll();
-    let i = 0;
-    while (i < count - 1 && l.starts[i + 1] <= s) i++;
-    const local = s - l.starts[i];
-    // Sekce se vymění v polovině mezery za dočtenou sekcí; přejezd sám je časový.
-    const now = i < count - 1 && local > l.reads[i] + l.transition / 2 ? i + 1 : i;
-
-    if (!timelineRef.current) {
-      panelRefs.current.forEach((panel, j) => {
-        if (!panel) return;
-        const y = j < i ? l.reads[j] : j === i ? Math.min(local, l.reads[i]) : 0;
-        panel.style.transform = `translateY(${-y}px)`;
-      });
-    }
-
-    if (now !== activeRef.current) {
-      activeRef.current = now;
-      setActive(now);
-    }
-  }, [count, trackScroll]);
-
-  const measure = useCallback(() => {
-    const root = rootRef.current;
-    const nav = navRef.current;
-    const stage = stageRef.current;
-    const probe = probeRef.current;
-    if (!root || !nav || !stage || !probe) return;
-    // Výška pódia z 100svh, ať se na mobilu nehýbe s lištou prohlížeče.
-    const stageH = Math.max(320, probe.getBoundingClientRect().height - headerH() - nav.offsetHeight);
-    stage.style.height = `${stageH}px`;
-    // Švy se kotví k výšce pódia, aby se půlky rozety a bordury na přechodu potkaly.
-    root.style.setProperty("--stage-h", `${stageH}px`);
-    // Sjednocená délka: na desktopu mají všechny sekce výšku nejdelší z nich (obsah na střed),
-    // na mobilu by to u krátkých sekcí nechalo prázdné obrazovky, tam vyplní aspoň pódium.
-    const panels = panelRefs.current.filter((p): p is HTMLDivElement => !!p);
-    panels.forEach((p) => (p.style.minHeight = ""));
-    const natural = panels.map((p) => p.offsetHeight);
-    const uniform = window.matchMedia(UNIFORM_QUERY).matches ? Math.max(stageH, ...natural) : stageH;
-    panels.forEach((p) => (p.style.minHeight = `${uniform}px`));
-    const reads = panels.map((p) => Math.max(0, p.offsetHeight - stageH));
-    const transition = Math.round(stageH * GAP_RATIO);
-    const starts = reads.map((_, i) => reads.slice(0, i).reduce((a, r) => a + r + transition, 0));
-    const total = starts[count - 1] + reads[count - 1];
-    layout.current = { stageH, starts, reads, transition, total };
-    root.style.height = `${nav.offsetHeight + stageH + total}px`;
-    if (supportsScrollTimeline()) {
-      if (!timelineRef.current) {
-        timelineRef.current = document.createElement("style");
-        timelineRef.current.dataset.carousel = "";
-        document.head.appendChild(timelineRef.current);
-      }
-      const rangeStart = Math.round(window.scrollY + root.getBoundingClientRect().top - headerH());
-      timelineRef.current.textContent = scrollTimelineCss(layout.current, count, rangeStart);
-    }
-    render();
-  }, [count, render]);
-
-  /** Posune stránku tak, aby byla sekce i (případně místo v ní) na pódiu. */
-  const scrollToSlide = useCallback(
-    (i: number, offsetInPanel = 0, smooth = true) => {
+  /** Posune carousel na sekci i; při kliknutí vrátí stránku na začátek carouselu. */
+  const go = useCallback(
+    (i: number, opts: { smooth?: boolean; toTop?: boolean } = {}) => {
+      const track = trackRef.current;
       const root = rootRef.current;
-      const l = layout.current;
-      if (!root || !l) return;
+      if (!track || !root) return;
       const idx = Math.max(0, Math.min(count - 1, i));
-      const within = Math.min(l.reads[idx], Math.max(0, offsetInPanel));
-      const top = window.scrollY + root.getBoundingClientRect().top - headerH() + l.starts[idx] + within;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.scrollTo({ top, behavior: smooth && !reduce ? "smooth" : "auto" });
+      const behavior: ScrollBehavior = opts.smooth === false || reduce ? "auto" : "smooth";
+      track.scrollTo({ left: idx * track.clientWidth, behavior });
+      if (opts.toTop !== false && root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior, block: "start" });
     },
     [count],
   );
 
+  // Aktivní sekce podle vodorovné polohy; výška carouselu podle aktivní sekce (mobil).
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduceMotion(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    // Překreslit hned v události scrollu, ne až v dalším snímku: se zpožděním o snímek
-    // obsah při každém kroku kolečka chvíli stál a pak dorovnal (viditelné poskakování).
-    const onScroll = () => render();
-    let lastW = window.innerWidth;
-    const onResize = () => {
-      if (window.innerWidth === lastW && layout.current) return render();
-      lastW = window.innerWidth;
-      measure();
+    const track = trackRef.current;
+    if (!track) return;
+    const panels = panelRefs.current.filter((p): p is HTMLDivElement => !!p);
+    const fit = () => {
+      panels.forEach((p) => (p.style.minHeight = ""));
+      if (window.matchMedia(UNIFORM_QUERY).matches) {
+        const max = Math.max(...panels.map((p) => p.offsetHeight));
+        panels.forEach((p) => (p.style.minHeight = `${max}px`));
+        track.style.height = "";
+      } else {
+        track.style.height = `${panels[activeRef.current]?.offsetHeight ?? 0}px`;
+      }
     };
-    const ro = new ResizeObserver(() => measure());
-    panelRefs.current.forEach((p) => p && ro.observe(p));
-    // Změna výšky obsahu nad carouselem (písma, obrázky) posune začátek časové osy.
-    const above = rootRef.current?.previousElementSibling;
-    if (above) ro.observe(above);
-    measure();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    const onScroll = () => {
+      const now = Math.round(track.scrollLeft / track.clientWidth);
+      if (now !== activeRef.current) {
+        activeRef.current = now;
+        setActive(now);
+        if (!window.matchMedia(UNIFORM_QUERY).matches) fit();
+      }
+    };
+    const ro = new ResizeObserver(fit);
+    panels.forEach((p) => ro.observe(p));
+    fit();
+    track.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", fit);
     return () => {
       ro.disconnect();
-      timelineRef.current?.remove();
-      timelineRef.current = null;
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      track.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", fit);
     };
-  }, [measure, render]);
+  }, []);
 
-  // Kotva v adrese: #<id snímku> nebo id prvku uvnitř sekce (#kontakt).
+  // Kotva v adrese: #<id sekce> nebo id prvku uvnitř sekce (#kontakt).
   useEffect(() => {
     const fromHash = () => {
       const id = decodeURIComponent(location.hash.slice(1));
       if (!id) return;
       const bySlide = slides.findIndex((s) => s.id === id);
       const el = bySlide < 0 ? document.getElementById(id) : null;
-      const panel = el?.closest<HTMLElement>("[data-slide]");
-      const idx = bySlide >= 0 ? bySlide : Number(panel?.dataset.slide ?? -1);
+      const idx = bySlide >= 0 ? bySlide : Number(el?.closest<HTMLElement>("[data-slide]")?.dataset.slide ?? -1);
       if (idx < 0) return;
-      const offset = el && panel ? el.getBoundingClientRect().top - panel.getBoundingClientRect().top : 0;
-      requestAnimationFrame(() => scrollToSlide(idx, offset, false));
+      requestAnimationFrame(() => {
+        go(idx, { smooth: false, toTop: false });
+        rootRef.current?.scrollIntoView({ block: "start" });
+      });
     };
     fromHash();
     window.addEventListener("hashchange", fromHash);
     return () => window.removeEventListener("hashchange", fromHash);
-  }, [slides, scrollToSlide]);
-
-  // Fokus z klávesnice v jiné sekci (Tab) — dorolovat na ni, jinak by byl fokus mimo pódium.
-  const onFocus = (e: React.FocusEvent) => {
-    const panel = (e.target as HTMLElement).closest<HTMLElement>("[data-slide]");
-    const l = layout.current;
-    if (!panel || !l) return;
-    const idx = Number(panel.dataset.slide);
-    const offset = (e.target as HTMLElement).getBoundingClientRect().top - panel.getBoundingClientRect().top;
-    const y = trackScroll() - l.starts[idx];
-    const visible = idx === activeRef.current && offset - y >= 0 && offset - y < l.stageH - 40;
-    if (!visible) scrollToSlide(idx, offset - l.stageH / 3, false);
-  };
+  }, [slides, go]);
 
   // Aktivní záložka vždy viditelná v posuvném pásu (mobil).
   useEffect(() => {
@@ -234,72 +102,108 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     strip.scrollTo({ left: tab.offsetLeft - strip.clientWidth / 2 + tab.clientWidth / 2, behavior: "smooth" });
   }, [active]);
 
+  const onTabKey = (e: React.KeyboardEvent) => {
+    const keys: Record<string, number> = { ArrowRight: active + 1, ArrowLeft: active - 1, Home: 0, End: count - 1 };
+    if (!(e.key in keys)) return;
+    e.preventDefault();
+    const next = Math.max(0, Math.min(count - 1, keys[e.key]));
+    go(next, { toTop: false });
+    tabsRef.current?.querySelector<HTMLElement>(`[data-tab="${next}"]`)?.focus();
+  };
+
   const prev = active > 0 ? slides[active - 1] : null;
   const next = active < count - 1 ? slides[active + 1] : null;
 
   return (
-    <div ref={rootRef} className="carousel relative" aria-label="Obsah úvodní stránky">
-      <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute h-svh w-px" />
-      <div className="carousel-sticky sticky top-16 lg:top-[4.75rem]">
-        {/* Navigace 1)–8). */}
-        <nav ref={navRef} data-theme="paper" aria-label="Sekce" className="carousel-nav themed relative z-10 border-y border-(--line)">
-          <div className="container-x flex items-center gap-3">
-            <NavArrow dir="prev" disabled={!prev} onClick={() => scrollToSlide(active - 1)} label={prev ? `Předchozí: ${prev.label}` : "Předchozí"} />
-            <div ref={tabsRef} className="no-scrollbar relative flex min-w-0 flex-1 gap-1 overflow-x-auto lg:justify-between">
-              {slides.map((s, i) => (
-                <a
-                  key={s.id}
-                  href={`#${s.id}`}
-                  data-tab={i}
-                  aria-current={i === active ? "true" : undefined}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    history.replaceState(null, "", `#${s.id}`);
-                    scrollToSlide(i);
-                  }}
-                  className={`flex shrink-0 items-baseline gap-2 whitespace-nowrap px-2.5 py-4 transition-colors duration-300 ${
-                    i === active ? "text-(--fg)" : "text-(--muted) hover:text-(--fg)"
-                  }`}
-                >
-                  <span className="label-sm tabular text-(--accent)">{i + 1})</span>
-                  <span className="text-[0.82rem] tracking-[0.04em]">{s.label}</span>
-                </a>
-              ))}
-            </div>
-            <NavArrow dir="next" disabled={!next} onClick={() => scrollToSlide(active + 1)} label={next ? `Další: ${next.label}` : "Další"} />
+    <div ref={rootRef} className="carousel relative scroll-mt-16 lg:scroll-mt-[4.75rem]" aria-roledescription="carousel" aria-label="Obsah úvodní stránky">
+      <nav data-theme="paper" aria-label="Sekce" className="carousel-nav themed sticky top-16 z-30 border-y border-(--line) lg:top-[4.75rem]">
+        <div className="container-x flex items-center gap-3">
+          <NavArrow dir="prev" disabled={!prev} onClick={() => go(active - 1)} label={prev ? `Předchozí: ${prev.label}` : "Předchozí"} />
+          <div ref={tabsRef} role="tablist" aria-label="Sekce" onKeyDown={onTabKey} className="no-scrollbar relative flex min-w-0 flex-1 gap-1 overflow-x-auto lg:justify-between">
+            {slides.map((s, i) => (
+              <button
+                key={s.id}
+                type="button"
+                role="tab"
+                data-tab={i}
+                aria-selected={i === active}
+                aria-controls={`sekce-${s.id}`}
+                tabIndex={i === active ? 0 : -1}
+                onClick={() => go(i)}
+                className={`flex shrink-0 items-baseline gap-2 whitespace-nowrap px-2.5 py-4 transition-colors duration-300 ${
+                  i === active ? "text-(--fg)" : "text-(--muted) hover:text-(--fg)"
+                }`}
+              >
+                <span className="label-sm tabular text-(--accent)">{i + 1})</span>
+                <span className="text-[0.82rem] tracking-[0.04em]">{s.label}</span>
+              </button>
+            ))}
           </div>
-          {/* Postup jako rytá linka. */}
-          <div aria-hidden="true" className="absolute inset-x-0 -bottom-px h-px">
-            <div
-              ref={progressRef}
-              className="h-full origin-left bg-(--accent) motion-safe:transition-transform motion-safe:duration-700"
-              style={{ transform: `scaleX(${(active + 1) / count})` }}
-            />
-          </div>
-        </nav>
+          <NavArrow dir="next" disabled={!next} onClick={() => go(active + 1)} label={next ? `Další: ${next.label}` : "Další"} />
+        </div>
+        <div aria-hidden="true" className="absolute inset-x-0 -bottom-px h-px">
+          <div
+            className="h-full origin-left bg-(--accent) motion-safe:transition-transform motion-safe:duration-500"
+            style={{ transform: `scaleX(${(active + 1) / count})` }}
+          />
+        </div>
+      </nav>
 
-        <div ref={stageRef} className="carousel-stage relative overflow-clip" onFocus={onFocus}>
-          {slides.map((s, i) => (
-            <div
-              key={s.id}
-              ref={(el) => {
-                panelRefs.current[i] = el;
-              }}
-              data-slide={i}
-              id={`sekce-${s.id}`}
-              role="group"
-              aria-roledescription="snímek"
-              aria-label={`${i + 1}) ${s.label}`}
-              className="carousel-slide absolute inset-x-0 top-0 will-change-transform"
-              style={{
-                translate: `${(i - active) * 100}% 0`,
-                transition: reduceMotion ? undefined : `translate ${SLIDE_MS}ms ${SLIDE_EASE}`,
-              }}
-            >
-              {s.content}
-              <Seams dark={s.dark} left={SEAMS[i - 1]} right={SEAMS[i]} />
-            </div>
-          ))}
+      <div
+        ref={trackRef}
+        className="carousel-track no-scrollbar flex snap-x snap-mandatory items-start overflow-x-auto overflow-y-hidden overscroll-x-contain motion-safe:transition-[height] motion-safe:duration-300"
+      >
+        {slides.map((s, i) => (
+          <div
+            key={s.id}
+            ref={(el) => {
+              panelRefs.current[i] = el;
+            }}
+            data-slide={i}
+            id={`sekce-${s.id}`}
+            role="tabpanel"
+            aria-roledescription="snímek"
+            aria-label={`${i + 1}) ${s.label}`}
+            inert={i !== active}
+            className="carousel-slide relative w-full shrink-0 snap-start snap-always"
+          >
+            {s.content}
+            <Seams dark={s.dark} left={SEAMS[i - 1]} right={SEAMS[i]} />
+          </div>
+        ))}
+      </div>
+
+      {/* Pokračování na konci sekce — čtenář nemusí zpět nahoru k záložkám. */}
+      <div data-theme="paper" className="themed border-t border-(--line)">
+        <div className="container-x flex items-stretch justify-between gap-4">
+          {prev ? (
+            <button type="button" onClick={() => go(active - 1)} className="group flex items-center gap-3 py-6 text-left">
+              <span className="rotate-180 text-(--accent)">
+                <Arrow />
+              </span>
+              <span>
+                <span className="label-xs block">Zpět</span>
+                <span className="display text-xl">
+                  {active}) {prev.label}
+                </span>
+              </span>
+            </button>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <button type="button" onClick={() => go(active + 1)} className="group flex items-center gap-3 py-6 text-right">
+              <span>
+                <span className="label-xs block">Pokračovat</span>
+                <span className="display text-xl">
+                  {active + 2}) {next.label}
+                </span>
+              </span>
+              <span className="text-(--accent)">
+                <Arrow />
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -349,9 +253,9 @@ const PLAN_RATIO = { plans: 1500 / 2600, section: 1500 / 2200 };
 
 /**
  * Švy mezi sekcemi: svislá bordura na obou okrajích a polovina motivu přesně na švu.
- * Odcházející sekce je při přejezdu dočtená dolů, přicházející začíná nahoře, proto se
- * levá polovina kotví k hornímu okraji pódia a pravá k jeho poslední výšce (--stage-h).
- * Rozeta sedí uprostřed pódia, dům stojí na jeho spodní hraně.
+ * Sousední sekce stojí v carouselu vedle sebe zarovnané nahoře a na desktopu mají
+ * stejnou výšku, takže se poloviny při posunu potkají. Rozeta a výkresy sedí uprostřed
+ * výšky, dům stojí na spodní hraně.
  */
 function Seams({ dark, left, right }: { dark?: boolean; left?: SeamMotif; right?: SeamMotif }) {
   return (
@@ -375,7 +279,7 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
           width: w,
           height: h,
           [side === "l" ? "left" : "right"]: -w / 2,
-          top: side === "l" ? `calc(var(--stage-h, 100%) - ${h}px)` : `calc(100% - ${h}px)`,
+          bottom: 0,
         }}
       />
     );
@@ -393,7 +297,7 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
           width: w,
           height: h,
           [side === "l" ? "left" : "right"]: offset,
-          top: side === "l" ? "calc(var(--stage-h, 200%) / 2)" : "calc(100% - var(--stage-h, 200%) / 2)",
+          top: "50%",
           maskImage: mask,
           WebkitMaskImage: mask,
         }}
@@ -410,7 +314,7 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
         width: size,
         height: size,
         [side === "l" ? "left" : "right"]: -size / 2,
-        top: side === "l" ? "calc(var(--stage-h, 200%) / 2)" : "calc(100% - var(--stage-h, 200%) / 2)",
+        top: "50%",
       }}
       {...extra}
     />

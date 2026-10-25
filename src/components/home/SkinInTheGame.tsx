@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { FACTS } from "@/lib/site";
 
 const OWN = ["Vlastní portfolio", "Vlastní úvěry", "Vlastní rozhodnutí", "Vlastní riziko"];
@@ -9,7 +9,6 @@ const OWN = ["Vlastní portfolio", "Vlastní úvěry", "Vlastní rozhodnutí", "
 export function SkinInTheGame() {
   return (
     <Section theme="cocoa" ariaLabelledby="skin-title" className="bricks overflow-hidden">
-
       <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-14">
         <Reveal className="order-2 lg:order-1 lg:col-span-5">
           <div className="border border-gold-300/55 p-2">
@@ -27,11 +26,8 @@ export function SkinInTheGame() {
         </Reveal>
 
         <div className="order-1 lg:order-2 lg:col-span-6 lg:col-start-7">
-          <Reveal>
-            <SectionMark index="02">Vlastní investice</SectionMark>
-          </Reveal>
           <Reveal delay={60}>
-            <h2 id="skin-title" className="display display-lg mt-10 max-w-[14ch]">
+            <h2 id="skin-title" className="display display-lg max-w-[14ch]">
               Neučím investory něco, <span className="italic-accent text-gold-300">co sám nedělám.</span>
             </h2>
           </Reveal>

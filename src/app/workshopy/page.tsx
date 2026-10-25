@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { CornerOrnament } from "@/components/engraving/Engraving";
 import { WorkshopTopics } from "@/components/workshops/WorkshopTopics";
 import { formatCzk } from "@/lib/format";
@@ -133,9 +133,6 @@ export default function WorkshopsPage() {
       />
 
       <Section theme="paper" ariaLabelledby="terms-title" className="border-t border-(--line)">
-        <Reveal>
-          <SectionMark index="01">Termíny</SectionMark>
-        </Reveal>
         <h2 id="terms-title" className="sr-only">
           Termíny workshopů
         </h2>
@@ -259,11 +256,8 @@ export default function WorkshopsPage() {
       <Section theme="cocoa" ariaLabelledby="cnb-title" className="overflow-hidden">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <Reveal>
-              <SectionMark index="02">Nová pravidla</SectionMark>
-            </Reveal>
             <Reveal delay={60}>
-              <h2 id="cnb-title" className="display display-md mt-10 max-w-[12ch]">
+              <h2 id="cnb-title" className="display display-md max-w-[12ch]">
                 Co se změnilo <span className="italic-accent text-gold-300">od {CNB_2026.effectiveFrom}</span>
               </h2>
             </Reveal>
@@ -317,11 +311,8 @@ export default function WorkshopsPage() {
       </Section>
 
       <Section theme="paper" ariaLabelledby="program-title">
-        <Reveal>
-          <SectionMark index="03">Program a témata</SectionMark>
-        </Reveal>
         <Reveal delay={60}>
-          <h2 id="program-title" className="display display-md mt-10 max-w-[14ch]">
+          <h2 id="program-title" className="display display-md max-w-[14ch]">
             Dva večery, <span className="italic-accent text-burgundy">dvě úrovně.</span>
           </h2>
         </Reveal>
@@ -360,11 +351,8 @@ export default function WorkshopsPage() {
       <Section theme="ink" ariaLabelledby="ws-faq-title">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
-            <Reveal>
-              <SectionMark index="05">Otázky</SectionMark>
-            </Reveal>
             <Reveal delay={60}>
-              <h2 id="ws-faq-title" className="display display-md mt-10 max-w-[11ch]">
+              <h2 id="ws-faq-title" className="display display-md max-w-[11ch]">
                 Než si <span className="italic-accent text-gold-300">zarezervujete místo.</span>
               </h2>
             </Reveal>

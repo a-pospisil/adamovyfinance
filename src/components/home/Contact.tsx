@@ -1,6 +1,6 @@
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { Guilloche } from "@/components/engraving/Engraving";
 import { EGFIN, SITE } from "@/lib/site";
 
@@ -11,11 +11,7 @@ export function Contact() {
       <Guilloche className="pointer-events-none absolute -left-48 bottom-0 size-[34rem]" opacity={0.12} />
 
       <div className="relative">
-        <Reveal>
-          <SectionMark index="08">Kontakt</SectionMark>
-        </Reveal>
-
-        <div className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-14">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <Reveal delay={60}>
               <h2 id="contact-title" className="display display-lg max-w-[12ch]">
