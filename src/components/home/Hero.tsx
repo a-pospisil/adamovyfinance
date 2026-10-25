@@ -57,7 +57,7 @@ export function Hero() {
       </div>
 
       <div className="container-x relative hidden border-t border-(--line) py-4 lg:block">
-        <MicroStrip text="Adamovy finance · Investice · Hypotéky · Portfolio" repeat={5} />
+        <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={3} />
       </div>
     </section>
   );
