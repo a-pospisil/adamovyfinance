@@ -158,6 +158,10 @@
   }
   .bn-ground--plain::after { content: none; }
 
+  /* Sekce v carouselu vyplní sjednocenou výšku snímku, obsah svisle na střed. */
+  .carousel-slide { display: flex; flex-direction: column; }
+  .carousel-slide > * { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; }
+
   /* Carousel sekcí bez JS: sekce pod sebou, bez navigace. */
   html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; }
   html:not([data-js]) .carousel-sticky { position: static; }
