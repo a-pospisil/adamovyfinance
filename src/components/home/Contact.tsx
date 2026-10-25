@@ -7,7 +7,7 @@ import { EGFIN, SITE } from "@/lib/site";
 /** 8) Kontakt. Otázka místo výzvy k akci a přirozený odkaz na Evergreen Finance. */
 export function Contact() {
   return (
-    <Section theme="cocoa" id="kontakt" ariaLabelledby="contact-title" className="overflow-hidden">
+    <Section theme="cocoa" id="kontakt" ariaLabelledby="contact-title" className="bricks overflow-hidden">
       <Guilloche className="pointer-events-none absolute -left-48 bottom-0 size-[34rem]" opacity={0.12} />
 
       <div className="relative">

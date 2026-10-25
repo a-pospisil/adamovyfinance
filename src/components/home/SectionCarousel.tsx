@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Arrow } from "@/components/ui/Button";
+import { BanknoteRosette, GrandRosette } from "@/components/engraving/Engraving";
 
-export type Slide = { id: string; label: string; content: ReactNode };
+/** `dark`: sekce na tmavém podkladu (ink, cocoa) — rozeta na švu je pak zlatá. */
+export type Slide = { id: string; label: string; content: ReactNode; dark?: boolean };
 
 /** Od této šířky mají všechny sekce stejnou výšku (= stejně dlouhý scroll). */
 const UNIFORM_QUERY = "(min-width: 1024px)";
@@ -86,6 +88,8 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     // Výška pódia z 100svh, ať se na mobilu nehýbe s lištou prohlížeče.
     const stageH = Math.max(320, probe.getBoundingClientRect().height - headerH() - nav.offsetHeight);
     stage.style.height = `${stageH}px`;
+    // Švy se kotví k výšce pódia, aby se půlky rozety a bordury na přechodu potkaly.
+    root.style.setProperty("--stage-h", `${stageH}px`);
     // Sjednocená délka: na desktopu mají všechny sekce výšku nejdelší z nich (obsah na střed),
     // na mobilu by to u krátkých sekcí nechalo prázdné obrazovky, tam vyplní aspoň pódium.
     const panels = panelRefs.current.filter((p): p is HTMLDivElement => !!p);
@@ -236,6 +240,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
               style={{ transform: `translate3d(${i * 100}%, 0, 0)` }}
             >
               {s.content}
+              <Seams dark={s.dark} />
             </div>
           ))}
         </div>
@@ -257,5 +262,23 @@ function NavArrow({ dir, disabled, onClick, label }: { dir: "prev" | "next"; dis
         <Arrow />
       </span>
     </button>
+  );
+}
+
+/**
+ * Švy mezi sekcemi: svislá bordura na obou okrajích a půlka rozety přesně na švu.
+ * Při vodorovném přejezdu se dvě sousední sekce potkají a bordury i rozeta
+ * se složí v jeden celek, takže sekce působí jako jeden pás tisku.
+ */
+function Seams({ dark }: { dark?: boolean }) {
+  const Rosette = dark ? GrandRosette : BanknoteRosette;
+  const rosetteProps = dark ? { tone: "gold" as const, opacity: 0.55 } : { opacity: 0.9 };
+  return (
+    <div aria-hidden="true" className="seams pointer-events-none absolute inset-0 overflow-hidden">
+      <span className="seam seam--l" />
+      <span className="seam seam--r" />
+      <Rosette className="seam-rosette seam-rosette--l hidden lg:block" {...rosetteProps} />
+      <Rosette className="seam-rosette seam-rosette--r hidden lg:block" {...rosetteProps} />
+    </div>
   );
 }

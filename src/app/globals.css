@@ -42,7 +42,7 @@
     --btn-bg: var(--color-ink);
     --btn-fg: var(--color-paper);
     --iris: linear-gradient(100deg, var(--color-brown) 0%, var(--color-burgundy) 30%, var(--color-banknote-green) 62%, var(--color-violet) 100%);
-    --lattice-opacity: 0.2;
+    --lattice-opacity: 0.14;
     --border-band: var(--color-gold);
     color-scheme: light;
   }
@@ -59,7 +59,7 @@
     --btn-bg: var(--color-paper);
     --btn-fg: var(--color-ink);
     --iris: linear-gradient(100deg, var(--color-gold-300) 0%, var(--color-brown-300) 40%, var(--color-paper-300) 70%, var(--color-gold) 100%);
-    --lattice-opacity: 0.13;
+    --lattice-opacity: 0.08;
     --border-band: var(--color-gold-300);
     color-scheme: dark;
   }
@@ -76,7 +76,7 @@
     --btn-bg: var(--color-paper);
     --btn-fg: var(--color-cocoa);
     --iris: linear-gradient(100deg, var(--color-gold-300) 0%, var(--color-brown-300) 40%, var(--color-paper-300) 70%, var(--color-gold) 100%);
-    --lattice-opacity: 0.13;
+    --lattice-opacity: 0.08;
     --border-band: var(--color-gold-300);
     color-scheme: dark;
   }
@@ -158,9 +158,56 @@
   }
   .bn-ground--plain::after { content: none; }
 
+  /* Cihlová vazba: jemná textura tmavých sekcí o nemovitostech a kontaktu. */
+  .bricks::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--gold);
+    opacity: 0.07;
+    -webkit-mask: url("/engraving/bricks-mask.svg") 0 0 / 120px 60px repeat;
+    mask: url("/engraving/bricks-mask.svg") 0 0 / 120px 60px repeat;
+  }
+
+  /* Švy carouselu: svislá bordura na obou okrajích sekce a půlka rozety na švu.
+     Dvě sousední sekce při přejezdu složí bordury i rozetu do jednoho celku. */
+  .seam {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 22px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.5;
+    background: var(--seam-color, var(--color-gold));
+    -webkit-mask: url("/engraving/border-mask-v.svg") 0 0 / 22px 160px repeat-y;
+    mask: url("/engraving/border-mask-v.svg") 0 0 / 22px 160px repeat-y;
+  }
+  /* Odcházející sekce je při přejezdu dočtená dolů, přicházející začíná nahoře:
+     levý šev se kotví k hornímu okraji, pravý k místu, kde začíná poslední výška pódia. */
+  .seam--l { left: 0; }
+  .seam--r {
+    right: 0;
+    -webkit-mask-position: 0 calc(100% - var(--stage-h, 100%));
+    mask-position: 0 calc(100% - var(--stage-h, 100%));
+  }
+  .seam-rosette {
+    position: absolute;
+    top: 50%;
+    width: 220px;
+    height: 220px;
+    z-index: 2;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+  .seam-rosette--l { left: -110px; top: calc(var(--stage-h, 200%) / 2); }
+  .seam-rosette--r { right: -110px; top: calc(100% - var(--stage-h, 200%) / 2); }
+
   /* Sekce v carouselu vyplní sjednocenou výšku snímku, obsah svisle na střed. */
   .carousel-slide { display: flex; flex-direction: column; }
-  .carousel-slide > * { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; }
+  .carousel-slide > :not(.seams) { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; }
 
   /* Carousel sekcí bez JS: sekce pod sebou, bez navigace. */
   html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; }
