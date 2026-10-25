@@ -273,7 +273,6 @@ console.log("bricks-mask.svg, border-mask-v.svg");
     line(`M${x} ${y}L${f(x + r * Math.cos(rad(a0)))} ${f(y + r * Math.sin(rad(a0)))}A${r} ${r} 0 0 ${sweep > 0 ? 1 : 0} ${f(x + r * Math.cos(rad(a1)))} ${f(y + r * Math.sin(rad(a1)))}`, 0.55);
   };
   const winH = (x, y, w) => line(`M${x} ${y - 9}H${x + w}M${x} ${y}H${x + w}M${x} ${y + 9}H${x + w}M${x} ${y - 9}V${y + 9}M${x + w} ${y - 9}V${y + 9}`, 0.55);
-  const winV = (x, y, h) => line(`M${x - 9} ${y}V${y + h}M${x} ${y}V${y + h}M${x + 9} ${y}V${y + h}M${x - 9} ${y}H${x + 9}M${x - 9} ${y + h}H${x + 9}`, 0.55);
   const note = (x, y, tx, ty, s) => { line(`M${x} ${y}L${tx} ${ty}H${tx + (tx > x ? 1 : -1) * 150}`, 0.45); L.push(`<circle cx="${x}" cy="${y}" r="3" fill="#000" stroke="none"/>`); text(tx + (tx > x ? 4 : -4), ty - 6, s, 11, tx > x ? "start" : "end"); };
 
   // rastr listu je zvlášť (plans-grid.svg), aby se opakoval přes celou sekci bez okrajů

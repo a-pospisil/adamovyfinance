@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { GrandRosette } from "@/components/engraving/Engraving";
 import { FACTS } from "@/lib/site";
 
@@ -33,9 +33,6 @@ export function Figures() {
         </Reveal>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <Reveal>
-            <SectionMark index="04">Zkušenost</SectionMark>
-          </Reveal>
           <h2 id="figures-title" className="sr-only">
             Zkušenost v číslech
           </h2>

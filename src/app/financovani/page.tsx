@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { Guilloche } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
@@ -146,11 +146,8 @@ export default function FinancingPage() {
         <Guilloche className="pointer-events-none absolute -right-32 top-10 size-[30rem]" opacity={0.12} />
         <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
-            <Reveal>
-              <SectionMark index="08">Otázky</SectionMark>
-            </Reveal>
             <Reveal delay={60}>
-              <h2 id="faq-title" className="display display-md mt-10 max-w-[12ch]">
+              <h2 id="faq-title" className="display display-md max-w-[12ch]">
                 Na co se investoři <span className="italic-accent text-gold-300">ptají nejčastěji.</span>
               </h2>
             </Reveal>

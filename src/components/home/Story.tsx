@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { Rosette } from "@/components/engraving/Engraving";
 import { EGFIN, FACTS } from "@/lib/site";
 
@@ -17,11 +17,7 @@ const TIMELINE = [
 export function Story() {
   return (
     <Section theme="paper" ariaLabelledby="story-title" className="border-t border-(--line)">
-      <Reveal>
-        <SectionMark index="01">Cesta</SectionMark>
-      </Reveal>
-
-      <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-14">
+      <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-5">
           <Reveal delay={60}>
             <h2 id="story-title" className="display display-lg max-w-[12ch]">

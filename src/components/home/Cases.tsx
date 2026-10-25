@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { FEATURED_CASE } from "@/lib/caseStudies";
 
 /** 7) Jedna případová studie z workshopů: problém, co se změnilo, výsledek. */
@@ -10,8 +10,7 @@ export function Cases() {
     <Section theme="paper" ariaLabelledby="cases-title" className="border-t border-(--line)">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal>
-          <SectionMark index="07">Případová studie</SectionMark>
-          <h2 id="cases-title" className="display display-md mt-8 max-w-[14ch]">
+          <h2 id="cases-title" className="display display-md max-w-[14ch]">
             Stejný klient, stejná banka, <span className="italic-accent text-burgundy">jiná struktura.</span>
           </h2>
         </Reveal>

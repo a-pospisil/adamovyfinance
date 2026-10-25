@@ -1,6 +1,6 @@
 import { Arrow } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { GOOGLE_PROFILE_URL, GOOGLE_RATING, REVIEWS } from "@/lib/reviews";
 
 function Stars() {
@@ -18,8 +18,7 @@ export function Reviews() {
     <Section theme="ink" ariaLabelledby="reviews-title" className="plans overflow-hidden">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal>
-          <SectionMark index="05">Co říkají klienti</SectionMark>
-          <h2 id="reviews-title" className="display display-md mt-8 max-w-[14ch]">
+          <h2 id="reviews-title" className="display display-md max-w-[14ch]">
             Hodnocení <span className="italic-accent text-gold-300">{GOOGLE_RATING.value} z 5</span>
           </h2>
         </Reveal>
@@ -41,10 +40,10 @@ export function Reviews() {
           >
             <Stars />
             <blockquote className="mt-5">
-              <p className="display text-[1.15rem] leading-[1.45] italic-accent">„{r.text}“</p>
+              <p className="display text-[clamp(1.3rem,1.7vw,1.55rem)] leading-[1.5] italic">„{r.text}“</p>
             </blockquote>
             <div className="mt-auto pt-5">
-              <p className="text-[0.95rem]">{r.author}</p>
+              <p className="text-[1.05rem]">{r.author}</p>
               <p className="microtype mt-1.5">Google · Evergreen Finance</p>
             </div>
           </Reveal>

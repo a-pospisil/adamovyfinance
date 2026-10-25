@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { SoldOutStamp } from "@/components/engraving/Engraving";
 import { formatCzk } from "@/lib/format";
 import { FACTS } from "@/lib/site";
@@ -16,11 +16,8 @@ export function Workshop({ now }: { now: Date }) {
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
         <SoldOutStamp className="w-[88%] max-w-[64rem] -rotate-[13deg] opacity-85 mix-blend-multiply" />
       </div>
-      <Reveal>
-        <SectionMark index="06">Workshop</SectionMark>
-      </Reveal>
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-6">
           <Reveal delay={60}>
             <h2 id="ws-title" className="display display-lg max-w-[14ch]">

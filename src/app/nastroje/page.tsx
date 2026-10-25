@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { Section, SectionMark } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
 import { EGFIN } from "@/lib/site";
@@ -47,11 +47,8 @@ export default function ToolsPage() {
       />
 
       <Section theme="paper" ariaLabelledby="calc-title" className="border-t border-(--line)">
-        <Reveal>
-          <SectionMark index="01">Kalkulačka investiční hypotéky</SectionMark>
-        </Reveal>
         <Reveal delay={60}>
-          <h2 id="calc-title" className="display display-md mt-10 max-w-[16ch]">
+          <h2 id="calc-title" className="display display-md max-w-[16ch]">
             Cena, LTV, nájem. <span className="italic-accent text-burgundy">A co z toho zbyde.</span>
           </h2>
         </Reveal>
@@ -61,11 +58,8 @@ export default function ToolsPage() {
       </Section>
 
       <Section theme="ink" ariaLabelledby="egtools-title">
-        <Reveal>
-          <SectionMark index="02">Kalkulačky Evergreen Finance</SectionMark>
-        </Reveal>
         <Reveal delay={60}>
-          <h2 id="egtools-title" className="display display-md mt-10 max-w-[16ch]">
+          <h2 id="egtools-title" className="display display-md max-w-[16ch]">
             Šest kalkulaček, <span className="italic-accent text-gold-300">které používá i můj tým.</span>
           </h2>
         </Reveal>
