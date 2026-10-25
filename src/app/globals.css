@@ -193,17 +193,11 @@
     -webkit-mask-position: 0 calc(100% - var(--stage-h, 100%));
     mask-position: 0 calc(100% - var(--stage-h, 100%));
   }
-  .seam-rosette {
+  .seam-motif {
     position: absolute;
-    top: 50%;
-    width: 220px;
-    height: 220px;
     z-index: 2;
     pointer-events: none;
-    transform: translateY(-50%);
   }
-  .seam-rosette--l { left: -110px; top: calc(var(--stage-h, 200%) / 2); }
-  .seam-rosette--r { right: -110px; top: calc(100% - var(--stage-h, 200%) / 2); }
 
   /* Sekce v carouselu vyplní sjednocenou výšku snímku, obsah svisle na střed. */
   .carousel-slide { display: flex; flex-direction: column; }
@@ -372,4 +366,13 @@
     height: 44px;
     transform: translateY(-50%);
   }
+}
+
+/* Uvnitř carouselu se obsah neodhaluje: pohyb dělá sám přejezd sekcí.
+   Animace odhalení by při vjezdu sekce posunula obsah o 14 px (viditelný poskok).
+   Mimo vrstvy, aby přebila utilitu `reveal`. */
+[data-js="1"] .carousel-slide [data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
