@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { CornerOrnament, MicroStrip } from "@/components/engraving/Engraving";
+import { CornerOrnament } from "@/components/engraving/Engraving";
 import { WorkshopTopics } from "@/components/workshops/WorkshopTopics";
 import { formatCzk } from "@/lib/format";
 import { pageMetadata } from "@/lib/metadata";
@@ -385,7 +385,6 @@ export default function WorkshopsPage() {
                 </div>
               ))}
             </dl>
-            <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={2} className="mt-10" />
           </Reveal>
         </div>
       </Section>

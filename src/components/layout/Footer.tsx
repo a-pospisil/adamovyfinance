@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CornerOrnament, Guilloche, MicroStrip } from "@/components/engraving/Engraving";
+import { CornerOrnament, Guilloche } from "@/components/engraving/Engraving";
 import { DEEP_PAGES, EGFIN, NAV, SITE } from "@/lib/site";
 
 /** Ikony sociálních sítí (Simple Icons, CC0). Facebook vede na stránku Evergreen Finance. */
@@ -30,8 +30,6 @@ export function Footer() {
       <CornerOrnament className="pointer-events-none absolute left-6 top-6 size-10" opacity={0.35} />
 
       <div className="container-x relative py-16 lg:py-20">
-        <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={3} className="mb-12 hidden sm:block" />
-
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <p className="display display-md max-w-sm">
