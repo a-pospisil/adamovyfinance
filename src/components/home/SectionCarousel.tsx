@@ -5,6 +5,8 @@ import { Arrow } from "@/components/ui/Button";
 
 export type Slide = { id: string; label: string; content: ReactNode };
 
+/** Od této šířky mají všechny sekce stejnou výšku (= stejně dlouhý scroll). */
+const UNIFORM_QUERY = "(min-width: 1024px)";
 /** Kolik výšky „pódia“ se odscrolluje během jednoho vodorovného přejezdu. */
 const TRANSITION_RATIO = 0.9;
 
@@ -84,7 +86,14 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     // Výška pódia z 100svh, ať se na mobilu nehýbe s lištou prohlížeče.
     const stageH = Math.max(320, probe.getBoundingClientRect().height - headerH() - nav.offsetHeight);
     stage.style.height = `${stageH}px`;
-    const reads = panelRefs.current.map((p) => Math.max(0, (p?.offsetHeight ?? 0) - stageH));
+    // Sjednocená délka: na desktopu mají všechny sekce výšku nejdelší z nich (obsah na střed),
+    // na mobilu by to u krátkých sekcí nechalo prázdné obrazovky, tam vyplní aspoň pódium.
+    const panels = panelRefs.current.filter((p): p is HTMLDivElement => !!p);
+    panels.forEach((p) => (p.style.minHeight = ""));
+    const natural = panels.map((p) => p.offsetHeight);
+    const uniform = window.matchMedia(UNIFORM_QUERY).matches ? Math.max(stageH, ...natural) : stageH;
+    panels.forEach((p) => (p.style.minHeight = `${uniform}px`));
+    const reads = panels.map((p) => Math.max(0, p.offsetHeight - stageH));
     const transition = Math.round(stageH * TRANSITION_RATIO);
     const starts = reads.map((_, i) => reads.slice(0, i).reduce((a, r) => a + r + transition, 0));
     const total = starts[count - 1] + reads[count - 1];
