@@ -170,3 +170,81 @@ for (const [name, content] of files) {
   console.log(name, `${Math.round(content.length / 1024)} KB`);
 }
 
+/* ---------- Bankovková rozeta v duhovém tisku ----------
+   Vícebarevná rozeta jako v hlubotisku: hvězda, soustružená síť, dvě vrstvy
+   okvětí, kosočtverečný copánek, vlnový pás a perlovec. Linky pod 0,2 px. */
+{
+  const r1 = (n) => Number(n.toFixed(1));
+  const path = (fn, steps, close = true) => {
+    const p = [];
+    for (let i = 0; i <= steps; i++) {
+      const [x, y] = fn((i / steps) * Math.PI * 2);
+      p.push(`${r1(x)} ${r1(y)}`);
+    }
+    return `M${p.join("L")}${close ? "Z" : ""}`;
+  };
+  const out = [];
+  const add = (d, color, w) => out.push(`<path d="${d}" stroke="${color}" stroke-width="${w}"/>`);
+  const C = { violet: "#66506b", brown: "#80533f", burgundy: "#633c48", green: "#536b58", gold: "#9c7a44" };
+
+  // 1) střed: jemná epitrochoida (hvězda)
+  for (let k = 0; k < 3; k++) {
+    const R = 22, r = 2.2, d = 9 + k * 2.2, kk = (R + r) / r;
+    add(path((t) => [(R + r) * Math.cos(t) - d * Math.cos(kk * t), (R + r) * Math.sin(t) - d * Math.sin(kk * t)], 1400), C.burgundy, 0.18);
+  }
+  // 2) prstenec hypotrochoid (soustružená síť)
+  for (let k = 0; k < 4; k++) {
+    const R = 60, r = 60 / 23, d = 22 + k * 1.6, kk = (R - r) / r, rot = (k * Math.PI) / 46;
+    add(path((t) => { const x = (R - r) * Math.cos(t) + d * Math.cos(kk * t), y = (R - r) * Math.sin(t) - d * Math.sin(kk * t); return [x * Math.cos(rot) - y * Math.sin(rot), x * Math.sin(rot) + y * Math.cos(rot)]; }, 1500), k % 2 ? C.violet : C.brown, 0.16);
+  }
+  // 3) okvětí: dvě vrstvy vnořených lístků (16 + 16 pootočených), duhový přechod barev
+  const petalCols = [C.brown, C.burgundy, C.violet, C.violet, C.green, C.brown, C.burgundy, C.violet, C.violet, C.green];
+  for (let k = 0; k < 10; k++) {
+    const s = 1 - k * 0.045;
+    add(path((t) => { const r = s * (66 + 46 * Math.abs(Math.sin(8 * t)) ** 0.75); return [r * Math.cos(t), r * Math.sin(t)]; }, 900), petalCols[k], 0.17);
+    add(path((t) => { const tt = t + Math.PI / 16, r = s * (58 + 30 * Math.abs(Math.sin(8 * t)) ** 0.75); return [r * Math.cos(tt), r * Math.sin(tt)]; }, 900), petalCols[(k + 3) % 10], 0.14);
+  }
+  // 4) copánek: 10 modulovaných kružnic, kosočtverce
+  for (let k = 0; k < 10; k++) {
+    const ph = (k / 10) * Math.PI;
+    add(path((t) => { const r = 138 + 10 * Math.sin(36 * t + ph); return [r * Math.cos(t), r * Math.sin(t)]; }, 1100), k % 2 ? C.violet : C.brown, 0.16);
+    add(path((t) => { const r = 138 + 10 * Math.sin(-36 * t + ph); return [r * Math.cos(t), r * Math.sin(t)]; }, 1100), k % 2 ? C.burgundy : C.violet, 0.14);
+  }
+  // 5) vnější vlnový pás: dvě protiběžné rodiny
+  for (let k = 0; k < 9; k++) {
+    const ph = (k / 9) * Math.PI;
+    add(path((t) => { const r = 168 + 9 * Math.sin(30 * t + ph) * Math.cos(6 * t); return [r * Math.cos(t), r * Math.sin(t)]; }, 1200), C.violet, 0.13);
+    add(path((t) => { const r = 168 + 9 * Math.sin(-30 * t + ph) * Math.cos(6 * t); return [r * Math.cos(t), r * Math.sin(t)]; }, 1200), C.brown, 0.13);
+  }
+  // 6) soustředné linky a perlovec
+  for (const [r, w, c] of [[100, 0.3, C.brown], [126, 0.35, C.burgundy], [124, 0.15, C.brown], [154, 0.3, C.brown], [122, 0.15, C.violet], [182, 0.45, C.burgundy], [186, 0.2, C.brown]]) out.push(`<circle r="${r}" stroke="${c}" stroke-width="${w}"/>`);
+  for (let i = 0; i < 160; i++) { const t = (i / 160) * Math.PI * 2; out.push(`<circle cx="${r1(193 * Math.cos(t))}" cy="${r1(193 * Math.sin(t))}" r="1.6" stroke="${C.brown}" stroke-width="0.25"/>`); }
+  // 7) radiální „soustruh" mezi 100 a 126
+  for (let i = 0; i < 180; i++) { const t = (i / 180) * Math.PI * 2; out.push(`<path d="M${r1(102 * Math.cos(t))} ${r1(102 * Math.sin(t))}L${r1(124 * Math.cos(t + 0.05))} ${r1(124 * Math.sin(t + 0.05))}" stroke="${C.violet}" stroke-width="0.12"/>`); }
+
+  writeFileSync(
+    "public/engraving/rosette-banknote.svg",
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-200 -200 400 400" fill="none" stroke-linecap="round">${out.join("")}</svg>`,
+  );
+  console.log("rosette-banknote.svg");
+}
+
+/* ---------- Cihlová vazba a svislá bordura (masky) ---------- */
+writeFileSync(
+  "public/engraving/bricks-mask.svg",
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" fill="none" stroke="#000" stroke-width="0.8"><path d="M0 0.4H120M0 30.4H120M30 0.4V30.4M90 0.4V30.4M0 30.4V60M60 30.4V60M120 30.4V60"/><path stroke-width="0.35" d="M4 8H24M36 14H70M96 6H114M10 40H40M66 46H100M74 22H86"/></svg>`,
+);
+{
+  const W = 22, H = 160, lines = 7, out = [];
+  for (let k = 0; k < lines; k++) {
+    const phase = (k / lines) * Math.PI * 2, pts = [];
+    for (let i = 0; i <= 120; i++) {
+      const y = (i / 120) * H;
+      pts.push(`${Number((W / 2 + (W / 2 - 2) * Math.sin(2 * (y / H) * Math.PI * 2 + phase)).toFixed(1))} ${Number(y.toFixed(1))}`);
+    }
+    out.push(`<path stroke-width="0.4" d="M${pts.join("L")}"/>`);
+  }
+  out.push(`<path stroke-width="0.6" d="M0.5 0V${H}M${W - 0.5} 0V${H}"/>`);
+  writeFileSync("public/engraving/border-mask-v.svg", svg(`0 0 ${W} ${H}`, out.join(""), "#000"));
+}
+console.log("bricks-mask.svg, border-mask-v.svg");

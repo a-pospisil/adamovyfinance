@@ -23,13 +23,13 @@ export default function Home() {
       <SectionCarousel
         slides={[
           { id: "cesta", label: "Cesta", content: <Story /> },
-          { id: "investice", label: "Vlastní investice", content: <SkinInTheGame /> },
+          { id: "investice", label: "Vlastní investice", content: <SkinInTheGame />, dark: true },
           { id: "jak-premyslim", label: "Jak přemýšlím", content: <Philosophy /> },
           { id: "zkusenost", label: "Zkušenost", content: <Figures /> },
-          { id: "recenze", label: "Co říkají klienti", content: <Reviews /> },
+          { id: "recenze", label: "Co říkají klienti", content: <Reviews />, dark: true },
           { id: "workshop", label: "Workshop", content: <Workshop now={now} /> },
           { id: "pripadova-studie", label: "Případová studie", content: <Cases /> },
-          { id: "kontakt-sekce", label: "Kontakt", content: <Contact /> },
+          { id: "kontakt-sekce", label: "Kontakt", content: <Contact />, dark: true },
         ]}
       />
     </main>

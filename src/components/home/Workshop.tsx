@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
@@ -5,7 +6,7 @@ import { formatCzk } from "@/lib/format";
 import { FACTS } from "@/lib/site";
 import { bundleStatus, formatDayMonth, formatWorkshopDate, workshopStatus, WORKSHOPS } from "@/lib/workshops";
 
-/** 6) Workshop. Pokračování příběhu, ne další služba. */
+/** 6) Workshop. Pokračování příběhu, ne další služba; vpravo fotka. */
 export function Workshop({ now }: { now: Date }) {
   const bundle = bundleStatus(now);
   return (
@@ -28,10 +29,8 @@ export function Workshop({ now }: { now: Date }) {
               {FACTS.workshopAlumni} absolventů.
             </p>
           </Reveal>
-        </div>
 
-        <div className="lg:col-span-5 lg:col-start-8">
-          <ol className="border-t border-(--line-strong)">
+          <ol className="mt-10 border-t border-(--line-strong)">
             {WORKSHOPS.map((w, i) => {
               const status = workshopStatus(w, now);
               const when = formatWorkshopDate(w);
@@ -61,6 +60,18 @@ export function Workshop({ now }: { now: Date }) {
             <Button href="/workshopy">Chci na workshop</Button>
           </Reveal>
         </div>
+
+        <Reveal className="lg:col-span-5 lg:col-start-8 lg:self-center" delay={100}>
+          <div className="relative aspect-[4/5] overflow-hidden">
+            <Image
+              src="/images/adam-seated.jpg"
+              alt="Adam Pospíšil sedí v křesle"
+              fill
+              sizes="(max-width: 1024px) 100vw, 36vw"
+              className="object-cover object-[50%_30%]"
+            />
+          </div>
+        </Reveal>
       </div>
     </Section>
   );

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { Guilloche } from "@/components/engraving/Engraving";
+import { Townhouse } from "@/components/engraving/Engraving";
 import { FACTS } from "@/lib/site";
 
 const OWN = ["Vlastní portfolio", "Vlastní úvěry", "Vlastní rozhodnutí", "Vlastní riziko"];
@@ -9,19 +9,22 @@ const OWN = ["Vlastní portfolio", "Vlastní úvěry", "Vlastní rozhodnutí", "
 /** 2) Vlastní investice. Osobní rovina dřív než odbornost. */
 export function SkinInTheGame() {
   return (
-    <Section theme="cocoa" ariaLabelledby="skin-title" className="overflow-hidden">
-      <Guilloche className="pointer-events-none absolute -right-44 top-1/2 size-[36rem] -translate-y-1/2" opacity={0.12} />
+    <Section theme="cocoa" ariaLabelledby="skin-title" className="bricks overflow-hidden">
+      {/* Rytina činžovního domu: vlastní nemovitosti, ne ilustrace. */}
+      <Townhouse className="pointer-events-none absolute -bottom-5 right-[4%] hidden w-[26rem] text-gold-300 opacity-35 md:block" />
 
       <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-14">
         <Reveal className="order-2 lg:order-1 lg:col-span-5">
-          <div className="relative aspect-[4/5] overflow-hidden">
-            <Image
-              src="/images/adam-portrait.jpg"
-              alt="Adam Pospíšil, zakladatel Evergreen Finance"
-              fill
-              sizes="(max-width: 1024px) 100vw, 38vw"
-              className="object-cover object-[52%_16%]"
-            />
+          <div className="border border-gold-300/55 p-2">
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <Image
+                src="/images/adam-portrait.jpg"
+                alt="Adam Pospíšil, zakladatel Evergreen Finance"
+                fill
+                sizes="(max-width: 1024px) 100vw, 38vw"
+                className="object-cover object-[52%_16%]"
+              />
+            </div>
           </div>
           <p className="microtype mt-3">Vlastní portfolio od roku {FACTS.ownPortfolioSince}</p>
         </Reveal>

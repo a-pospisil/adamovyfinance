@@ -99,3 +99,22 @@ export function GrandRosette({ className = "", opacity = 0.2, tone = "brown" }: 
 export function BanknoteGround({ border = true }: { border?: boolean }) {
   return <span aria-hidden="true" className={`bn-ground ${border ? "" : "bn-ground--plain"}`} />;
 }
+
+/** Bankovková rozeta v duhovém tisku (fialová, hnědá, vínová, zelená) — jemné linky jako v hlubotisku. */
+export function BanknoteRosette({ className = "", opacity = 1, style }: Props & { style?: React.CSSProperties }) {
+  return <Motif src="/engraving/rosette-banknote.svg" className={className} opacity={opacity} style={style} />;
+}
+
+/** Rytina pražského činžovního domu s cihlovou bosáží v přízemí. Barvu bere z `currentColor`. */
+export function Townhouse({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 360 280" fill="none" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" aria-hidden="true" className={className}>
+      <path d="M10 276H350M40 276V64H320V276M30 64H330M34 58H326M40 70H320M120 58L180 18L240 58Z" />
+      <ellipse cx="180" cy="44" rx="10" ry="7" />
+      <path d="M40 216H320M40 212H320" />
+      <path strokeWidth="0.45" d="M40 228H320M40 240H320M40 252H320M40 264H320M70 216V228M110 216V228M150 216V228M210 216V228M250 216V228M290 216V228M90 228V240M130 228V240M230 228V240M270 228V240M70 240V252M110 240V252M250 240V252M290 240V252M90 252V264M130 252V264M230 252V264M270 252V264M70 264V276M110 264V276M250 264V276M290 264V276" />
+      <path d="M164 276V246Q180 228 196 246V276M74 84h22v28H74zM112 84h22v28h-22zM226 84h22v28h-22zM264 84h22v28h-22zM169 84h22v28h-22zM74 136h22v28H74zM112 136h22v28h-22zM226 136h22v28h-22zM264 136h22v28h-22zM169 136h22v28h-22z" />
+      <path strokeWidth="0.6" d="M72 84Q85 75 98 84M110 84Q123 75 136 84M224 84Q237 75 250 84M262 84Q275 75 288 84M167 84Q180 74 193 84M70 186H100M108 186H138M222 186H252M260 186H290M165 186H195" />
+    </svg>
+  );
+}

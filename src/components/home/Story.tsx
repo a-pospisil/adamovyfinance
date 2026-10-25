@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
 import { Rosette } from "@/components/engraving/Engraving";
@@ -47,6 +48,17 @@ export function Story() {
                 </a>
                 , kterou jsem v roce 2018 založil.
               </p>
+            </div>
+          </Reveal>
+          <Reveal delay={160} className="mt-10">
+            <div className="relative aspect-[3/2] overflow-hidden">
+              <Image
+                src="/images/adam-desk.jpg"
+                alt="Adam Pospíšil při práci u stolu"
+                fill
+                sizes="(max-width: 1024px) 100vw, 36vw"
+                className="object-cover object-[60%_40%]"
+              />
             </div>
           </Reveal>
         </div>
