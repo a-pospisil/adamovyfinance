@@ -92,7 +92,6 @@ export default function WorkshopsPage() {
 
       <PageHero
         label="Workshop Adama Pospíšila · Praha · dvě úrovně"
-        numeral="04"
         title={
           <>
             Financování investičních <span className="italic-accent text-burgundy">nemovitostí.</span>
