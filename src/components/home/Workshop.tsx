@@ -58,7 +58,7 @@ export function Workshop({ now }: { now: Date }) {
               </p>
             </Reveal>
           )}
-          <Reveal delay={140} className="relative z-20 mt-8">
+          <Reveal delay={140} className="mt-8">
             <Button href="/workshopy">Chci na workshop</Button>
           </Reveal>
         </div>
