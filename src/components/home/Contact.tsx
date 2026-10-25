@@ -4,7 +4,7 @@ import { Section, SectionMark } from "@/components/ui/Section";
 import { Guilloche } from "@/components/engraving/Engraving";
 import { EGFIN, SITE } from "@/lib/site";
 
-/** 09 — Kontakt. Otázka místo výzvy k akci a přirozený odkaz na Evergreen Finance. */
+/** 8) Kontakt. Otázka místo výzvy k akci a přirozený odkaz na Evergreen Finance. */
 export function Contact() {
   return (
     <Section theme="cocoa" id="kontakt" ariaLabelledby="contact-title" className="overflow-hidden">
@@ -12,7 +12,7 @@ export function Contact() {
 
       <div className="relative">
         <Reveal>
-          <SectionMark index="09">Kontakt</SectionMark>
+          <SectionMark index="08">Kontakt</SectionMark>
         </Reveal>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-14">

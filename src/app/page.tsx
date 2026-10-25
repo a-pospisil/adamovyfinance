@@ -7,6 +7,7 @@ import { Reviews } from "@/components/home/Reviews";
 import { Workshop } from "@/components/home/Workshop";
 import { Cases } from "@/components/home/Cases";
 import { Contact } from "@/components/home/Contact";
+import { SectionCarousel } from "@/components/home/SectionCarousel";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { profilePageSchema } from "@/lib/schema";
 
@@ -19,14 +20,18 @@ export default function Home() {
     <main>
       <JsonLd data={profilePageSchema()} />
       <Hero />
-      <Story />
-      <SkinInTheGame />
-      <Philosophy />
-      <Figures />
-      <Reviews />
-      <Workshop now={now} />
-      <Cases />
-      <Contact />
+      <SectionCarousel
+        slides={[
+          { id: "cesta", label: "Cesta", content: <Story /> },
+          { id: "investice", label: "Vlastní investice", content: <SkinInTheGame /> },
+          { id: "jak-premyslim", label: "Jak přemýšlím", content: <Philosophy /> },
+          { id: "zkusenost", label: "Zkušenost", content: <Figures /> },
+          { id: "recenze", label: "Co říkají klienti", content: <Reviews /> },
+          { id: "workshop", label: "Workshop", content: <Workshop now={now} /> },
+          { id: "pripadova-studie", label: "Případová studie", content: <Cases /> },
+          { id: "kontakt-sekce", label: "Kontakt", content: <Contact /> },
+        ]}
+      />
     </main>
   );
 }

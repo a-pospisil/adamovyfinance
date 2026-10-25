@@ -12,13 +12,13 @@ function Stars() {
   );
 }
 
-/** 06 — Co říkají klienti. Skutečné recenze z veřejného profilu na Google. */
+/** 5) Co říkají klienti. Skutečné recenze z veřejného profilu na Google. */
 export function Reviews() {
   return (
     <Section theme="ink" ariaLabelledby="reviews-title">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <Reveal>
-          <SectionMark index="06">Co říkají klienti</SectionMark>
+          <SectionMark index="05">Co říkají klienti</SectionMark>
           <h2 id="reviews-title" className="display display-md mt-8 max-w-[14ch]">
             Hodnocení <span className="italic-accent text-gold-300">{GOOGLE_RATING.value} z 5</span>
           </h2>

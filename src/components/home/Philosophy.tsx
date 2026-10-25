@@ -9,15 +9,15 @@ const PRINCIPLES = [
   "Portfolio se financuje jako celek, ne po jednom úvěru.",
 ];
 
-/** 04 — Jak přemýšlím. Značkové tvrzení a čtyři věty, nic víc. */
+/** 3) Jak přemýšlím. Značkové tvrzení a čtyři věty, nic víc. */
 export function Philosophy() {
   return (
     <Section theme="paper" ariaLabelledby="phil-title" className="overflow-hidden">
-      <Numeral value="04" className="pointer-events-none absolute -right-6 top-10 text-[16rem] leading-none sm:text-[22rem]" tone="brown" opacity={0.05} />
+      <Numeral value="03" className="pointer-events-none absolute -right-6 top-10 text-[16rem] leading-none sm:text-[22rem]" tone="brown" opacity={0.05} />
 
       <div className="relative">
         <Reveal>
-          <SectionMark index="04">Jak přemýšlím</SectionMark>
+          <SectionMark index="03">Jak přemýšlím</SectionMark>
         </Reveal>
 
         <Reveal delay={60}>

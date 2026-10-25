@@ -5,13 +5,13 @@ import { formatCzk } from "@/lib/format";
 import { FACTS } from "@/lib/site";
 import { bundleStatus, formatDayMonth, formatWorkshopDate, workshopStatus, WORKSHOPS } from "@/lib/workshops";
 
-/** 07 — Workshop. Pokračování příběhu, ne další služba. */
+/** 6) Workshop. Pokračování příběhu, ne další služba. */
 export function Workshop({ now }: { now: Date }) {
   const bundle = bundleStatus(now);
   return (
     <Section theme="paper" ariaLabelledby="ws-title" className="border-t border-(--line)">
       <Reveal>
-        <SectionMark index="07">Workshop</SectionMark>
+        <SectionMark index="06">Workshop</SectionMark>
       </Reveal>
 
       <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-14">
