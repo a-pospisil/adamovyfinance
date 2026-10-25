@@ -373,3 +373,12 @@
     transform: translateY(-50%);
   }
 }
+
+/* Uvnitř carouselu se obsah neodhaluje: pohyb dělá sám přejezd sekcí.
+   Animace odhalení by při vjezdu sekce posunula obsah o 14 px (viditelný poskok).
+   Mimo vrstvy, aby přebila utilitu `reveal`. */
+[data-js="1"] .carousel-slide [data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}

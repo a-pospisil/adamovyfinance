@@ -14,8 +14,8 @@ export function Hero() {
         <div className="absolute inset-y-0 right-[3.5%] hidden w-16 bg-[linear-gradient(180deg,rgb(212_182_134/0)_0%,rgb(212_182_134/0.38)_18%,rgb(102_80_107/0.22)_42%,rgb(83_107_88/0.2)_62%,rgb(212_182_134/0.36)_82%,rgb(212_182_134/0)_100%)] md:block" />
       </div>
 
-      <div className="container-x relative grid min-h-[100svh] items-end gap-12 pb-20 pt-28 sm:pt-32 lg:grid-cols-12 lg:gap-14 lg:pb-24 lg:pt-36">
-        <div className="flex flex-col gap-8 lg:col-span-7 lg:pb-10">
+      <div className="container-x relative grid items-center gap-12 pb-16 pt-28 sm:pt-32 lg:grid-cols-12 lg:gap-14 lg:pb-20 lg:pt-32">
+        <div className="flex flex-col gap-8 lg:col-span-7">
           <p className="display text-[1.25rem] tracking-[0.08em] text-brown [font-variant:small-caps]">
             financování investičních nemovitostí · praha
           </p>
