@@ -14,7 +14,7 @@ export function Workshop({ now }: { now: Date }) {
     <Section theme="paper" ariaLabelledby="ws-title" className="border-t border-(--line)">
       {/* Razítko přes celou sekci, otištěné našikmo jako rukou. */}
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden">
-        <SoldOutStamp className="w-[96%] max-w-none translate-y-[19%] -rotate-[8deg] opacity-85 mix-blend-multiply" />
+        <SoldOutStamp className="w-[96%] max-w-none translate-y-[16%] -rotate-[8deg] opacity-85 mix-blend-multiply" />
       </div>
 
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
