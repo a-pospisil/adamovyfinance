@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { CornerOrnament, Guilloche, MicroStrip, Numeral, WaveField } from "@/components/engraving/Engraving";
+import { BanknoteGround, CornerOrnament, GrandRosette, MicroStrip, WaveField } from "@/components/engraving/Engraving";
 
-/** 01 — Adam. Nejdřív člověk: jméno, tvář, jedna věta o tom, co dělá. */
+/** Úvod — Adam. Nejdřív člověk: jméno, tvář, jedna věta o tom, co dělá. */
 export function Hero() {
   return (
-    <section data-theme="paper" aria-labelledby="hero-title" className="themed relative overflow-hidden">
+    <section data-theme="paper" aria-labelledby="hero-title" className="themed relative isolate overflow-hidden">
+      <BanknoteGround border={false} />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <WaveField className="absolute inset-0 h-full w-full" tone="brown" opacity={0.07} />
-        <Guilloche className="absolute -left-40 top-1/2 size-[34rem] -translate-y-1/2 lg:-left-52 lg:size-[44rem]" opacity={0.16} />
-        <Numeral value="01" className="absolute -left-4 bottom-8 text-[16rem] leading-none lg:text-[22rem]" tone="brown" opacity={0.05} />
+        <WaveField className="absolute inset-0 h-full w-full" tone="brown" opacity={0.06} />
+        <GrandRosette className="absolute -left-[19rem] top-1/2 size-[38rem] -translate-y-1/2 lg:-left-[26rem] lg:size-[52rem]" opacity={0.26} />
       </div>
 
       <div className="container-x relative grid min-h-[100svh] items-center gap-12 pb-16 pt-24 sm:pt-28 lg:grid-cols-12 lg:gap-10 lg:pb-20 lg:pt-28">
@@ -57,7 +57,7 @@ export function Hero() {
       </div>
 
       <div className="container-x relative hidden border-t border-(--line) py-4 lg:block">
-        <MicroStrip text="Adamovy finance · Investice · Hypotéky · Portfolio" repeat={5} />
+        <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={3} />
       </div>
     </section>
   );

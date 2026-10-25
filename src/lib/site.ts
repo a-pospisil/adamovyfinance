@@ -45,6 +45,7 @@ export const EGFIN = {
   workshopBeginners: "https://www.egfin.cz/workshopy/zacatecnici",
   workshopAdvanced: "https://www.egfin.cz/workshopy/pokrocile",
   linkedin: "https://www.linkedin.com/company/71705854/",
+  facebook: "https://www.facebook.com/evergreenfin/",
 } as const;
 
 /**

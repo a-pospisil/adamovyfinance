@@ -11,12 +11,12 @@ const TIMELINE = [
   { year: "Dnes", title: "Investoři a workshopy", text: "Stavím financování investorům, kteří nechtějí jednu nemovitost, ale portfolio. A učím je to i na workshopech." },
 ];
 
-/** 02 — Cesta. Od hypoték k investičním portfoliím, vyprávěné v první osobě. */
+/** 1) Cesta. Od hypoték k investičním portfoliím, vyprávěné v první osobě. */
 export function Story() {
   return (
     <Section theme="paper" ariaLabelledby="story-title" className="border-t border-(--line)">
       <Reveal>
-        <SectionMark index="02">Cesta</SectionMark>
+        <SectionMark index="01">Cesta</SectionMark>
       </Reveal>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-14">

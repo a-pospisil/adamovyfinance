@@ -41,6 +41,9 @@
     --gold: var(--color-gold);
     --btn-bg: var(--color-ink);
     --btn-fg: var(--color-paper);
+    --iris: linear-gradient(100deg, var(--color-brown) 0%, var(--color-burgundy) 30%, var(--color-banknote-green) 62%, var(--color-violet) 100%);
+    --lattice-opacity: 0.2;
+    --border-band: var(--color-gold);
     color-scheme: light;
   }
   [data-theme="ink"] {
@@ -55,6 +58,9 @@
     --gold: var(--color-gold-300);
     --btn-bg: var(--color-paper);
     --btn-fg: var(--color-ink);
+    --iris: linear-gradient(100deg, var(--color-gold-300) 0%, var(--color-brown-300) 40%, var(--color-paper-300) 70%, var(--color-gold) 100%);
+    --lattice-opacity: 0.13;
+    --border-band: var(--color-gold-300);
     color-scheme: dark;
   }
   [data-theme="cocoa"] {
@@ -69,6 +75,9 @@
     --gold: var(--color-gold-300);
     --btn-bg: var(--color-paper);
     --btn-fg: var(--color-cocoa);
+    --iris: linear-gradient(100deg, var(--color-gold-300) 0%, var(--color-brown-300) 40%, var(--color-paper-300) 70%, var(--color-gold) 100%);
+    --lattice-opacity: 0.13;
+    --border-band: var(--color-gold-300);
     color-scheme: dark;
   }
 
@@ -114,6 +123,45 @@
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
   button, input, select, textarea { font: inherit; color: inherit; }
+}
+
+/* ---------- Bankovkový tisk ----------
+   Podtisk sekce: ochranná síť (guilloché vlny) obarvená duhovým tiskem — barevný
+   přechod se maskuje tvarem sítě, takže linky plynule mění barvu jako na bankovce.
+   Nahoře lemová bordura. Vrstva leží pod obsahem (z-index -1 v izolované sekci). */
+@layer components {
+  .bn-ground {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bn-ground::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--iris);
+    opacity: var(--lattice-opacity);
+    -webkit-mask: url("/engraving/lattice-mask.svg") 0 0 / 240px 96px repeat;
+    mask: url("/engraving/lattice-mask.svg") 0 0 / 240px 96px repeat;
+  }
+  .bn-ground::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 22px;
+    background: var(--border-band);
+    opacity: 0.5;
+    -webkit-mask: url("/engraving/border-mask.svg") 0 0 / 160px 22px repeat-x;
+    mask: url("/engraving/border-mask.svg") 0 0 / 160px 22px repeat-x;
+  }
+  .bn-ground--plain::after { content: none; }
+
+  /* Carousel sekcí bez JS: sekce pod sebou, bez navigace. */
+  html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; }
+  html:not([data-js]) .carousel-sticky { position: static; }
+  html:not([data-js]) .carousel-nav { display: none; }
 }
 
 /* ---------- Utilities ---------- */

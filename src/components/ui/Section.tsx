@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BanknoteGround } from "@/components/engraving/Engraving";
 
 type Props = {
   id?: string;
@@ -10,7 +11,7 @@ type Props = {
   ariaLabelledby?: string;
 };
 
-/** Sekce webu. Barvy dědí potomci přes --bg/--fg/--line/--accent. */
+/** Sekce webu s bankovkovým podtiskem. Barvy dědí potomci přes --bg/--fg/--line/--accent. */
 export function Section({
   id,
   theme = "paper",
@@ -25,8 +26,9 @@ export function Section({
       id={id}
       data-theme={theme}
       aria-labelledby={ariaLabelledby}
-      className={`themed relative ${padded ? "section-y" : ""} ${className}`}
+      className={`themed relative isolate ${padded ? "section-y" : ""} ${className}`}
     >
+      <BanknoteGround />
       <div className="container-x">{children}</div>
     </Tag>
   );

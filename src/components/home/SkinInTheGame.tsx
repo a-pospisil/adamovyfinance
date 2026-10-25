@@ -6,7 +6,7 @@ import { FACTS } from "@/lib/site";
 
 const OWN = ["Vlastní portfolio", "Vlastní úvěry", "Vlastní rozhodnutí", "Vlastní riziko"];
 
-/** 03 — Vlastní investice. Osobní rovina dřív než odbornost. */
+/** 2) Vlastní investice. Osobní rovina dřív než odbornost. */
 export function SkinInTheGame() {
   return (
     <Section theme="cocoa" ariaLabelledby="skin-title" className="overflow-hidden">
@@ -28,7 +28,7 @@ export function SkinInTheGame() {
 
         <div className="order-1 lg:order-2 lg:col-span-6 lg:col-start-7">
           <Reveal>
-            <SectionMark index="03">Vlastní investice</SectionMark>
+            <SectionMark index="02">Vlastní investice</SectionMark>
           </Reveal>
           <Reveal delay={60}>
             <h2 id="skin-title" className="display display-lg mt-10 max-w-[14ch]">

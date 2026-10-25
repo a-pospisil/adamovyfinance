@@ -66,7 +66,98 @@ const cornerBody =
   `<path stroke-width="0.45" d="M12 12 Q20 12 22 20 Q24 28 32 30"/>` +
   `<circle cx="12" cy="12" r="2.4" stroke-width="0.5"/>`;
 
+/* ---------- Bankovkový tisk ---------- */
+
+/** Prstenec z modulovaných kružnic (r = R + A·sin(nθ + φ)) — „copánek“ rozety bankovky. */
+function braid(R, A, n, lines, spread, steps = 720) {
+  return Array.from({ length: lines }, (_, k) => {
+    const phase = (k / lines) * spread;
+    const pts = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * Math.PI * 2;
+      const r = R + A * Math.sin(n * t + phase);
+      pts.push(`${round(r * Math.cos(t))} ${round(r * Math.sin(t))}`);
+    }
+    return `M${pts.join("L")}Z`;
+  });
+}
+
+/** Okvětní lístky: r = R0 + A·|sin(nθ/2)|^p, několik soustředných obrysů. */
+function petals(R0, A, n, lines, gap, power = 0.7, steps = 900) {
+  return Array.from({ length: lines }, (_, k) => {
+    const pts = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * Math.PI * 2;
+      const r = R0 - k * gap + (A - k * gap * 0.6) * Math.abs(Math.sin((n * t) / 2)) ** power;
+      pts.push(`${round(r * Math.cos(t))} ${round(r * Math.sin(t))}`);
+    }
+    return `M${pts.join("L")}Z`;
+  });
+}
+
+/** Velká rozeta — vrstvená jako na českých bankovkách: hvězda, lístky, copánky, perlovec. */
+function grandRosette() {
+  const p = (d, w) => `<path stroke-width="${w}" d="${d}"/>`;
+  const parts = [
+    p(guilloche(60, 17, 24, 17, 1400), 0.32),
+    ...petals(96, 30, 24, 6, 3.2).map((d) => p(d, 0.32)),
+    ...braid(138, 7, 48, 9, Math.PI * 2).map((d) => p(d, 0.28)),
+    ...braid(170, 10, 30, 7, Math.PI).map((d) => p(d, 0.3)),
+    p(rosette(150, 4, 9, 4, 2600), 0.22),
+    ...braid(206, 5, 96, 5, Math.PI * 2, 1100).map((d) => p(d, 0.26)),
+    `<circle r="58" stroke-width="0.5"/><circle r="186" stroke-width="0.45"/><circle r="214" stroke-width="0.6"/><circle r="218" stroke-width="0.3"/>`,
+    // perlovec po obvodu
+    Array.from({ length: 120 }, (_, i) => {
+      const t = (i / 120) * Math.PI * 2;
+      return `<circle cx="${round(226 * Math.cos(t))}" cy="${round(226 * Math.sin(t))}" r="2.2" stroke-width="0.35"/>`;
+    }).join(""),
+  ];
+  return parts.join("");
+}
+
+/**
+ * Podtisk (ochranná síť) jako dlaždice: dvě rodiny jemných vln se kříží a vytváří moaré.
+ * Perioda vln = šířka dlaždice a rozestup řádků dělí výšku, takže se dlaždice napojuje beze švu.
+ */
+function lattice(W, H, gap, amp) {
+  const lines = [];
+  for (const dir of [1, -1]) {
+    for (let y0 = -2 * gap; y0 <= H + 2 * gap; y0 += gap) {
+      const pts = [];
+      for (let i = 0; i <= 96; i++) {
+        const x = (i / 96) * W;
+        const p = (x / W) * Math.PI * 2;
+        pts.push(`${round(x)} ${round(y0 + dir * (amp * Math.sin(p) + amp * 0.35 * Math.sin(3 * p + (dir > 0 ? 0 : 1.3))))}`);
+      }
+      lines.push(`<path stroke-width="${dir > 0 ? 0.45 : 0.3}" d="M${pts.join("L")}"/>`);
+    }
+  }
+  return lines.join("");
+}
+
+/** Lemový pás (bordura) — opletené vlny, dlaždice napojitelná vodorovně. */
+function borderBand(W, H, lines) {
+  const out = [];
+  for (let k = 0; k < lines; k++) {
+    const phase = (k / lines) * Math.PI * 2;
+    const pts = [];
+    for (let i = 0; i <= 120; i++) {
+      const x = (i / 120) * W;
+      const p = (x / W) * Math.PI * 2;
+      pts.push(`${round(x)} ${round(H / 2 + (H / 2 - 2) * Math.sin(2 * p + phase))}`);
+    }
+    out.push(`<path stroke-width="0.4" d="M${pts.join("L")}"/>`);
+  }
+  out.push(`<path stroke-width="0.6" d="M0 0.5H${W}M0 ${H - 0.5}H${W}"/>`);
+  return out.join("");
+}
+
 const files = [
+  ["rosette-grand-gold.svg", svg("-232 -232 464 464", grandRosette(), TONES.gold)],
+  ["rosette-grand-brown.svg", svg("-232 -232 464 464", grandRosette(), TONES.brown)],
+  // Masky: barvu dodá CSS (duhový tisk), proto černý tah.
+  ["lattice-mask.svg", svg("0 0 240 96", lattice(240, 96, 6, 9), "#000")],
+  ["border-mask.svg", svg("0 0 160 22", borderBand(160, 22, 7), "#000")],
   ["guilloche-gold.svg", svg("-130 -130 260 260", guillocheBody, TONES.gold)],
   ["waves-brown.svg", svg("0 0 600 400", wavesBody, TONES.brown)],
   ["waves-paper.svg", svg("0 0 600 400", wavesBody, TONES.paper)],
@@ -78,3 +169,4 @@ for (const [name, content] of files) {
   writeFileSync(`public/engraving/${name}`, content);
   console.log(name, `${Math.round(content.length / 1024)} KB`);
 }
+

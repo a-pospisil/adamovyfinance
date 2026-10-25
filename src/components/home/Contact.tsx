@@ -4,7 +4,7 @@ import { Section, SectionMark } from "@/components/ui/Section";
 import { Guilloche } from "@/components/engraving/Engraving";
 import { EGFIN, SITE } from "@/lib/site";
 
-/** 09 — Kontakt. Otázka místo výzvy k akci a přirozený odkaz na Evergreen Finance. */
+/** 8) Kontakt. Otázka místo výzvy k akci a přirozený odkaz na Evergreen Finance. */
 export function Contact() {
   return (
     <Section theme="cocoa" id="kontakt" ariaLabelledby="contact-title" className="overflow-hidden">
@@ -12,7 +12,7 @@ export function Contact() {
 
       <div className="relative">
         <Reveal>
-          <SectionMark index="09">Kontakt</SectionMark>
+          <SectionMark index="08">Kontakt</SectionMark>
         </Reveal>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-14">
@@ -28,42 +28,44 @@ export function Contact() {
                 a v jakém pořadí.
               </p>
             </Reveal>
-            <Reveal delay={180}>
-              <dl className="mt-10 space-y-6 border-t border-(--line) pt-8">
-                <div>
-                  <dt className="label-xs">Telefon / WhatsApp</dt>
-                  <dd className="display mt-1 text-2xl">
-                    <a href={SITE.phoneHref} className="tap">
-                      {SITE.phone}
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-xs">E-mail</dt>
-                  <dd className="mt-1 text-[1.05rem]">
-                    <a href={`mailto:${SITE.email}`} className="tap underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)">
-                      {SITE.email}
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="label-xs">Kde mě najdete</dt>
-                  <dd className="mt-1 max-w-sm text-(--muted)">
-                    Financování řeším ve společnosti{" "}
-                    <a href={EGFIN.url} className="tap text-(--fg) underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)" target="_blank" rel="noopener noreferrer">
-                      Evergreen Finance
-                    </a>
-                    , {SITE.office.street}, {SITE.office.zip} {SITE.office.city}.
-                  </dd>
-                </div>
-              </dl>
-            </Reveal>
           </div>
 
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={140}>
             <ContactForm />
           </Reveal>
         </div>
+
+        {/* Kontakty v jednom řádku pod textem i formulářem. */}
+        <Reveal delay={180}>
+          <dl className="mt-16 grid gap-8 border-t border-(--line) pt-10 text-center md:grid-cols-3 md:items-start md:gap-10">
+            <div>
+              <dt className="label-xs">Telefon / WhatsApp</dt>
+              <dd className="display mt-2 text-2xl">
+                <a href={SITE.phoneHref} className="tap">
+                  {SITE.phone}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="label-xs">E-mail</dt>
+              <dd className="mt-2 text-[1.05rem]">
+                <a href={`mailto:${SITE.email}`} className="tap underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)">
+                  {SITE.email}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="label-xs">Kde mě najdete</dt>
+              <dd className="mx-auto mt-2 max-w-sm text-(--muted)">
+                Financování řeším ve společnosti{" "}
+                <a href={EGFIN.url} className="tap text-(--fg) underline decoration-(--line-strong) underline-offset-4 hover:decoration-(--accent)" target="_blank" rel="noopener noreferrer">
+                  Evergreen Finance
+                </a>
+                , {SITE.office.street}, {SITE.office.zip} {SITE.office.city}.
+              </dd>
+            </div>
+          </dl>
+        </Reveal>
       </div>
     </Section>
   );
