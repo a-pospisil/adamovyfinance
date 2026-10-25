@@ -7,7 +7,21 @@ import { EGFIN, FACTS } from "@/lib/site";
 const TIMELINE = [
   { year: "2010", title: "Začátek ve financích", text: "Šest let v bankách jako prémiový bankéř. Tam jsem se naučil, jak banka počítá a podle čeho rozhoduje." },
   { year: "2016", title: "Komplexní poradenství", text: "Odcházím z banky a začínám klientům radit napříč bankami a produkty." },
-  { year: "2018", title: "Vlastní firma", text: "Zakládám Evergreen Finance. Investice, pojištění, úvěry — zatím všechno." },
+  { year: "2018", title: "Vlastní firma", text: (
+      <>
+        Zakládám{" "}
+        <a
+          href={EGFIN.url}
+          className="text-(--fg) underline decoration-(--line-strong) underline-offset-4 transition-colors hover:decoration-burgundy"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Evergreen Finance
+        </a>
+        . Investice, pojištění, úvěry — zatím všechno.
+      </>
+    ),
+  },
   { year: "2021", title: "Jediná specializace", text: "Místo rozšiřování nabídky zužuji, až zbude jedno: financování investičních nemovitostí." },
   { year: "2022", title: "Vlastní portfolio", text: "Kupuji první investiční nemovitost. Od té doby řeším stejná rozhodnutí jako moji klienti." },
   { year: "Dnes", title: "Investoři a workshopy", text: "Stavím financování investorům, kteří nechtějí jednu nemovitost, ale portfolio. A učím je to i na workshopech." },
@@ -35,15 +49,8 @@ export function Story() {
                 udělá s druhým, třetím a čtvrtým. Většina lidí to zjistí až ve chvíli, kdy jim banka podruhé řekne ne.
               </p>
               <p className="text-(--muted)">
-                Proto jsem od roku {FACTS.specialisationSince} nechal všechno ostatní být a dělám jen financování
-                investičních nemovitostí. Od roku {FACTS.ownPortfolioSince} i pro sebe: stejné banky, stejná pravidla,
-                stejná rozhodnutí. Pracuji ve společnosti{" "}
-                <a
-                  href={EGFIN.url}
-                  className="text-(--fg) underline decoration-(--line-strong) underline-offset-4 transition-colors hover:decoration-burgundy" target="_blank" rel="noopener noreferrer">
-                  Evergreen Finance
-                </a>
-                , kterou jsem v roce 2018 založil.
+                Proto jsem se od roku {FACTS.specialisationSince} začal specializovat na financování investičních
+                nemovitostí. Od roku {FACTS.ownPortfolioSince} i pro sebe: stejné banky, stejná pravidla, stejná rozhodnutí.
               </p>
             </div>
           </Reveal>
