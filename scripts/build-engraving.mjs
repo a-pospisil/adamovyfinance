@@ -6,7 +6,6 @@
  * a dál se bere z cache. Spouští se ručně: npm run engraving
  */
 import { mkdirSync, writeFileSync } from "node:fs";
-import sharp from "sharp";
 
 const round = (n) => Number(n.toFixed(1));
 
@@ -171,23 +170,3 @@ for (const [name, content] of files) {
   console.log(name, `${Math.round(content.length / 1024)} KB`);
 }
 
-/**
- * Vodotisk: portrét převedený na tlumený tónový obraz v oválu, jako vodoznak bankovky.
- * Jas a kontrast jsou stlačené, okraj oválu plynule mizí do průhlednosti.
- */
-const WM = { w: 360, h: 450 };
-const ovalMask = Buffer.from(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${WM.w}" height="${WM.h}"><defs><radialGradient id="g" cx="50%" cy="46%" r="50%"><stop offset="0.62" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><ellipse cx="${WM.w / 2}" cy="${WM.h * 0.47}" rx="${WM.w * 0.48}" ry="${WM.h * 0.47}" fill="url(#g)"/></svg>`,
-);
-await sharp("public/images/adam-portrait.jpg")
-  .extract({ left: 360, top: 150, width: 640, height: 800 })
-  .resize(WM.w, WM.h)
-  .grayscale()
-  .normalise()
-  .linear(0.55, 70)
-  .blur(1.1)
-  .ensureAlpha()
-  .composite([{ input: ovalMask, blend: "dest-in" }])
-  .webp({ quality: 72, alphaQuality: 80 })
-  .toFile("public/engraving/watermark.webp");
-console.log("watermark.webp");

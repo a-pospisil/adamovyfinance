@@ -92,17 +92,6 @@ export function GrandRosette({ className = "", opacity = 0.2, tone = "brown" }: 
   return <Motif src={`/engraving/rosette-grand-${tone}.svg`} className={className} opacity={opacity} />;
 }
 
-/** Vodotisk — tlumený portrét v oválu, jako vodoznak bankovky. Jen na světlém papíře. */
-export function Watermark({ className = "", opacity = 0.42 }: Props) {
-  return (
-    <Motif
-      src="/engraving/watermark.webp"
-      className={`mix-blend-multiply [filter:sepia(0.55)_contrast(0.9)] ${className}`}
-      opacity={opacity}
-    />
-  );
-}
-
 /**
  * Bankovkový podtisk celé sekce: ochranná síť v duhovém tisku a lemová bordura nahoře.
  * Barvy bere z tématu sekce (viz .bn-ground v globals.css).

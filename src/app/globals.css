@@ -160,8 +160,8 @@
 
   /* Carousel sekcí bez JS: sekce pod sebou, bez navigace. */
   html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; }
-  html:not([data-js]) .carousel-nav,
-  html:not([data-js]) .carousel-pager { display: none; }
+  html:not([data-js]) .carousel-sticky { position: static; }
+  html:not([data-js]) .carousel-nav { display: none; }
 }
 
 /* ---------- Utilities ---------- */

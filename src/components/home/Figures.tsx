@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { GrandRosette, Watermark } from "@/components/engraving/Engraving";
+import { GrandRosette } from "@/components/engraving/Engraving";
 import { FACTS } from "@/lib/site";
 
 const FIGURES = [
@@ -14,10 +14,9 @@ const FIGURES = [
 export function Figures() {
   return (
     <Section theme="paper" ariaLabelledby="figures-title" className="overflow-hidden border-t border-(--line)">
-      {/* Jako na bankovce: rozeta a vedle ní prázdné oválné pole s vodotiskem. */}
+      {/* Jako na bankovce: rozeta v pravé části pole. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <GrandRosette tone="gold" className="absolute -bottom-40 right-[18%] hidden size-[30rem] md:block" opacity={0.3} />
-        <Watermark className="absolute -bottom-6 right-[4%] h-64 sm:h-80 lg:h-[24rem]" opacity={0.38} />
       </div>
       <Reveal>
         <SectionMark index="04">Zkušenost</SectionMark>
