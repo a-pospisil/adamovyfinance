@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { Guilloche, MicroStrip, Numeral } from "@/components/engraving/Engraving";
+import { Guilloche, Numeral } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
 import { SITE } from "@/lib/site";
@@ -127,7 +127,6 @@ export default function ContactPage() {
                   </li>
                 ))}
               </ol>
-              <MicroStrip text="Adam Pospíšil · Praha" repeat={3} className="mt-10" />
             </Reveal>
           </div>
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={100}>
