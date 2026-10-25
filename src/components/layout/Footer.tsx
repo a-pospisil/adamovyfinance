@@ -11,7 +11,7 @@ export function Footer() {
       <CornerOrnament className="pointer-events-none absolute left-6 top-6 size-10" opacity={0.35} />
 
       <div className="container-x relative py-16 lg:py-20">
-        <MicroStrip text="Adam Pospíšil · Investiční nemovitosti · Praha" repeat={6} className="mb-12 hidden sm:block" />
+        <MicroStrip text="Adamovy finance · Adam Pospíšil · Investiční nemovitosti · Praha" repeat={6} className="mb-12 hidden sm:block" />
 
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
@@ -21,8 +21,8 @@ export function Footer() {
               <span className="italic-accent text-gold-300">Já vidím portfolio.</span>
             </p>
             <p className="mt-6 max-w-sm text-[0.95rem] text-(--muted)">
-              Adam Pospíšil — financování investičních nemovitostí pro investory. Praha. Financování řeším ve
-              společnosti{" "}
+              <strong className="font-normal text-paper">Adamovy finance</strong> je osobní web Adama Pospíšila —
+              financování investičních nemovitostí pro investory. Praha. Financování řeším ve společnosti{" "}
               <a href={EGFIN.url} className="tap text-paper underline decoration-(--line-strong) underline-offset-4 hover:decoration-gold-300" target="_blank" rel="noopener noreferrer">
                 Evergreen Finance
               </a>
@@ -36,7 +36,7 @@ export function Footer() {
               <ul className="space-y-2.5">
                 <li>
                   <Link href="/" className="tap text-[0.95rem] transition-colors hover:text-gold-300">
-                    Adam Pospíšil
+                    Adamovy finance
                   </Link>
                 </li>
                 {[...NAV, ...DEEP_PAGES].map((item) => (
@@ -82,6 +82,11 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href={SITE.facebook} className="tap transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
+                    Facebook {SITE.facebookHandle}
+                  </a>
+                </li>
+                <li>
                   <a href={SITE.instagram} className="tap transition-colors hover:text-gold-300" target="_blank" rel="noopener noreferrer">
                     Instagram {SITE.instagramHandle}
                   </a>
@@ -101,7 +106,7 @@ export function Footer() {
 
         <div className="mt-14 flex flex-wrap items-baseline justify-between gap-4 border-t border-(--line) pt-6">
           <p className="microtype">A. P. / 01 · CZ / {year}</p>
-          <p className="microtype">Adamovy finance</p>
+          <p className="microtype">Adamovy finance · {SITE.domain}</p>
         </div>
 
         <div className="mt-6 grid gap-5 text-[0.78rem] leading-relaxed text-(--muted) lg:grid-cols-12">
