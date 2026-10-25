@@ -228,7 +228,8 @@ function NavArrow({ dir, disabled, onClick, label }: { dir: "prev" | "next"; dis
 
 /** Motiv na švu mezi dvěma sekcemi; každá sekce nese jeho polovinu. */
 type SeamMotif =
-  | { kind: "rosette"; size: number }
+  /** `dx`, `dy`: posun středu jako podíl velikosti (záporné = doleva / nahoru). */
+  | { kind: "rosette"; size: number; dx?: number; dy?: number }
   | { kind: "townhouse"; width: number }
   /** Výkres (půdorys nebo řez): `split` = podíl šířky v levé (odcházející) sekci. */
   | { kind: "plan"; drawing: "plans" | "section"; width: number; split: number };
@@ -245,7 +246,7 @@ const SEAMS: SeamMotif[] = [
   { kind: "plan", drawing: "section", width: 1700, split: 0.42 },
   { kind: "plan", drawing: "plans", width: 1900, split: 0.6 },
   { kind: "rosette", size: 380 },
-  { kind: "rosette", size: 190 },
+  { kind: "rosette", size: 300, dx: -0.08, dy: -0.2 },
 ];
 
 const TOWNHOUSE_RATIO = 464 / 520;
@@ -305,6 +306,8 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
     );
   }
   const size = motif.size;
+  const dx = (motif.dx ?? 0) * size;
+  const dy = (motif.dy ?? 0) * size;
   const Rosette = dark ? GrandRosette : BanknoteRosette;
   const extra = dark ? { tone: "gold" as const, opacity: 0.55 } : { opacity: 0.9 };
   return (
@@ -313,8 +316,9 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
       style={{
         width: size,
         height: size,
-        [side === "l" ? "left" : "right"]: -size / 2,
-        top: "50%",
+        // Obě poloviny se posouvají stejně, aby na švu navazovaly.
+        [side === "l" ? "left" : "right"]: side === "l" ? -size / 2 + dx : -size / 2 - dx,
+        top: `calc(50% + ${dy}px)`,
       }}
       {...extra}
     />
