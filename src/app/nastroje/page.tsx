@@ -32,7 +32,6 @@ export default function ToolsPage() {
 
       <PageHero
         label="Moje nástroje"
-        numeral="06"
         title={
           <>
             Spočítejte si to <span className="italic-accent text-burgundy">dřív než banka.</span>

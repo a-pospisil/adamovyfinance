@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/Button";
+import { Arrow, Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { Guilloche } from "@/components/engraving/Engraving";
+import { GrandRosette, Townhouse } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { CNB_2026, EGFIN } from "@/lib/site";
@@ -98,7 +98,7 @@ export default function FinancingPage() {
 
       <PageHero
         label="Investiční hypotéky · refinancování · portfolio"
-        numeral="02"
+        image={{ src: "/images/adam-desk.jpg", alt: "Adam Pospíšil při práci", position: "62% 40%" }}
         title={
           <>
             Financování investičních nemovitostí,{" "}
@@ -116,34 +116,40 @@ export default function FinancingPage() {
         }
       />
 
-      <Section theme="paper" ariaLabelledby="topics-title" className="border-t border-(--line)">
-        <h2 id="topics-title" className="sr-only">
-          Oblasti financování
-        </h2>
-        <ol className="border-t border-(--line-strong)">
+      <Section theme="paper" ariaLabelledby="topics-title" className="overflow-hidden border-t border-(--line)">
+        {/* Rytina činžovního domu: o nemovitostech, ne ilustrace. */}
+        <Townhouse className="pointer-events-none absolute -bottom-4 -right-24 hidden w-[34rem] text-brown opacity-25 lg:block" />
+
+        <Reveal>
+          <h2 id="topics-title" className="display display-md max-w-[16ch]">
+            Sedm oblastí, <span className="italic-accent text-burgundy">jeden cíl: portfolio, které roste.</span>
+          </h2>
+        </Reveal>
+
+        <ol className="mt-12 border-t border-(--line-strong)">
           {TOPICS.map((t, i) => (
-            <Reveal
-              as="li"
-              key={t.id}
-              id={t.id}
-              delay={(i % 3) * 60}
-              className="grid gap-2 border-b border-(--line) py-7 lg:grid-cols-12 lg:items-baseline lg:gap-8"
-            >
-              <span className="label-sm tabular text-(--accent) lg:col-span-1">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="display display-sm lg:col-span-4">{t.title}</h3>
-              <p className="text-(--muted) lg:col-span-4">{t.lead}</p>
+            <Reveal as="li" key={t.id} id={t.id} delay={(i % 3) * 60} className="border-b border-(--line)">
               <a
                 href={t.egfin}
-                className="label-xs tap mt-2 inline-block justify-self-start whitespace-nowrap border-b border-(--line-strong) pb-0.5 transition-colors hover:border-(--accent) hover:text-(--accent) lg:col-span-3 lg:mt-0 lg:justify-self-end" target="_blank" rel="noopener noreferrer">
-                Podrobně na egfin.cz
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group grid gap-2 py-7 transition-colors lg:grid-cols-12 lg:items-baseline lg:gap-8"
+              >
+                <span className="nominal text-[1.9rem] text-brown lg:col-span-1">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="display display-sm transition-colors group-hover:text-(--accent) lg:col-span-4">{t.title}</h3>
+                <p className="text-[1.02rem] text-(--muted) lg:col-span-5">{t.lead}</p>
+                <span className="label-xs mt-2 inline-flex items-center gap-3 justify-self-start whitespace-nowrap transition-colors group-hover:text-(--accent) lg:col-span-2 lg:mt-0 lg:justify-self-end">
+                  egfin.cz
+                  <Arrow />
+                </span>
               </a>
             </Reveal>
           ))}
         </ol>
       </Section>
 
-      <Section theme="ink" ariaLabelledby="faq-title" className="overflow-hidden">
-        <Guilloche className="pointer-events-none absolute -right-32 top-10 size-[30rem]" opacity={0.12} />
+      <Section theme="cocoa" ariaLabelledby="faq-title" className="bricks overflow-hidden">
+        <GrandRosette tone="gold" className="pointer-events-none absolute -bottom-52 -left-52 hidden size-[34rem] md:block" opacity={0.14} />
         <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4">
             <Reveal delay={60}>
@@ -152,9 +158,7 @@ export default function FinancingPage() {
               </h2>
             </Reveal>
             <Reveal delay={120} className="mt-10">
-              <Button href="/kontakt" variant="outline">
-                Probrat mé financování
-              </Button>
+              <Button href="/kontakt">Probrat mé financování</Button>
             </Reveal>
           </div>
           <Reveal className="lg:col-span-7 lg:col-start-6" delay={100}>
@@ -162,7 +166,7 @@ export default function FinancingPage() {
               {FAQ.map((f) => (
                 <div key={f.q} className="border-b border-(--line) py-6">
                   <dt className="display display-sm">{f.q}</dt>
-                  <dd className="mt-3 max-w-2xl text-[0.98rem] leading-relaxed text-(--muted)">{f.a}</dd>
+                  <dd className="mt-3 max-w-2xl text-[1.05rem] leading-relaxed text-(--muted)">{f.a}</dd>
                 </div>
               ))}
             </dl>

@@ -1,36 +1,31 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/ui/Reveal";
-import { Guilloche, Numeral, WaveField } from "@/components/engraving/Engraving";
+import { BanknoteGround, BanknoteRosette } from "@/components/engraving/Engraving";
 
 type Props = {
   label: string;
   title: ReactNode;
   lead?: ReactNode;
   aside?: ReactNode;
-  numeral?: string;
+  /** Fotka vpravo v zlatém rámu s rozetou přes roh (jako úvod titulní stránky). */
+  image?: { src: string; alt: string; position?: string };
 };
 
-/** Záhlaví podstránky: papír, jemná rytina, jedno velké tvrzení. */
-export function PageHero({ label, title, lead, aside, numeral }: Props) {
+/** Úvod podstránky ve stylu titulní stránky: ochranná síť, rozeta bankovky, nadtitulek kapitálkami. */
+export function PageHero({ label, title, lead, aside, image }: Props) {
+  const side = aside ?? (image ? <FramedPhoto {...image} /> : null);
   return (
-    <section data-theme="paper" className="themed relative overflow-hidden pb-16 pt-28 sm:pt-32 lg:pb-20 lg:pt-36">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-1/2 max-w-3xl">
-        <WaveField className="absolute inset-0 h-full w-full" tone="brown" opacity={0.06} />
-        <Guilloche className="absolute -right-24 top-1/2 size-[30rem] -translate-y-1/2" opacity={0.14} />
-        {numeral && (
-          <Numeral
-            value={numeral}
-            className="absolute right-[8%] top-1/2 -translate-y-1/2 text-[16rem] leading-none"
-            tone="brown"
-            opacity={0.06}
-          />
-        )}
+    <section data-theme="paper" className="themed relative isolate overflow-hidden pb-16 pt-28 sm:pt-32 lg:pb-20 lg:pt-36">
+      <BanknoteGround border={false} />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <BanknoteRosette className="absolute -left-[22rem] top-1/2 size-[40rem] -translate-y-1/2 lg:-left-[28rem] lg:size-[50rem]" opacity={0.14} />
       </div>
 
-      <div className="container-x relative grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div className={aside ? "lg:col-span-7" : "lg:col-span-9"}>
+      <div className="container-x relative grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className={side ? "lg:col-span-7" : "lg:col-span-9"}>
           <Reveal>
-            <p className="label-xs">{label}</p>
+            <p className="display text-[1.2rem] lowercase tracking-[0.08em] text-brown [font-variant:small-caps]">{label}</p>
           </Reveal>
           <Reveal delay={80}>
             <h1 className="display display-lg mt-6 max-w-[14ch]">{title}</h1>
@@ -41,12 +36,28 @@ export function PageHero({ label, title, lead, aside, numeral }: Props) {
             </Reveal>
           )}
         </div>
-        {aside && (
+        {side && (
           <Reveal className="lg:col-span-4 lg:col-start-9" delay={120}>
-            {aside}
+            {side}
           </Reveal>
         )}
       </div>
     </section>
+  );
+}
+
+function FramedPhoto({ src, alt, position = "50% 20%" }: { src: string; alt: string; position?: string }) {
+  return (
+    <figure className="relative">
+      <div className="relative border border-gold/70 p-2">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <Image src={src} alt={alt} fill priority sizes="(max-width: 1024px) 88vw, 30vw" className="object-cover" style={{ objectPosition: position }} />
+        </div>
+        <BanknoteRosette
+          className="pointer-events-none absolute -bottom-[8rem] -right-[8.5rem] size-[18rem] mix-blend-multiply lg:-bottom-[11rem] lg:-right-[12rem] lg:size-[26rem]"
+          opacity={0.9}
+        />
+      </div>
+    </figure>
   );
 }

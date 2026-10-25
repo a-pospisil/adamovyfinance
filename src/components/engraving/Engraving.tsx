@@ -205,7 +205,7 @@ export function SoldOutStamp({ className = "", style }: { className?: string; st
         <rect x="34" y="34" width="832" height="232" rx="12" strokeWidth="4" />
         <g fill="#1d3461" stroke="none" fontFamily="'Arial Black', 'Helvetica Neue', Arial, sans-serif" fontWeight="900" textAnchor="middle">
           <text x="450" y="84" fontSize="24" letterSpacing="9" textLength="400" lengthAdjust="spacingAndGlyphs">WORKSHOP · PRAHA</text>
-          <text x="450" y="190" fontSize="112" letterSpacing="4" textLength="700" lengthAdjust="spacingAndGlyphs">VYPRODÁNO</text>
+          <text x="450" y="188" fontSize="100" textLength="790" lengthAdjust="spacing">VYPRODÁNO</text>
           <text x="450" y="244" fontSize="22" letterSpacing="9" textLength="380" lengthAdjust="spacingAndGlyphs">ADAMOVY FINANCE</text>
         </g>
       </g>
