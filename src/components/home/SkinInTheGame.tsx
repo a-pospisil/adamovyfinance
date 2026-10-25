@@ -12,7 +12,7 @@ export function SkinInTheGame() {
       <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-14">
         <Reveal className="order-2 lg:order-1 lg:col-span-5">
           <div className="border border-gold-300/55 p-2">
-            <div className="relative aspect-[4/5] overflow-hidden">
+            <div className="relative aspect-[4/5] overflow-hidden lg:aspect-square">
               <Image
                 src="/images/adam-portrait.jpg"
                 alt="Adam Pospíšil, zakladatel Evergreen Finance"

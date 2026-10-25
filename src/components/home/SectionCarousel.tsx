@@ -35,7 +35,10 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const behavior: ScrollBehavior = opts.smooth === false || reduce ? "auto" : "smooth";
       track.scrollTo({ left: idx * track.clientWidth, behavior });
-      if (opts.toTop !== false && root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior, block: "start" });
+      // Carousel dorovnat pod hlavičku, ať je vybraná sekce celá vidět (i když je ještě pod úvodem).
+      const offset = parseFloat(getComputedStyle(root).scrollMarginTop) || 0;
+      if (opts.toTop !== false && Math.abs(root.getBoundingClientRect().top - offset) > 2)
+        root.scrollIntoView({ behavior, block: "start" });
     },
     [count],
   );
