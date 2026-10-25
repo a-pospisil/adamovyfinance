@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CornerOrnament, Guilloche } from "@/components/engraving/Engraving";
+import { BanknoteGround, CornerOrnament, GrandRosette } from "@/components/engraving/Engraving";
 import { DEEP_PAGES, EGFIN, NAV, SITE } from "@/lib/site";
 
 /** Ikony sociálních sítí (Simple Icons, CC0). Facebook vede na stránku Evergreen Finance. */
@@ -25,8 +25,10 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer data-theme="ink" className="themed relative overflow-hidden">
-      <Guilloche className="pointer-events-none absolute -right-24 -top-32 size-[26rem]" opacity={0.1} />
+    <footer data-theme="ink" className="themed relative isolate overflow-hidden">
+      {/* Podtisk a lemová bordura nahoře oddělí patičku i od tmavé sekce nad ní. */}
+      <BanknoteGround />
+      <GrandRosette tone="gold" className="pointer-events-none absolute -right-48 top-1/2 hidden size-[28rem] -translate-y-1/2 md:block" opacity={0.12} />
       <CornerOrnament className="pointer-events-none absolute left-6 top-6 size-10" opacity={0.35} />
 
       <div className="container-x relative py-16 lg:py-20">

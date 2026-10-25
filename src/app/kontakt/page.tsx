@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section, SectionMark } from "@/components/ui/Section";
-import { Guilloche, Numeral } from "@/components/engraving/Engraving";
+import { BanknoteGround, BanknoteRosette, GrandRosette } from "@/components/engraving/Engraving";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema } from "@/lib/schema";
 import { SITE } from "@/lib/site";
@@ -28,19 +28,16 @@ export default function ContactPage() {
     <main>
       <JsonLd data={breadcrumbSchema([{ name: "Kontakt", path: "/kontakt" }])} />
 
-      <section data-theme="paper" className="themed relative overflow-hidden pb-20 pt-28 sm:pt-32 lg:pt-36">
-        <Guilloche className="pointer-events-none absolute -right-40 top-20 size-[34rem]" opacity={0.14} />
-        <Numeral
-          value="05"
-          className="pointer-events-none absolute -right-4 bottom-10 text-[16rem] leading-none"
-          tone="brown"
-          opacity={0.05}
-        />
+      <section data-theme="paper" className="themed relative isolate overflow-hidden pb-20 pt-28 sm:pt-32 lg:pt-36">
+        <BanknoteGround border={false} />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <BanknoteRosette className="absolute -right-[24rem] top-24 size-[40rem] lg:-right-[28rem] lg:size-[50rem]" opacity={0.16} />
+        </div>
 
         <div className="container-x relative grid gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <p className="label-xs">Kontakt</p>
+              <p className="display text-[1.25rem] tracking-[0.08em] text-brown [font-variant:small-caps]">kontakt · praha 1</p>
             </Reveal>
             <Reveal delay={80}>
               <h1 className="display display-lg mt-6 max-w-[11ch]">
@@ -104,7 +101,10 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <Section theme="ink" ariaLabelledby="prepare-title">
+      <Section theme="cocoa" ariaLabelledby="prepare-title" className="bricks overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <GrandRosette tone="gold" className="absolute -left-56 -bottom-56 hidden size-[34rem] md:block" opacity={0.14} />
+        </div>
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <Reveal>
@@ -130,14 +130,16 @@ export default function ContactPage() {
             </Reveal>
           </div>
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={100}>
-            <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[3/2] lg:aspect-[4/5]">
-              <Image
-                src="/images/adam-phone.jpg"
-                alt="Adam Pospíšil telefonuje s klientem"
-                fill
-                sizes="(max-width: 1024px) 100vw, 45vw"
-                className="object-cover object-[50%_18%]"
-              />
+            <div className="border border-gold-300/55 p-2">
+              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[3/2] lg:aspect-[4/5]">
+                <Image
+                  src="/images/adam-phone.jpg"
+                  alt="Adam Pospíšil telefonuje s klientem"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  className="object-cover object-[50%_18%]"
+                />
+              </div>
             </div>
           </Reveal>
         </div>

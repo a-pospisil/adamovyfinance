@@ -9,59 +9,50 @@ export type Slide = { id: string; label: string; content: ReactNode; dark?: bool
 
 /** Od této šířky mají všechny sekce stejnou výšku (= stejně dlouhý scroll). */
 const UNIFORM_QUERY = "(min-width: 1024px)";
-/** Kolik výšky „pódia“ se odscrolluje během jednoho vodorovného přejezdu. */
-const TRANSITION_RATIO = 0.9;
+/**
+ * Mezera ve scrollu mezi dočtením sekce a začátkem další (podíl výšky pódia). V jejím
+ * středu se spustí vodorovný přejezd; ten je časový, ne vázaný na scroll.
+ */
+const GAP_RATIO = 0.35;
+/** Délka vodorovného přejezdu mezi sekcemi. */
+const SLIDE_MS = 850;
+const SLIDE_EASE = "cubic-bezier(0.65, 0, 0.2, 1)";
 
 type Layout = {
   stageH: number;
   starts: number[]; // scroll pozice, kde začíná čtení sekce i
   reads: number[]; // kolik se sekce i posune svisle, než je dočtená
-  transition: number;
+  transition: number; // mezera mezi dočtením a další sekcí
   total: number;
 };
 
 /**
- * Animace řízené scrollem (Chrome, Edge, Safari 26+): pohyb sekcí počítá prohlížeč ve
- * stejném vlákně jako samotný scroll, takže se obsah nemůže zpožďovat ani poskakovat.
- * Bez podpory (Firefox) posouvá sekce JavaScript v události scrollu.
+ * Animace řízené scrollem (Chrome, Edge, Safari 26+): svislé čtení sekce počítá prohlížeč
+ * ve vlákně scrollu, takže jede přesně s ním. Bez podpory (Firefox) ho nastavuje JavaScript.
  */
 const supportsScrollTimeline = () =>
   typeof CSS !== "undefined" && CSS.supports("animation-timeline: scroll()") && CSS.supports("animation-range: 0px 1px");
 
-/** Křivka přejezdu pro CSS — odpovídá funkci `ease` níže. */
-const EASE_CSS = "cubic-bezier(0.42, 0, 0.58, 1)";
-
 /**
- * Klíčové snímky každé sekce pro časovou osu scrollu: v bodech, kde začíná a končí čtení
- * a přejezd, má každá sekce přesně tu polohu, kterou by jí dal `render()`. Mezi nimi
- * lineárně (čtení) nebo po křivce `EASE_CSS` (přejezd).
+ * Svislý posun každé sekce na časové ose scrollu (vlastnost `transform`, lineárně).
+ * Vodorovná poloha je zvlášť ve vlastnosti `translate` a mění se časovou animací.
  */
 function scrollTimelineCss(l: Layout, count: number, rangeStart: number): string {
-  const points: { s: number; pos: number; i: number; easeNext: boolean }[] = [];
-  for (let i = 0; i < count; i++) {
-    points.push({ s: l.starts[i], pos: i, i, easeNext: false });
-    points.push({ s: l.starts[i] + l.reads[i], pos: i, i, easeNext: i < count - 1 });
-  }
   const total = Math.max(1, l.total);
   const pct = (v: number) => `${((v / total) * 100).toFixed(4)}%`;
   const range = `animation-range: ${rangeStart}px ${rangeStart + total}px;`;
   const rules: string[] = [];
   for (let j = 0; j < count; j++) {
-    const frames = points.map(({ s, pos, i, easeNext }) => {
-      const y = j < i ? l.reads[j] : j === i ? s - l.starts[i] : 0;
-      const timing = easeNext ? ` animation-timing-function: ${EASE_CSS};` : " animation-timing-function: linear;";
-      return `${pct(s)} { transform: translate3d(${(j - pos) * 100}%, ${-y}px, 0);${timing} }`;
-    });
+    const start = l.starts[j];
+    const end = start + l.reads[j];
+    const frames = [`0% { transform: translateY(0); }`];
+    if (start > 0) frames.push(`${pct(start)} { transform: translateY(0); }`);
+    frames.push(`${pct(end)} { transform: translateY(${-l.reads[j]}px); }`, `100% { transform: translateY(${-l.reads[j]}px); }`);
     rules.push(`@keyframes carousel-slide-${j} { ${frames.join(" ")} }`);
     rules.push(`.carousel [data-slide="${j}"] { animation: carousel-slide-${j} linear both; animation-timeline: scroll(root block); ${range} }`);
   }
-  rules.push(`@keyframes carousel-progress { from { transform: scaleX(${1 / count}); } to { transform: scaleX(1); } }`);
-  rules.push(`.carousel .carousel-progress { animation: carousel-progress linear both; animation-timeline: scroll(root block); ${range} }`);
   return rules.join("\n");
 }
-
-/** Plynulý náběh a doběh přejezdu, aby sekce „dosedla“. */
-const ease = (t: number) => t * t * (3 - 2 * t);
 
 /**
  * Sekce 1)–8) úvodní stránky jako carousel ovládaný scrollem. Obal má výšku
@@ -73,6 +64,7 @@ const ease = (t: number) => t * t * (3 - 2 * t);
 export function SectionCarousel({ slides }: { slides: Slide[] }) {
   const count = slides.length;
   const [active, setActive] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -101,22 +93,17 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     let i = 0;
     while (i < count - 1 && l.starts[i + 1] <= s) i++;
     const local = s - l.starts[i];
-    const t = i < count - 1 && local > l.reads[i] ? ease(Math.min(1, (local - l.reads[i]) / l.transition)) : 0;
-    const pos = i + t;
+    // Sekce se vymění v polovině mezery za dočtenou sekcí; přejezd sám je časový.
+    const now = i < count - 1 && local > l.reads[i] + l.transition / 2 ? i + 1 : i;
 
-    // S animacemi řízenými scrollem hýbe sekcemi prohlížeč; tady jen záložky.
     if (!timelineRef.current) {
       panelRefs.current.forEach((panel, j) => {
         if (!panel) return;
         const y = j < i ? l.reads[j] : j === i ? Math.min(local, l.reads[i]) : 0;
-        const dx = j - pos;
-        panel.style.transform = `translate3d(${dx * 100}%, ${-y}px, 0)`;
-        panel.style.visibility = Math.abs(dx) >= 1 ? "hidden" : "visible";
+        panel.style.transform = `translateY(${-y}px)`;
       });
-      if (progressRef.current) progressRef.current.style.transform = `scaleX(${(pos + 1) / count})`;
     }
 
-    const now = Math.round(pos);
     if (now !== activeRef.current) {
       activeRef.current = now;
       setActive(now);
@@ -142,7 +129,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     const uniform = window.matchMedia(UNIFORM_QUERY).matches ? Math.max(stageH, ...natural) : stageH;
     panels.forEach((p) => (p.style.minHeight = `${uniform}px`));
     const reads = panels.map((p) => Math.max(0, p.offsetHeight - stageH));
-    const transition = Math.round(stageH * TRANSITION_RATIO);
+    const transition = Math.round(stageH * GAP_RATIO);
     const starts = reads.map((_, i) => reads.slice(0, i).reduce((a, r) => a + r + transition, 0));
     const total = starts[count - 1] + reads[count - 1];
     layout.current = { stageH, starts, reads, transition, total };
@@ -152,7 +139,6 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
         timelineRef.current = document.createElement("style");
         timelineRef.current.dataset.carousel = "";
         document.head.appendChild(timelineRef.current);
-        panels.forEach((p) => (p.style.visibility = "visible"));
       }
       const rangeStart = Math.round(window.scrollY + root.getBoundingClientRect().top - headerH());
       timelineRef.current.textContent = scrollTimelineCss(layout.current, count, rangeStart);
@@ -174,6 +160,14 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     },
     [count],
   );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     // Překreslit hned v události scrollu, ne až v dalším snímku: se zpožděním o snímek
@@ -276,7 +270,11 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
           </div>
           {/* Postup jako rytá linka. */}
           <div aria-hidden="true" className="absolute inset-x-0 -bottom-px h-px">
-            <div ref={progressRef} className="carousel-progress h-full origin-left bg-(--accent)" style={{ transform: `scaleX(${1 / count})` }} />
+            <div
+              ref={progressRef}
+              className="h-full origin-left bg-(--accent) motion-safe:transition-transform motion-safe:duration-700"
+              style={{ transform: `scaleX(${(active + 1) / count})` }}
+            />
           </div>
         </nav>
 
@@ -293,7 +291,10 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
               aria-roledescription="snímek"
               aria-label={`${i + 1}) ${s.label}`}
               className="carousel-slide absolute inset-x-0 top-0 will-change-transform"
-              style={{ transform: `translate3d(${i * 100}%, 0, 0)` }}
+              style={{
+                translate: `${(i - active) * 100}% 0`,
+                transition: reduceMotion ? undefined : `translate ${SLIDE_MS}ms ${SLIDE_EASE}`,
+              }}
             >
               {s.content}
               <Seams dark={s.dark} left={SEAMS[i - 1]} right={SEAMS[i]} />
@@ -322,23 +323,29 @@ function NavArrow({ dir, disabled, onClick, label }: { dir: "prev" | "next"; dis
 }
 
 /** Motiv na švu mezi dvěma sekcemi; každá sekce nese jeho polovinu. */
-type SeamMotif = { kind: "rosette"; size: number } | { kind: "townhouse"; width: number };
+type SeamMotif =
+  | { kind: "rosette"; size: number }
+  | { kind: "townhouse"; width: number }
+  /** Výkres (půdorys nebo řez): `split` = podíl šířky v levé (odcházející) sekci. */
+  | { kind: "plan"; drawing: "plans" | "section"; width: number; split: number };
 
 /**
  * Švy 1|2 … 7|8. Různé velikosti rozet, aby přechody nepůsobily šablonovitě;
- * mezi Vlastní investicí a Jak přemýšlím stojí místo rozety činžovní dům.
+ * mezi Vlastní investicí a Jak přemýšlím stojí činžovní dům a recenze přecházejí do
+ * workshopu výkresy bytového domu: řez ze Zkušenosti, půdorys patra do Workshopu.
  */
 const SEAMS: SeamMotif[] = [
   { kind: "rosette", size: 220 },
   { kind: "townhouse", width: 560 },
   { kind: "rosette", size: 320 },
-  { kind: "rosette", size: 150 },
-  { kind: "rosette", size: 260 },
+  { kind: "plan", drawing: "section", width: 1700, split: 0.42 },
+  { kind: "plan", drawing: "plans", width: 1900, split: 0.6 },
   { kind: "rosette", size: 380 },
   { kind: "rosette", size: 190 },
 ];
 
 const TOWNHOUSE_RATIO = 464 / 520;
+const PLAN_RATIO = { plans: 1500 / 2600, section: 1500 / 2200 };
 
 /**
  * Švy mezi sekcemi: svislá bordura na obou okrajích a polovina motivu přesně na švu.
@@ -369,6 +376,26 @@ function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; da
           height: h,
           [side === "l" ? "left" : "right"]: -w / 2,
           top: side === "l" ? `calc(var(--stage-h, 100%) - ${h}px)` : `calc(100% - ${h}px)`,
+        }}
+      />
+    );
+  }
+  if (motif.kind === "plan") {
+    const w = motif.width;
+    const h = Math.round(w * PLAN_RATIO[motif.drawing]);
+    const mask = `url("/engraving/${motif.drawing === "plans" ? "plans" : "section"}-mask.svg")`;
+    // Levá sekce nese levou část výkresu (podíl `split`), pravá zbytek; na švu navazují.
+    const offset = side === "r" ? -w * (1 - motif.split) : -w * motif.split;
+    return (
+      <div
+        className={`seam-motif seam-plan hidden -translate-y-1/2 lg:block ${dark ? "bg-paper opacity-20" : "bg-brown opacity-25"}`}
+        style={{
+          width: w,
+          height: h,
+          [side === "l" ? "left" : "right"]: offset,
+          top: side === "l" ? "calc(var(--stage-h, 200%) / 2)" : "calc(100% - var(--stage-h, 200%) / 2)",
+          maskImage: mask,
+          WebkitMaskImage: mask,
         }}
       />
     );

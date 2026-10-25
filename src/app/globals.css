@@ -171,8 +171,8 @@
     mask: url("/engraving/bricks-mask.svg") 0 0 / 120px 60px repeat;
   }
 
-  /* Blueprint: celé patro bytového domu přes celou sekci s recenzemi (místo ochranné sítě).
-     Světlé linky na tmavém podkladu jako na modrotisku. */
+  /* Blueprint v sekci s recenzemi: milimetrový rastr výkresu přes celou sekci (bez okrajů)
+     místo ochranné sítě. Samotný výkres domu leží na švu se sekcí 6 (SectionCarousel). */
   .plans .bn-ground::before { display: none; }
   .plans::after {
     content: "";
@@ -181,9 +181,19 @@
     z-index: -1;
     pointer-events: none;
     background: var(--fg);
-    opacity: 0.17;
-    -webkit-mask: url("/engraving/plans-mask.svg") center / cover no-repeat;
-    mask: url("/engraving/plans-mask.svg") center / cover no-repeat;
+    opacity: 0.12;
+    -webkit-mask: url("/engraving/plans-grid.svg") 0 0 / 100px 100px repeat;
+    mask: url("/engraving/plans-grid.svg") 0 0 / 100px 100px repeat;
+  }
+
+  /* Výkres domu na švu: barva podle podkladu sekce. */
+  .seam-plan {
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 
   /* Švy carouselu: svislá bordura na obou okrajích sekce a půlka rozety na švu.
@@ -219,7 +229,7 @@
   .carousel-slide > :not(.seams) { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; }
 
   /* Carousel sekcí bez JS: sekce pod sebou, bez navigace. */
-  html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; }
+  html:not([data-js]) .carousel-slide { position: static !important; transform: none !important; translate: none !important; }
   html:not([data-js]) .carousel-sticky { position: static; }
   html:not([data-js]) .carousel-nav { display: none; }
 }
