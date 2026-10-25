@@ -385,7 +385,7 @@ export default function WorkshopsPage() {
                 </div>
               ))}
             </dl>
-            <MicroStrip text="Praha · Baťův palác · Investiční nemovitosti" repeat={3} className="mt-10" />
+            <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={2} className="mt-10" />
           </Reveal>
         </div>
       </Section>

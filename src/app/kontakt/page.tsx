@@ -127,7 +127,7 @@ export default function ContactPage() {
                   </li>
                 ))}
               </ol>
-              <MicroStrip text="Adam Pospíšil · Praha" repeat={3} className="mt-10" />
+              <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={2} className="mt-10" />
             </Reveal>
           </div>
           <Reveal className="lg:col-span-6 lg:col-start-7" delay={100}>

@@ -30,7 +30,7 @@ export function Footer() {
       <CornerOrnament className="pointer-events-none absolute left-6 top-6 size-10" opacity={0.35} />
 
       <div className="container-x relative py-16 lg:py-20">
-        <MicroStrip text="Adamovy finance · Adam Pospíšil · Investiční nemovitosti · Praha" repeat={6} className="mb-12 hidden sm:block" />
+        <MicroStrip text="Hypotéky · Investice · Pojištění · Nemovitosti · Financování · Strategie · Portfolio" repeat={3} className="mb-12 hidden sm:block" />
 
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
