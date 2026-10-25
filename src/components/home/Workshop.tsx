@@ -64,7 +64,7 @@ export function Workshop({ now }: { now: Date }) {
         </div>
 
         <Reveal className="lg:col-span-5 lg:col-start-8 lg:self-center" delay={100}>
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden lg:aspect-square">
             <Image
               src="/images/adam-seated.jpg"
               alt="Adam Pospíšil sedí v křesle"

@@ -55,7 +55,7 @@ export function Story() {
             </div>
           </Reveal>
           <Reveal delay={160} className="mt-10">
-            <div className="relative aspect-[3/2] overflow-hidden">
+            <div className="relative aspect-[3/2] overflow-hidden lg:aspect-[5/2]">
               <Image
                 src="/images/adam-desk.jpg"
                 alt="Adam Pospíšil při práci u stolu"
@@ -74,7 +74,7 @@ export function Story() {
                 as="li"
                 key={it.year}
                 delay={i * 70}
-                className="grid gap-2 border-b border-(--line) py-6 sm:grid-cols-12 sm:gap-6"
+                className="grid gap-2 border-b border-(--line) py-6 sm:grid-cols-12 sm:gap-6 lg:py-4"
               >
                 <span className="nominal text-2xl text-(--accent) sm:col-span-3">{it.year}</span>
                 <div className="sm:col-span-9">

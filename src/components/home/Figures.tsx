@@ -21,7 +21,7 @@ export function Figures() {
 
       <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
         <Reveal className="lg:col-span-5">
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden lg:aspect-square">
             <Image
               src="/images/adam-suit.jpg"
               alt="Adam Pospíšil v obleku"

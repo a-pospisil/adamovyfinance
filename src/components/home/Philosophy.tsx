@@ -31,7 +31,7 @@ export function Philosophy() {
         </div>
 
         <Reveal as="figure" delay={120} className="lg:col-span-4 lg:col-start-9">
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden lg:aspect-square">
             <Image
               src="/images/adam-phone.jpg"
               alt="Adam Pospíšil telefonuje u okna"
