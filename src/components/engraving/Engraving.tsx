@@ -182,3 +182,33 @@ export function Townhouse({ className = "", style }: { className?: string; style
     </svg>
   );
 }
+
+/**
+ * Razítko „VYPRODÁNO“ — gumové razítko v modrém inkoustu, otištěné našikmo.
+ * Realismus dělá SVG filtr: roztřepený okraj (posun šumem) a místa bez inkoustu
+ * (maska z nízkofrekvenčního šumu). Jen jedno na stránce (pevné id filtru).
+ */
+export function SoldOutStamp({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg viewBox="0 0 900 300" role="img" aria-label="Vyprodáno" className={className} style={style}>
+      <defs>
+        <filter id="stamp-ink" x="-4%" y="-8%" width="108%" height="116%">
+          <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="4" result="grain" />
+          <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="rough" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.028 0.06" numOctaves="4" seed="11" result="blot" />
+          <feColorMatrix in="blot" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.8 2.15" result="ink" />
+          <feComposite in="rough" in2="ink" operator="in" />
+        </filter>
+      </defs>
+      <g filter="url(#stamp-ink)" fill="none" stroke="#1d3461">
+        <rect x="12" y="12" width="876" height="276" rx="22" strokeWidth="11" />
+        <rect x="34" y="34" width="832" height="232" rx="12" strokeWidth="4" />
+        <g fill="#1d3461" stroke="none" fontFamily="'Arial Black', 'Helvetica Neue', Arial, sans-serif" fontWeight="900" textAnchor="middle">
+          <text x="450" y="84" fontSize="26" letterSpacing="9">WORKSHOP · PRAHA</text>
+          <text x="450" y="198" fontSize="136" letterSpacing="6">VYPRODÁNO</text>
+          <text x="450" y="248" fontSize="24" letterSpacing="9">ADAMOVY FINANCE</text>
+        </g>
+      </g>
+    </svg>
+  );
+}

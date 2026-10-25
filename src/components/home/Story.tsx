@@ -5,7 +5,8 @@ import { Rosette } from "@/components/engraving/Engraving";
 import { EGFIN, FACTS } from "@/lib/site";
 
 const TIMELINE = [
-  { year: "2010", title: "Začátek ve financích", text: "Osm let v bankách jako prémiový bankéř. Tam jsem se naučil, jak banka počítá a podle čeho rozhoduje." },
+  { year: "2010", title: "Začátek ve financích", text: "Šest let v bankách jako prémiový bankéř. Tam jsem se naučil, jak banka počítá a podle čeho rozhoduje." },
+  { year: "2016", title: "Komplexní poradenství", text: "Odcházím z banky a začínám klientům radit napříč bankami a produkty." },
   { year: "2018", title: "Vlastní firma", text: "Zakládám Evergreen Finance. Investice, pojištění, úvěry — zatím všechno." },
   { year: "2021", title: "Jediná specializace", text: "Místo rozšiřování nabídky zužuji, až zbude jedno: financování investičních nemovitostí." },
   { year: "2022", title: "Vlastní portfolio", text: "Kupuji první investiční nemovitost. Od té doby řeším stejná rozhodnutí jako moji klienti." },
@@ -30,7 +31,7 @@ export function Story() {
           <Reveal delay={120}>
             <div className="mt-8 max-w-md space-y-5 text-[1.05rem] leading-relaxed">
               <p>
-                Nezačínal jsem u investičních nemovitostí. Začínal jsem u hypoték, osm let v bankách. Naučil jsem se
+                Nezačínal jsem u investičních nemovitostí. Začínal jsem u hypoték, šest let v bankách. Naučil jsem se
                 tam jednu věc: každá banka vidí stejného klienta jinak.
               </p>
               <p className="text-(--muted)">

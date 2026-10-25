@@ -248,3 +248,62 @@ writeFileSync(
   writeFileSync("public/engraving/border-mask-v.svg", svg(`0 0 ${W} ${H}`, out.join(""), "#000"));
 }
 console.log("bricks-mask.svg, border-mask-v.svg");
+
+/* ---------- Stavební výkresy (maska) ----------
+   Půdorys bytu s dveřmi, okny a kótami, pohled na činžovní dům a rozpiska jako
+   na stavebním plánu. Pozadí sekce s recenzemi; barvu dodá CSS. */
+{
+  const L = [];
+  const line = (d, w = 0.8) => L.push(`<path stroke-width="${w}" d="${d}"/>`);
+  const text = (x, y, s, size = 11, anchor = "middle") =>
+    L.push(`<text x="${x}" y="${y}" font-size="${size}" text-anchor="${anchor}" fill="#000" stroke="none" font-family="Arial, Helvetica, sans-serif" letter-spacing="1.5">${s}</text>`);
+  // rastr
+  for (let x = 0; x <= 1200; x += 40) line(`M${x} 0V720`, 0.15);
+  for (let y = 0; y <= 720; y += 40) line(`M0 ${y}H1200`, 0.15);
+  // půdorys: obvodové zdi
+  line("M60 80H620V620H60Z", 1.6);
+  line("M72 92H608V608H72Z", 0.9);
+  // vnitřní příčky
+  line("M300 92V250M300 290V400M306 92V250M306 290V400", 0.9);
+  line("M72 400H200M240 400H608M72 406H200M240 406H608", 0.9);
+  line("M460 406V520M460 560V608M466 406V520M466 560V608", 0.9);
+  line("M306 250H560M306 256H560", 0.9);
+  // dveře s křídly
+  for (const [x, y, r, a0, a1] of [[300, 250, 40, 0, 90], [200, 406, 40, 270, 360], [460, 520, 40, 180, 270]]) {
+    const p = (a) => [x + r * Math.cos((a * Math.PI) / 180), y + r * Math.sin((a * Math.PI) / 180)].map((v) => v.toFixed(1));
+    const [x0, y0] = p(a0), [x1, y1] = p(a1);
+    line(`M${x} ${y}L${x0} ${y0}A${r} ${r} 0 0 1 ${x1} ${y1}`, 0.6);
+  }
+  // okna v obvodové zdi
+  for (const x of [120, 220, 380, 500]) line(`M${x} 80H${x + 60}M${x} 86H${x + 60}M${x} 92H${x + 60}`, 0.6);
+  for (const y of [180, 470]) line(`M608 ${y}V${y + 70}M614 ${y}V${y + 70}M620 ${y}V${y + 70}`, 0.6);
+  // kóty
+  line("M60 50H620M60 44V56M620 44V56M300 44V56", 0.6);
+  text(180, 42, "6 000"); text(460, 42, "8 000");
+  line("M30 80V620M24 80H36M24 620H36M24 400H36", 0.6);
+  text(22, 245, "8 200", 11, "end"); text(22, 515, "5 400", 11, "end");
+  // popisy místností
+  text(186, 240, "OBÝVACÍ POKOJ"); text(186, 258, "28,4 m²", 10);
+  text(456, 170, "LOŽNICE"); text(456, 188, "14,2 m²", 10);
+  text(456, 330, "KUCHYŇ"); text(456, 348, "9,8 m²", 10);
+  text(260, 510, "PŘEDSÍŇ"); text(260, 528, "7,1 m²", 10);
+  text(536, 510, "KOUPELNA"); text(536, 528, "5,6 m²", 10);
+  // pohled na dům
+  line("M700 640H1160", 1.2);
+  line("M740 640V200H1120V640", 1.2);
+  line("M728 200H1132M734 192H1126", 0.9);
+  line("M800 192L930 112L1060 192", 1);
+  for (const y of [300, 400, 500]) line(`M740 ${y}H1120`, 0.5);
+  for (const fy of [220, 320, 420]) for (const wx of [770, 840, 910, 980, 1050]) line(`M${wx} ${fy}h40v56h-40zM${wx + 20} ${fy}v56M${wx} ${fy + 24}h40`, 0.55);
+  line("M915 640V560Q930 540 945 560V640", 0.9);
+  for (let y = 520; y < 640; y += 12) line(`M740 ${y}H900M960 ${y}H1120`, 0.3);
+  // výšková kóta
+  line("M1160 200V640M1154 200H1166M1154 640H1166", 0.6);
+  text(1172, 424, "+18,600", 11, "start");
+  // rozpiska
+  line("M860 668H1180V712H860ZM860 690H1180M1040 668V712", 0.8);
+  text(950, 684, "PŮDORYS 2.NP", 10); text(1110, 684, "M 1:100", 10);
+  text(950, 706, "BYT 3+KK · PRAHA", 9); text(1110, 706, "LIST 04", 9);
+  writeFileSync("public/engraving/plans-mask.svg", svg("0 0 1200 720", L.join(""), "#000"));
+  console.log("plans-mask.svg");
+}
