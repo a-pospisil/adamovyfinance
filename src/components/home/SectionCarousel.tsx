@@ -20,6 +20,46 @@ type Layout = {
   total: number;
 };
 
+/**
+ * Animace řízené scrollem (Chrome, Edge, Safari 26+): pohyb sekcí počítá prohlížeč ve
+ * stejném vlákně jako samotný scroll, takže se obsah nemůže zpožďovat ani poskakovat.
+ * Bez podpory (Firefox) posouvá sekce JavaScript v události scrollu.
+ */
+const supportsScrollTimeline = () =>
+  typeof CSS !== "undefined" && CSS.supports("animation-timeline: scroll()") && CSS.supports("animation-range: 0px 1px");
+
+/** Křivka přejezdu pro CSS — odpovídá funkci `ease` níže. */
+const EASE_CSS = "cubic-bezier(0.42, 0, 0.58, 1)";
+
+/**
+ * Klíčové snímky každé sekce pro časovou osu scrollu: v bodech, kde začíná a končí čtení
+ * a přejezd, má každá sekce přesně tu polohu, kterou by jí dal `render()`. Mezi nimi
+ * lineárně (čtení) nebo po křivce `EASE_CSS` (přejezd).
+ */
+function scrollTimelineCss(l: Layout, count: number, rangeStart: number): string {
+  const points: { s: number; pos: number; i: number; easeNext: boolean }[] = [];
+  for (let i = 0; i < count; i++) {
+    points.push({ s: l.starts[i], pos: i, i, easeNext: false });
+    points.push({ s: l.starts[i] + l.reads[i], pos: i, i, easeNext: i < count - 1 });
+  }
+  const total = Math.max(1, l.total);
+  const pct = (v: number) => `${((v / total) * 100).toFixed(4)}%`;
+  const range = `animation-range: ${rangeStart}px ${rangeStart + total}px;`;
+  const rules: string[] = [];
+  for (let j = 0; j < count; j++) {
+    const frames = points.map(({ s, pos, i, easeNext }) => {
+      const y = j < i ? l.reads[j] : j === i ? s - l.starts[i] : 0;
+      const timing = easeNext ? ` animation-timing-function: ${EASE_CSS};` : " animation-timing-function: linear;";
+      return `${pct(s)} { transform: translate3d(${(j - pos) * 100}%, ${-y}px, 0);${timing} }`;
+    });
+    rules.push(`@keyframes carousel-slide-${j} { ${frames.join(" ")} }`);
+    rules.push(`.carousel [data-slide="${j}"] { animation: carousel-slide-${j} linear both; animation-timeline: scroll(root block); ${range} }`);
+  }
+  rules.push(`@keyframes carousel-progress { from { transform: scaleX(${1 / count}); } to { transform: scaleX(1); } }`);
+  rules.push(`.carousel .carousel-progress { animation: carousel-progress linear both; animation-timeline: scroll(root block); ${range} }`);
+  return rules.join("\n");
+}
+
 /** Plynulý náběh a doběh přejezdu, aby sekce „dosedla“. */
 const ease = (t: number) => t * t * (3 - 2 * t);
 
@@ -42,6 +82,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const layout = useRef<Layout | null>(null);
   const activeRef = useRef(0);
+  const timelineRef = useRef<HTMLStyleElement | null>(null);
 
   const headerH = () => document.querySelector("header")?.getBoundingClientRect().height ?? 0;
 
@@ -63,14 +104,17 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     const t = i < count - 1 && local > l.reads[i] ? ease(Math.min(1, (local - l.reads[i]) / l.transition)) : 0;
     const pos = i + t;
 
-    panelRefs.current.forEach((panel, j) => {
-      if (!panel) return;
-      const y = j < i ? l.reads[j] : j === i ? Math.min(local, l.reads[i]) : 0;
-      const dx = j - pos;
-      panel.style.transform = `translate3d(${dx * 100}%, ${-y}px, 0)`;
-      panel.style.visibility = Math.abs(dx) >= 1 ? "hidden" : "visible";
-    });
-    if (progressRef.current) progressRef.current.style.transform = `scaleX(${(pos + 1) / count})`;
+    // S animacemi řízenými scrollem hýbe sekcemi prohlížeč; tady jen záložky.
+    if (!timelineRef.current) {
+      panelRefs.current.forEach((panel, j) => {
+        if (!panel) return;
+        const y = j < i ? l.reads[j] : j === i ? Math.min(local, l.reads[i]) : 0;
+        const dx = j - pos;
+        panel.style.transform = `translate3d(${dx * 100}%, ${-y}px, 0)`;
+        panel.style.visibility = Math.abs(dx) >= 1 ? "hidden" : "visible";
+      });
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${(pos + 1) / count})`;
+    }
 
     const now = Math.round(pos);
     if (now !== activeRef.current) {
@@ -103,6 +147,16 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     const total = starts[count - 1] + reads[count - 1];
     layout.current = { stageH, starts, reads, transition, total };
     root.style.height = `${nav.offsetHeight + stageH + total}px`;
+    if (supportsScrollTimeline()) {
+      if (!timelineRef.current) {
+        timelineRef.current = document.createElement("style");
+        timelineRef.current.dataset.carousel = "";
+        document.head.appendChild(timelineRef.current);
+        panels.forEach((p) => (p.style.visibility = "visible"));
+      }
+      const rangeStart = Math.round(window.scrollY + root.getBoundingClientRect().top - headerH());
+      timelineRef.current.textContent = scrollTimelineCss(layout.current, count, rangeStart);
+    }
     render();
   }, [count, render]);
 
@@ -133,11 +187,16 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
     };
     const ro = new ResizeObserver(() => measure());
     panelRefs.current.forEach((p) => p && ro.observe(p));
+    // Změna výšky obsahu nad carouselem (písma, obrázky) posune začátek časové osy.
+    const above = rootRef.current?.previousElementSibling;
+    if (above) ro.observe(above);
     measure();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
       ro.disconnect();
+      timelineRef.current?.remove();
+      timelineRef.current = null;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
@@ -217,7 +276,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
           </div>
           {/* Postup jako rytá linka. */}
           <div aria-hidden="true" className="absolute inset-x-0 -bottom-px h-px">
-            <div ref={progressRef} className="h-full origin-left bg-(--accent)" style={{ transform: `scaleX(${1 / count})` }} />
+            <div ref={progressRef} className="carousel-progress h-full origin-left bg-(--accent)" style={{ transform: `scaleX(${1 / count})` }} />
           </div>
         </nav>
 

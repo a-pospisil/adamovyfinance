@@ -52,7 +52,7 @@ export default function ContactPage() {
                 <p>Napište, kde dnes stojíte a co chcete koupit nebo změnit.</p>
                 <p>Odpovím konkrétně: co je možné, za jakých podmínek a v jakém pořadí.</p>
                 <p>
-                  Vstup do spolupráce stojí jednorázově 15&nbsp;000&nbsp;Kč (analýza příjmů a výdajů a roadmapa
+                  Vstupní poplatek do spolupráce činí jednorázově 15&nbsp;000&nbsp;Kč (analýza příjmů a výdajů a roadmapa
                   financování).
                 </p>
               </div>
