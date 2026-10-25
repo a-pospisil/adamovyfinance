@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Arrow } from "@/components/ui/Button";
-import { BanknoteRosette, GrandRosette } from "@/components/engraving/Engraving";
+import { BanknoteRosette, GrandRosette, Townhouse } from "@/components/engraving/Engraving";
 
 /** `dark`: sekce na tmavém podkladu (ink, cocoa) — rozeta na švu je pak zlatá. */
 export type Slide = { id: string; label: string; content: ReactNode; dark?: boolean };
@@ -240,7 +240,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
               style={{ transform: `translate3d(${i * 100}%, 0, 0)` }}
             >
               {s.content}
-              <Seams dark={s.dark} />
+              <Seams dark={s.dark} left={SEAMS[i - 1]} right={SEAMS[i]} />
             </div>
           ))}
         </div>
@@ -265,20 +265,71 @@ function NavArrow({ dir, disabled, onClick, label }: { dir: "prev" | "next"; dis
   );
 }
 
+/** Motiv na švu mezi dvěma sekcemi; každá sekce nese jeho polovinu. */
+type SeamMotif = { kind: "rosette"; size: number } | { kind: "townhouse"; width: number };
+
 /**
- * Švy mezi sekcemi: svislá bordura na obou okrajích a půlka rozety přesně na švu.
- * Při vodorovném přejezdu se dvě sousední sekce potkají a bordury i rozeta
- * se složí v jeden celek, takže sekce působí jako jeden pás tisku.
+ * Švy 1|2 … 7|8. Různé velikosti rozet, aby přechody nepůsobily šablonovitě;
+ * mezi Vlastní investicí a Jak přemýšlím stojí místo rozety činžovní dům.
  */
-function Seams({ dark }: { dark?: boolean }) {
-  const Rosette = dark ? GrandRosette : BanknoteRosette;
-  const rosetteProps = dark ? { tone: "gold" as const, opacity: 0.55 } : { opacity: 0.9 };
+const SEAMS: SeamMotif[] = [
+  { kind: "rosette", size: 220 },
+  { kind: "townhouse", width: 560 },
+  { kind: "rosette", size: 320 },
+  { kind: "rosette", size: 150 },
+  { kind: "rosette", size: 260 },
+  { kind: "rosette", size: 380 },
+  { kind: "rosette", size: 190 },
+];
+
+const TOWNHOUSE_RATIO = 464 / 520;
+
+/**
+ * Švy mezi sekcemi: svislá bordura na obou okrajích a polovina motivu přesně na švu.
+ * Odcházející sekce je při přejezdu dočtená dolů, přicházející začíná nahoře, proto se
+ * levá polovina kotví k hornímu okraji pódia a pravá k jeho poslední výšce (--stage-h).
+ * Rozeta sedí uprostřed pódia, dům stojí na jeho spodní hraně.
+ */
+function Seams({ dark, left, right }: { dark?: boolean; left?: SeamMotif; right?: SeamMotif }) {
   return (
     <div aria-hidden="true" className="seams pointer-events-none absolute inset-0 overflow-hidden">
       <span className="seam seam--l" />
       <span className="seam seam--r" />
-      <Rosette className="seam-rosette seam-rosette--l hidden lg:block" {...rosetteProps} />
-      <Rosette className="seam-rosette seam-rosette--r hidden lg:block" {...rosetteProps} />
+      {left && <SeamHalf motif={left} side="l" dark={dark} />}
+      {right && <SeamHalf motif={right} side="r" dark={dark} />}
     </div>
+  );
+}
+
+function SeamHalf({ motif, side, dark }: { motif: SeamMotif; side: "l" | "r"; dark?: boolean }) {
+  if (motif.kind === "townhouse") {
+    const w = motif.width;
+    const h = Math.round(w * TOWNHOUSE_RATIO);
+    return (
+      <Townhouse
+        className={`seam-motif hidden lg:block ${dark ? "text-gold-300 opacity-40" : "text-brown opacity-45"}`}
+        style={{
+          width: w,
+          height: h,
+          [side === "l" ? "left" : "right"]: -w / 2,
+          top: side === "l" ? `calc(var(--stage-h, 100%) - ${h}px)` : `calc(100% - ${h}px)`,
+        }}
+      />
+    );
+  }
+  const size = motif.size;
+  const Rosette = dark ? GrandRosette : BanknoteRosette;
+  const extra = dark ? { tone: "gold" as const, opacity: 0.55 } : { opacity: 0.9 };
+  return (
+    <Rosette
+      className="seam-motif hidden -translate-y-1/2 lg:block"
+      style={{
+        width: size,
+        height: size,
+        [side === "l" ? "left" : "right"]: -size / 2,
+        top: side === "l" ? "calc(var(--stage-h, 200%) / 2)" : "calc(100% - var(--stage-h, 200%) / 2)",
+      }}
+      {...extra}
+    />
   );
 }
