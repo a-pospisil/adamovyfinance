@@ -119,7 +119,7 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
       <nav data-theme="paper" aria-label="Sekce" className="carousel-nav themed sticky top-16 z-30 border-y border-(--line) lg:top-[4.75rem]">
         <div className="container-x flex items-center gap-3">
           <NavArrow dir="prev" disabled={!prev} onClick={() => go(active - 1)} label={prev ? `Předchozí: ${prev.label}` : "Předchozí"} />
-          <div ref={tabsRef} role="tablist" aria-label="Sekce" onKeyDown={onTabKey} className="no-scrollbar relative flex min-w-0 flex-1 gap-1 overflow-x-auto lg:justify-between">
+          <div ref={tabsRef} role="tablist" aria-label="Sekce" onKeyDown={onTabKey} className="no-scrollbar relative flex min-w-0 flex-1 gap-1 overflow-x-auto lg:gap-0 lg:justify-between">
             {slides.map((s, i) => (
               <button
                 key={s.id}
@@ -130,12 +130,12 @@ export function SectionCarousel({ slides }: { slides: Slide[] }) {
                 aria-controls={`sekce-${s.id}`}
                 tabIndex={i === active ? 0 : -1}
                 onClick={() => go(i)}
-                className={`flex shrink-0 items-baseline gap-2 whitespace-nowrap px-2.5 py-4 transition-colors duration-300 ${
+                className={`flex shrink-0 items-baseline gap-1.5 whitespace-nowrap px-2 py-4 lg:gap-1 lg:px-0.5 xl:gap-2 xl:px-2.5 transition-colors duration-300 ${
                   i === active ? "text-(--fg)" : "text-(--muted) hover:text-(--fg)"
                 }`}
               >
                 <span className="label-sm tabular text-(--accent)">{i + 1})</span>
-                <span className="text-[0.82rem] tracking-[0.04em]">{s.label}</span>
+                <span className="text-[0.82rem] tracking-[0.04em] lg:text-[0.78rem] lg:tracking-[0.02em] xl:text-[0.82rem] xl:tracking-[0.04em]">{s.label}</span>
               </button>
             ))}
           </div>
